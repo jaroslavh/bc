@@ -1,45 +1,29 @@
-import json
 from random import randint
+import csv
 
 #-------------------------------------------------------------------------
-# filling table = for size = 4
-#  XX | a0 | a1 | a2 | a3
-# ------------------------
-#  a0 | XX |    |    |
-# ------------------------
-#  a1 |fill| XX |    |
-# ------------------------
-#  a2 |fill|fill| XX |
-# ------------------------
-#  a3 |fill|fill|fill| XX
-# ------------------------
-def generate_similarity_tables(size):
-    
-    ret_dict = {}
-    id_num = 0
-    while id_num != size: #generate identificators
-        ret_dict.update({"a" + str(id_num) : []})
-        id_num += 1
+def generate_3d_data(cluster_size, cluster_number, file_name):
 
-    values = [] #communication of values between hosts
-    i = 0
-    for row in ret_dict:
-        for column in ret_dict:
-            if(row == column):
-                continue
-            app = randint(0,1000)
-            if (app > 800):
-                ret_dict[row].append({column:app})
-                ret_dict[column].append({row:app})
-    return ret_dict
+    if (cluster_number) > 8:
+        return False
+
+    with open(file_name, 'w', newline='') as csv_file:
+        data_writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        for cluster in range(0, cluster_number):
+            x = 250 + 500 * ((cluster >> 2) % 2)
+            y = 250 + 500 * ((cluster >> 1) % 2)
+            z = 250 + 500 * ((cluster >> 0) % 2)
+            for item in range(1, cluster_size):
+                data_writer.writerow([cluster, randint(100, 200) + x, randint(100, 200)
+                     + y, randint(100, 200) + z])
+    return True
 
 #-------------------------------------------------------------------------
 
-print("Starting to generate data")
+print("Data generation started:")
 
-data = generate_similarity_tables(1000)
+if generate_3d_data( 200, 4, 'data.csv'):
+    print("Data generated.")
+else:
+    print("Data generation failed.")
 
-
-output_file = open("data.json", 'w')
-
-output_file.write(json.dumps(data))
