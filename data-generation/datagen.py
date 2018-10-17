@@ -1,5 +1,6 @@
 from random import randint
 import csv
+import sys
 
 #-------------------------------------------------------------------------
 # Generates data in 3d space 0 to 1000 cube.
@@ -17,12 +18,12 @@ def generate_3d_data(cluster_size, cluster_number, file_name, clear):
     with open(file_name, 'w', newline='') as csv_file:
         data_writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         for cluster in range(0, cluster_number):
-            x = 250 + 500 * ((cluster >> 2) % 2)
-            y = 250 + 500 * ((cluster >> 1) % 2)
-            z = 250 + 500 * ((cluster >> 0) % 2)
+            x = 100 + 500 * ((cluster >> 2) % 2)
+            y = 100 + 500 * ((cluster >> 1) % 2)
+            z = 100 + 500 * ((cluster >> 0) % 2)
             for item in range(1, cluster_size):
-                data_writer.writerow([cluster, randint(100, 200) + x, randint(100, 200)
-                     + y, randint(100, 200) + z])
+                data_writer.writerow([cluster, randint(0, 300) + x, randint(0, 300)
+                     + y, randint(0, 300) + z])
     if clear == False:
         generate_random_points(500, file_name)
     return True
@@ -43,7 +44,11 @@ def generate_random_points(number_of_points, file_name):
 
 print("Data generation started:")
 
-if generate_3d_data( 200, 4, 'data.csv', True):
+if len(sys.argv) != 2:
+    print("Usage: python3 datagen.py <output filename>")
+    exit(1)
+
+if generate_3d_data( 200, 4, sys.argv[1], False):
     print("Data generated.")
 else:
     print("Data generation failed.")
