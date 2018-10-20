@@ -1,3 +1,8 @@
+# script to plot clusters loaded from csv file in format:
+# cluster_name, x_float, y_float, z_float
+# 
+# script does not check the structure of the file - expects right format
+
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import csv
@@ -14,20 +19,39 @@ x_data = []
 y_data = []
 z_data = []
 
-with open(sys.argv[1], newline='') as csv_file:
+colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
+colors_counter = 0
+
+in_file = sys.argv[1]
+
+with open(in_file, newline='') as csv_file:
     data_file_reader = csv.reader(csv_file, delimiter=' ', quotechar='|')
+    cluster_number = None
     for row in data_file_reader:
         split = row[0].split(',')
+
+        if (cluster_number == None or cluster_number != split[0]):
+            cluster_number = split[0]
+            ax.scatter(x_data, y_data, z_data, c=colors[colors_counter], marker='o')
+            colors_counter += 1
+            x_data = []
+            y_data = []
+            z_data = []
+            
         x_data.append(float(split[1]))
         y_data.append(float(split[2]))
-        z_data.append(float(split[3]))
-   
-ax.scatter(x_data, y_data, z_data, c='r', marker='o')
+        z_data.append(float(split[3]))   
+
+# plot the last cluster
+ax.scatter(x_data, y_data, z_data, c=colors[colors_counter], marker='o')
+
 xLabel = ax.set_xlabel('X')
 yLabel = ax.set_ylabel('Y')
 zLabel = ax.set_zlabel('Z')
-ax.set_xlim([0, 1000])
-ax.set_ylim([0, 1000])
-ax.set_zlim([0, 1000])
+
+if (in_file != "datasets/07-iris.csv"): 
+  ax.set_xlim([0, 1000])
+  ax.set_ylim([0, 1000])
+  ax.set_zlim([0, 1000])
 
 plt.show()

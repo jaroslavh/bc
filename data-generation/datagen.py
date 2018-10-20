@@ -9,8 +9,8 @@ import sys
 #   cluster_size integer - number of points to generate in each cluster
 #   cluster_number integer - number of clusters in space, capped at 8
 #   file_name string - name of file to save the cluster
-#   clear boolean - True - generate only clusters, False - generate some more random points
-def generate_3d_data(cluster_size, cluster_number, file_name, clear):
+#   noise boolean - True - generate only clusters, False - generate some more random points
+def generate_3d_data(file_name, cluster_number, cluster_size, noise):
 
     if (cluster_number) > 8:
         return False
@@ -24,8 +24,8 @@ def generate_3d_data(cluster_size, cluster_number, file_name, clear):
             for item in range(1, cluster_size):
                 data_writer.writerow([cluster, randint(0, 300) + x, randint(0, 300)
                      + y, randint(0, 300) + z])
-    if clear == False:
-        generate_random_points(500, file_name)
+    if noise == True:
+        generate_random_points(cluster_size, file_name)
     return True
 
 #-------------------------------------------------------------------------
@@ -44,11 +44,22 @@ def generate_random_points(number_of_points, file_name):
 
 print("Data generation started:")
 
-if len(sys.argv) != 2:
-    print("Usage: python3 datagen.py <output filename>")
+if len(sys.argv) != 5:
+    print("Usage: python3 datagen.py <output filename> <number of clusters> <points per cluster> <generate noise>")
     exit(1)
 
-if generate_3d_data( 200, 4, sys.argv[1], False):
+out_file = sys.argv[1]
+number_of_clusters = int(sys.argv[2])
+points_per_cluster = int(sys.argv[3])
+if (sys.argv[4] == 'T'):
+    gen_noise = True
+elif (sys.argv[4] == 'F'):
+    gen_noise = False
+else:
+    print("Please use T (true) or F (false) to generate specify whether you want to generate noise.")
+    exit(1)
+
+if generate_3d_data(out_file, number_of_clusters, points_per_cluster, gen_noise):
     print("Data generated.")
 else:
     print("Data generation failed.")
