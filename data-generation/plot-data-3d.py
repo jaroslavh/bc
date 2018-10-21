@@ -15,6 +15,7 @@ if len(sys.argv) != 2:
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
+dataset_folder = "../datasets/"
 x_data = []
 y_data = []
 z_data = []
@@ -49,7 +50,7 @@ xLabel = ax.set_xlabel('X')
 yLabel = ax.set_ylabel('Y')
 zLabel = ax.set_zlabel('Z')
 
-if (in_file != "datasets/07-iris.csv"): 
+if (in_file !=  dataset_folder + "07-iris.csv"): 
   ax.set_xlim([0, 1000])
   ax.set_ylim([0, 1000])
   ax.set_zlim([0, 1000])
