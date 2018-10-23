@@ -15,7 +15,7 @@ if len(sys.argv) != 2:
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-dataset_folder = "../datasets/"
+dataset_folder = "datasets/"
 x_data = []
 y_data = []
 z_data = []
