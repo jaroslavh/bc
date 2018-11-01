@@ -50,9 +50,9 @@ xLabel = ax.set_xlabel('X')
 yLabel = ax.set_ylabel('Y')
 zLabel = ax.set_zlabel('Z')
 
-if (in_file !=  dataset_folder + "07-iris.csv"): 
-  ax.set_xlim([0, 1000])
-  ax.set_ylim([0, 1000])
-  ax.set_zlim([0, 1000])
+# Uncomment if you want to plot 1000x1000x1000 graphs
+#ax.set_xlim([0, 1000])
+#ax.set_ylim([0, 1000])
+#ax.set_zlim([0, 1000])
 
 plt.show()

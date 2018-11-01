@@ -21,7 +21,7 @@ def generate_3d_data(file_name, cluster_number, cluster_size, noise):
             x = 100 + 500 * ((cluster >> 2) % 2)
             y = 100 + 500 * ((cluster >> 1) % 2)
             z = 100 + 500 * ((cluster >> 0) % 2)
-            for item in range(1, cluster_size):
+            for item in range(1, cluster_size + 1):
                 data_writer.writerow([cluster, randint(0, 450) + x, randint(0, 450)
                      + y, randint(0, 450) + z])
     if noise == True:
@@ -37,7 +37,7 @@ def generate_3d_data(file_name, cluster_number, cluster_size, noise):
 def generate_random_points(number_of_points, file_name):
     with open(file_name, 'a', newline='') as csv_file:
         data_writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        for i in range(0, number_of_points):
+        for i in range(0, number_of_points + 1):
             data_writer.writerow([100, randint(0, 1000), randint(0, 1000), randint(0, 1000)])
 
 #-------------------------------------------------------------------------
