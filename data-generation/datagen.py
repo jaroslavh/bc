@@ -22,8 +22,8 @@ def generate_3d_data(file_name, cluster_number, cluster_size, noise):
             y = 100 + 500 * ((cluster >> 1) % 2)
             z = 100 + 500 * ((cluster >> 0) % 2)
             for item in range(1, cluster_size):
-                data_writer.writerow([cluster, randint(0, 300) + x, randint(0, 300)
-                     + y, randint(0, 300) + z])
+                data_writer.writerow([cluster, randint(0, 450) + x, randint(0, 450)
+                     + y, randint(0, 450) + z])
     if noise == True:
         generate_random_points(cluster_size, file_name)
     return True

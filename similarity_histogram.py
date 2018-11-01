@@ -5,6 +5,7 @@ import csv
 import sys
 from scipy.spatial import distance
 
+# checking arguments
 if len(sys.argv) != 3:
     print("Usage: python3 similarity_histogram.py <input filename> <cosine/euclidean dist>")
     exit(1)
@@ -18,9 +19,8 @@ else:
     print("Distance argument error. Use: -e - euclidean, -c - cosine")
     exit(1)
 
-distance_measure = sys.argv[2]
-
-histogram_data = []
+distance_measure = sys.argv[2] # euclidean distance of cosine similarity
+histogram_data = [] # list to load data from csv
  
 with open(in_file, newline='') as csv_file:
     data_file_reader = csv.reader(csv_file, delimiter=' ', quotechar='|')
@@ -36,7 +36,7 @@ with open(in_file, newline='') as csv_file:
         else:    
             histogram_data.append(distance.cosine(base_point, distant_point))
 
-for i in [10, 20, 30, 40, 50]:
+for i in [10]: #[10, 20, 30, 40, 50]:
     num_bins = i
     patches = plt.hist(histogram_data, num_bins, facecolor='blue', alpha=0.5)
     plt.show()
