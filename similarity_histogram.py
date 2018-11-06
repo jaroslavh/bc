@@ -36,7 +36,7 @@ with open(in_file, newline='') as csv_file:
         else:    
             histogram_data.append(distance.cosine(base_point, distant_point))
 
-for i in [10]: #[10, 20, 30, 40, 50]:
+for i in [30]: #[10, 20, 30, 40, 50]:
     num_bins = i
     patches = plt.hist(histogram_data, num_bins, facecolor='blue', alpha=0.5)
     plt.show()

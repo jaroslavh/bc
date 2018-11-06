@@ -20,7 +20,7 @@ x_data = []
 y_data = []
 z_data = []
 
-colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
+colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w', 'b']
 colors_counter = 0
 
 in_file = sys.argv[1]
@@ -31,9 +31,11 @@ with open(in_file, newline='') as csv_file:
     for row in data_file_reader:
         split = row[0].split(',')
 
-        if (cluster_number == None or cluster_number != split[0]):
+        if (cluster_number == None):
             cluster_number = split[0]
+        elif (cluster_number != split[0]):
             ax.scatter(x_data, y_data, z_data, c=colors[colors_counter], marker='o')
+            cluster_number = split[0]
             colors_counter += 1
             x_data = []
             y_data = []

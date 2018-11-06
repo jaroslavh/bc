@@ -1,0 +1,14 @@
+6. 11. 2018
+Prepared dataset for testing basic cluster representation algorithms. It has 3
+clusters of different size and density (1000, 1200 and 800 points). These
+clusters do not overlap, however 2 are very close, almost touching.
+
+From this dataset I prepared 5 sets for learning and testing. Always usint 80%
+of the dataset to "learn" the structure of cluster and then I will try to
+assign the remaining 20% to a cluster based on closest neighbor algorithm.
+
+I was able to create representation using randomPoint and greedyApproach. I
+found out that previously implemented smartGreedyApproach is not working as I
+expected. I tried to fix but did not succeed yet. I will need to finish this
+later.
+
