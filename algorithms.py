@@ -15,7 +15,6 @@ def randomPoints(similarity, pointsList, cluster, delta):
                 pointsList.remove(point)
 
 def greedyApproach(similarity, pointsList, cluster, delta):
-    print(pointsList)
     farthestPoint = pointsList[0]
     pointsList.remove(farthestPoint)
     while pointsList:
@@ -28,37 +27,28 @@ def greedyApproach(similarity, pointsList, cluster, delta):
                 farthestPoint = point
             pointsList.remove(point)
 
-def smartGreedyApproach(similarity, pointsList, cluster, delta): #TODO this does not work yet
+def smartGreedyApproach(similarity, pointsList, cluster, delta):
     smartPoint = pointsList[0]
     while pointsList:
-        #print(len(pointsList))
-        print(smartPoint.coordinates())
         cluster.append(smartPoint) #starting with a random point
         pointsList.remove(smartPoint)
         maxDist = 0
-        workList = []
+
         for point in pointsList:
-            print(point.coordinates())
-            tempDist = similarity(cluster.medoids[-1].coordinates(), point.coordinates())
-            if (tempDist < delta):
+            tempDist = similarity(smartPoint.coordinates(), point.coordinates())
+            if (tempDist <= delta):
                 pointsList.remove(point)
-            else:
-                workList.append((point, tempDist))
-                if (tempDist > maxDist):
-                    maxDist = tempDist
-        
+            if (tempDist > maxDist):
+                maxDist = tempDist
+
         optimalDistance = delta + ((maxDist - delta) / 2)
         currentDist = optimalDistance
 
-        print(str(len(workList)) + " : " + str(len(pointsList)))
-        if (len(workList) == 0):
-            print('printing remaining')
-            for point in pointsList:
-                print(point.coordinates())
-        for remaining in workList:
-            if (optimalDistance - remaining[1] < currentDist):
-                currentDist = optimalDistance - remaining[1]
-                smartPoint = remaining[0]
+        for remaining in pointsList:
+            tempDist = similarity(smartPoint.coordinates(), remaining.coordinates())
+            if (abs(optimalDistance - tempDist) < currentDist):
+                currentDist = abs(optimalDistance - tempDist)
+                smartPoint = remaining
         
 
 # check cli arguments
@@ -98,8 +88,8 @@ with open(in_file, newline='') as csv_file:
 
             # whole file loaded to memory we can start to go through the points
             #randomPoints(similarity_func, points_from_file, cluster, delta_list[delta_cnt])
-            #greedyApproach(similarity_func, points_from_file, cluster, delta_list[delta_cnt])
-            smartGreedyApproach(similarity_func, points_from_file, cluster, delta_list[delta_cnt])
+            greedyApproach(similarity_func, points_from_file, cluster, delta_list[delta_cnt])
+            #smartGreedyApproach(similarity_func, points_from_file, cluster, delta_list[delta_cnt])
             cluster.writeFile(out_file)
             cluster = Cluster(cluster_number)
             cluster.medoids = []
@@ -110,6 +100,6 @@ with open(in_file, newline='') as csv_file:
         
 # whole file loaded to memory we can start to go through the points
 #randomPoints(similarity_func, points_from_file, cluster, delta_list[delta_cnt])
-#greedyApproach(similarity_func, points_from_file, cluster, delta_list[delta_cnt])
-smartGreedyApproach(similarity_func, points_from_file, cluster, delta_list[delta_cnt])
+greedyApproach(similarity_func, points_from_file, cluster, delta_list[delta_cnt])
+#smartGreedyApproach(similarity_func, points_from_file, cluster, delta_list[delta_cnt])
 cluster.writeFile(out_file)
