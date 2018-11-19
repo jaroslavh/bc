@@ -1,17 +1,16 @@
 # implementation of class point
-from scipy.spatial import distance
 
 class Point:
-    visited = False
-    x = 0
-    y = 0
-    z = 0
+    coors = [] # coordinates of point
 
-    def __init__(self, x, y, z):
-        self.x = x
-        self.y = y
-        self.z = z
-        self.visited = False
+    def __init__(self, coordinates): #TODO check if it is a list of ints
+        self.coors = coordinates
 
-    def coordinates(self):
-        return [self.x, self.y, self.z]    
+    def __str__(self):
+        return str(self.coors)
+
+    def __eq__(self, other):
+        return (self.coors == other.coors)
+
+    def dim(self):
+        return len(self.coors)
