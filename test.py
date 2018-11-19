@@ -5,6 +5,7 @@ from fileio import FileIO
 from cluster import Cluster
 from point import Point
 
+# testcases for point.py
 class TestPoint(unittest.TestCase):
 
     # comparing 2 same points
@@ -21,6 +22,7 @@ class TestPoint(unittest.TestCase):
         b = Point([1, 1])
         self.assertEqual((a == b), False)
 
+# testcases for cluster.py
 class TestCluster(unittest.TestCase):
 
     def test__eq__same_clusters(self):
@@ -44,7 +46,7 @@ class TestCluster(unittest.TestCase):
         d = Cluster(0, [Point([0, 10, 1])])
         self.assertEqual(c == d, False)
 
-
+# testcases for fileio.py
 class TestFileIO(unittest.TestCase):
 
     def test___init___file_does_not_exist(self):
@@ -68,16 +70,28 @@ class TestFileIO(unittest.TestCase):
         with self.assertRaises(Exception):
             f.close()
 
-   # def test_loadFile_good_file(self):
-   #     f = FileIO("tests/test1.csv", "r")
-   #     loaded = f.loadFile()
-   #     reference = [
-   #         Cluster(0, [Point([1, 1, 1]), Point([2, 2, 2]), Point([3.0, 3.0, 3.0])]),
-   #         Cluster(1, [Point([1, 1, 1]), Point([1, 1, 1]), Point([1, 1, 1]),
-   #             Point([1, 1, 1]), Point([1, 1, 1]), Point([1, 1, 1]), ]),
-   #         Cluster(2, [Point([1, 1, 1])])
-   #     ] #TODO compare cluster by cluster
-   #     self.assertEquals(loaded, reference)
+    def test_loadFile_good_file(self):
+        f = FileIO("tests/test1.csv", "r")
+        loaded = f.loadFile()
+        f.close()
+
+        reference = [
+            Cluster('0', [Point([1, 1, 1]), Point([2, 2, 2]), Point([3.0, 3.0, 3.0])]),
+            Cluster('1', [Point([1, 1, 1]), Point([1, 1, 1]), Point([1, 1, 1]),
+                Point([1, 1, 1]), Point([1, 1, 1]), Point([1, 1, 1]), ]),
+            Cluster('2', [Point([1, 1, 1])])
+        ]
+        self.assertEqual(loaded, reference)
+
+    def test_loadFile_wrong_file(self):
+        f1 = FileIO("tests/test1.csv", "r")
+        loaded1 = f1.loadFile()
+        f1.close()
+
+        f2 = FileIO("tests/test2.csv", "r")
+        loaded2 = f2.loadFile()
+        f2.close()
+        self.assertEqual((loaded1 == loaded2), False)        
 
 
 if __name__ == '__main__':
