@@ -49,4 +49,28 @@ Implemented methods __eq__ for Point and Cluster methods. Also added tests for
 them. For Cluster comparison there will probably be a need to implement another
 __eq__ method to compare just the points without id.
 
-I need to work more on the file loading, which seems to be not working right.
+Loading file finally improved. Now I can also load points of different sizes in
+coordinates. I can move on to updating other files and then I can finally
+implement that point_classification and tests with it.
+
+In the end started working on changing the finding_medoids.py file to newer
+structure. Tommorow I have to start working on changing the methods to work on
+a whole cluster. Around line 25.
+
+20. 11. 2018
+I have rewritten all 3 so far implemented algorithms to work for whole
+clusters. I need to figure out how to test them in different spaces then 3D
+because the tests are not really showing any promise so far. I also need to
+check one last time the greedy algorithms if they are implemented right.
+
+I really need to move to the kNN algorithm so that I can measure some results.
+I hope tommorow is the day.
+
+I feel a bit down, because I thought that it will go much faster. However I 
+should be at the end of the first refactoring period so the progress should
+become faster now.
+
+21. 11. 2018
+Found a mistake in smartGreedyApproach and fixed it. Now it works as expected
+finally.
+

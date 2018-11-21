@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # script to plot clusters loaded from csv file in format:
 # cluster_name, x_float, y_float, z_float
 # 
@@ -7,10 +9,12 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import csv
 import sys
+import argparse
 
-if len(sys.argv) != 2:
-    print("Usage: python3 plot-data-3d.py <input filename>")
-    exit(1)
+parser = argparse.ArgumentParser()
+parser.add_argument("inFile", help="csv file to read data from")
+args = parser.parse_args()
+in_file = args.inFile
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
@@ -22,8 +26,6 @@ z_data = []
 
 colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w', 'b']
 colors_counter = 0
-
-in_file = sys.argv[1]
 
 with open(in_file, newline='') as csv_file:
     data_file_reader = csv.reader(csv_file, delimiter=' ', quotechar='|')

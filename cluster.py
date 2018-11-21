@@ -38,4 +38,4 @@ class Cluster:
         with open(out_file, 'a', newline='') as csv_file:
             data_writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             for point in self.points:
-                data_writer.writerow([id] + point.coors)
+                data_writer.writerow([self.id] + point.coors)
