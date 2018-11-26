@@ -74,3 +74,78 @@ become faster now.
 Found a mistake in smartGreedyApproach and fixed it. Now it works as expected
 finally.
 
+I also tested a tutorial on using kNN from scikit learn using pandas. If I did 
+just think of using pandas before, it would have made my job much easier. I do
+not regret much though. Learned a lot.
+
+22. 11. 2018
+Ran first tests on the learn1, test1 csv suite. Here are the results. I was
+using kNN algorithm with k = 5
+
+Random:
+[[200   0   0]
+ [  0 236   4]
+ [  0   0 160]]
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00       200
+           3       1.00      0.98      0.99       240
+           6       0.98      1.00      0.99       160
+
+   micro avg       0.99      0.99      0.99       600
+   macro avg       0.99      0.99      0.99       600
+weighted avg       0.99      0.99      0.99       600
+
+Greedy:
+[[195   1   4]
+ [  5 235   0]
+ [  0   0 160]]
+              precision    recall  f1-score   support
+
+           0       0.97      0.97      0.97       200
+           3       1.00      0.98      0.99       240
+           6       0.98      1.00      0.99       160
+
+   micro avg       0.98      0.98      0.98       600
+   macro avg       0.98      0.98      0.98       600
+weighted avg       0.98      0.98      0.98       600
+
+Smart:
+[[192   0   8]
+ [  7 233   0]
+ [  0   0 160]]
+              precision    recall  f1-score   support
+
+           0       0.96      0.96      0.96       200
+           3       1.00      0.97      0.99       240
+           6       0.95      1.00      0.98       160
+
+   micro avg       0.97      0.97      0.97       600
+   macro avg       0.97      0.98      0.97       600
+weighted avg       0.98      0.97      0.98       600
+
+The first results are surprising, since the random selection looks to work the
+best. However I need to test it on all 5 suites and also on different datasets
+since these are very basic.
+
+26. 11. 2018
+After a few days working on my coding skills elsewhere I am trying to
+formulate my task properly so that I can dive deeper into it.
+
+TASK:
+Given a cluster of points in a high dimensional (50+ dimensions) space that has
+only one metric between points possible figure out the best way to find medoids
+of given cluster. Medoids are points from that cluster that can represent the 
+cluster for kNN purposes and take up less space.
+
+Test differend medoid finding algorithms by using kNN to sort new points into 
+previously represented clusters.
+
+The metrics that I focus on are:
+    1) Accuracy in assigning the points in represented clusters
+    2) Points representing given cluster - the less the better for kNN and 
+       other computations
+    3) Speed and memory needs of the given algorithm.
+    
+I am not really sure if k-Medoids algorithm will work for me, because of the
+cost associated with it, however I am working on it.
