@@ -28,6 +28,8 @@ class FileIO:
     def close(self):
         self.csvFile.close()
 
+
+    # returns a list of clusters
     def loadFile(self):
         dataFileReader = csv.reader(self.csvFile, delimiter=' ', quotechar='|')
         clusterID = None

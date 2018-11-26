@@ -73,12 +73,6 @@ def smartGreedyApproach(similarity, cluster, delta):
 
     return Cluster("med" + str(cluster.id), medoids)
 
-# Based on [neighbor_number] returns to which cluster the [point]
-# belongs from [representation_file].       
-def kNearestNeighbors(point, representation_file, neighbor_number):
-    print("Nearest Neighbors")
-
-
 # check cli arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("inFile", help="csv file to read data from")
@@ -97,7 +91,7 @@ else: #TODO can this be done by argparse?
     exit(1)
 # TODO add argument for delta_list that I calculated from the histogram
 
-delta_list = [350, 350, 160]
+delta_list = [0.01, 0.01, 0.01]
 
 # read the data file
 f = FileIO(in_file, "r")
