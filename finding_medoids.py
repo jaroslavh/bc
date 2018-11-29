@@ -15,7 +15,7 @@ def randomPoints(similarity, cluster, delta):
     pointsList = cluster.points
     medoids = []
     while pointsList:
-        medoids.append(pointsList.pop())
+        medoids.append(pointsList.pop(0))
         
         pointsList = [x for x in pointsList \
             if not (similarity(medoids[-1].coors, x.coors) < delta)]
@@ -25,7 +25,7 @@ def randomPoints(similarity, cluster, delta):
 # always adds to the medoids the farthest point
 def greedyApproach(similarity, cluster, delta):
     pointsList = cluster.points
-    farthestPoint = pointsList[0]
+    farthestPoint = pointsList[0] #TODO use pop better
     medoids = []
     while len(pointsList) != 0:
         maxDist = 0

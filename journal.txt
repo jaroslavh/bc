@@ -149,3 +149,18 @@ The metrics that I focus on are:
     
 I am not really sure if k-Medoids algorithm will work for me, because of the
 cost associated with it, however I am working on it.
+
+28. 11. 2018
+Worked on determining whether the results are as expected and found out a great
+bug in whole concept. While iterating through list I was deleting from it the
+wrong way, which destroyed the whole concept greatly. I need to use list
+comprehensions, which I finally grasped the right way. Will continue fixing it
+tommorow.
+
+29. 11. 2018
+Fixed all the medoid finding algorithms to work well. The results are finally
+looking better.
+
+Created all the new results and they look great, finally it seems to be
+working. I hope that now I will be able to take it to the next level with some
+real data.

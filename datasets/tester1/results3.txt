@@ -1,0 +1,42 @@
+RANDOM
+[[195   0   5]
+ [  8 219  13]
+ [  0   0 160]]
+              precision    recall  f1-score   support
+
+           0       0.96      0.97      0.97       200
+           3       1.00      0.91      0.95       240
+           6       0.90      1.00      0.95       160
+
+   micro avg       0.96      0.96      0.96       600
+   macro avg       0.95      0.96      0.96       600
+weighted avg       0.96      0.96      0.96       600
+
+GREEDY
+[[194   0   6]
+ [  3 224  13]
+ [  0   0 160]]
+              precision    recall  f1-score   support
+
+           0       0.98      0.97      0.98       200
+           3       1.00      0.93      0.97       240
+           6       0.89      1.00      0.94       160
+
+   micro avg       0.96      0.96      0.96       600
+   macro avg       0.96      0.97      0.96       600
+weighted avg       0.97      0.96      0.96       600
+
+SMART GREEDY
+[[200   0   0]
+ [  2 236   2]
+ [  0   0 160]]
+              precision    recall  f1-score   support
+
+           0       0.99      1.00      1.00       200
+           3       1.00      0.98      0.99       240
+           6       0.99      1.00      0.99       160
+
+   micro avg       0.99      0.99      0.99       600
+   macro avg       0.99      0.99      0.99       600
+weighted avg       0.99      0.99      0.99       600
+
