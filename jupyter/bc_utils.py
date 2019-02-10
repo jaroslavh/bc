@@ -1,5 +1,7 @@
 import pandas as pd
+import numpy as np
 from matplotlib import pyplot
+
 
 # utils for usage in multiple other notebooks
 
@@ -32,3 +34,34 @@ class TestDf:
             group.plot(ax=ax, kind='scatter', x='x', y='y',
                    label="test_"+str(key), color=test_colors[key])
         pyplot.show()
+
+def delta_medoids_one_shot(df, delta, similarity_measure):
+    """Returns subset of input DataFrame, that is a good representation
+    of given data.
+    
+    This is a simplified delta-medoids algorithm. It finds out the
+    representatives in one pass through the input data. Final representatives
+    depend on the ordering of input data.
+    
+    :param df: in data
+    :type df: pandas.DataFrame
+    :param delta: maximum distance of points to be considered similar
+    :type delta: float
+    :param similarity_measure: similarity function to be used in algorithm
+    :type similarity_measure: scipy.spacial.distance
+    
+    :Example:
+    >>> TODO"""
+    representatives = np.array(df.iloc[0], ndmin=2)
+    
+    #here starts RepAssign routine for advanced delta-medoids
+    for row in df.iterrows():
+        point = tuple(row[1])
+        
+        for rep in representatives: #needs optimalization
+            if similarity_measure(point, rep) <= delta: #here add distance measure as parameter
+                break
+        else:
+            representatives = np.vstack((representatives, point))
+            
+    return pd.DataFrame(representatives, columns=['x', 'y'])
