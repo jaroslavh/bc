@@ -15,31 +15,31 @@ def randomPoints(similarity, cluster, delta):
     pointsList = cluster.points
     medoids = []
     while pointsList:
-        medoids.append(pointsList.pop())
-        for point in pointsList:
-            if (similarity(medoids[-1].coors, point.coors) < delta):
-                pointsList.remove(point)
-    return Cluster("med" + str(cluster.id), medoids)
+        medoids.append(pointsList.pop(0))
+        
+        pointsList = [x for x in pointsList \
+            if not (similarity(medoids[-1].coors, x.coors) < delta)]
+
+    return Cluster(str(cluster.id), medoids)
 
 # always adds to the medoids the farthest point
 def greedyApproach(similarity, cluster, delta):
     pointsList = cluster.points
-    farthestPoint = pointsList[0]
+    farthestPoint = pointsList[0] #TODO use pop better
     medoids = []
-    while pointsList:
+    while len(pointsList) != 0:
         maxDist = 0
         medoids.append(farthestPoint)
         pointsList.remove(farthestPoint)
-        for point in pointsList:
-            if (similarity(farthestPoint.coors, point.coors) <= delta):
-                pointsList.remove(point)
+        pointsList = [x for x in pointsList \
+            if not (similarity(medoids[-1].coors, x.coors) < delta)]
 
-        for point in pointsList:
-            tempDist = similarity(farthestPoint.coors, point.coors)
+        for remaining in pointsList:
+            tempDist = similarity(medoids[-1].coors, remaining.coors)
             if (tempDist > maxDist):
                 maxDist = tempDist
-                farthestPoint = point
-    return Cluster("med" + str(cluster.id), medoids)
+                farthestPoint = remaining
+    return Cluster(str(cluster.id), medoids)
 
 # always adds the point that is closest to the middistance between last added
 # point and farthest point
@@ -50,28 +50,27 @@ def smartGreedyApproach(similarity, cluster, delta):
     while pointsList:
         maxDist = 0
         medoids.append(smartPoint)
-        pointsList.remove(smartPoint)
 
         # filtering out the points already in delta + finding farthest point
+        pointsList = [x for x in pointsList \
+            if not (similarity(medoids[-1].coors, x.coors) < delta)]
+
         for point in pointsList:
             tempDist = similarity(medoids[-1].coors, point.coors)
-            if (tempDist <= delta):
-                pointsList.remove(point)
-            elif (tempDist > maxDist):
+            if tempDist > maxDist:
                 maxDist = tempDist
         
-        optimalDistance = delta + ((maxDist - delta) / 2)
-        currentDist = optimalDistance
+        optimalDistance = maxDist - delta
+        currentDist = maxDist
 
         # finding the optimal medoid
         for remaining in pointsList:
-            tempDist = similarity(smartPoint.coors, remaining.coors)
-
-            if (abs(optimalDistance - tempDist) < currentDist):
+            tempDist = similarity(medoids[-1].coors, remaining.coors)
+            if (abs(optimalDistance - tempDist) <= currentDist):
                 currentDist = abs(optimalDistance - tempDist)
                 smartPoint = remaining
 
-    return Cluster("med" + str(cluster.id), medoids)
+    return Cluster(str(cluster.id), medoids)
 
 # check cli arguments
 parser = argparse.ArgumentParser()
@@ -91,7 +90,7 @@ else: #TODO can this be done by argparse?
     exit(1)
 # TODO add argument for delta_list that I calculated from the histogram
 
-delta_list = [0.01, 0.01, 0.01]
+delta_list = [350, 350, 160]
 
 # read the data file
 f = FileIO(in_file, "r")

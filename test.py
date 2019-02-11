@@ -22,6 +22,27 @@ class TestPoint(unittest.TestCase):
         b = Point([1, 1])
         self.assertEqual((a == b), False)
 
+    # further testing __eq__ by trying to remove from list
+    def test_removing_from_list(self):
+        points = [
+            Point([1, 1, 1]),
+            Point([12, 1, 1]),
+            Point([4, 1, 1]),
+            Point([0, 1, 1]),
+            Point([3, 1, 1]),
+            Point([2, 1, 1])
+        ]
+        points.remove(points[0])
+        points_removed = [
+            Point([12, 1, 1]),
+            Point([4, 1, 1]),
+            Point([0, 1, 1]),
+            Point([3, 1, 1]),
+            Point([2, 1, 1])
+        ]
+        self.assertEqual(points == points_removed, True)
+
+
 # testcases for cluster.py
 class TestCluster(unittest.TestCase):
 
