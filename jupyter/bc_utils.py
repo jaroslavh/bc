@@ -59,9 +59,48 @@ def delta_medoids_one_shot(df, delta, similarity_measure):
         point = tuple(row[1])
         
         for rep in representatives: #needs optimalization
-            if similarity_measure(point, rep) <= delta: #here add distance measure as parameter
+            if similarity_measure(point, rep) <= delta:
                 break
         else:
             representatives = np.vstack((representatives, point))
             
-    return pd.DataFrame(representatives, columns=['x', 'y'])
+    return pd.DataFrame(representatives, columns=df.columns.values)
+
+def delta_medoids(df, delta, similarity_measure):                                                         
+    """Returns subset of input DataFrame, that is a good representation                                            
+    of given data.                                                                                                 
+                                                                                                                   
+    This is a simplified delta-medoids algorithm. It finds out the                                                 
+    representatives in one pass through the input data. Final representatives                                      
+    depend on the ordering of input data.                                                                          
+                                                                                                                   
+    :param df: in data                                                                                             
+    :type df: pandas.DataFrame                                                                                     
+    :param delta: maximum distance of points to be considered similar                                              
+    :type delta: float                                                                                             
+    :param similarity_measure: similarity function to be used in algorithm                                         
+    :type similarity_measure: scipy.spacial.distance                                                               
+                                                                                                                   
+    :Example:                                                                                                      
+    >>> TODO"""
+    clusters = {}
+                                                                                                                   
+    #here starts RepAssign routine for advanced delta-medoids                                                      
+    for row in df.iterrows():
+        dist = float("inf")
+        represenative = None
+        
+        point = tuple(row[1])                                                                                      
+                                                                                                                   
+        for rep in clusters.keys():
+            #finding the closest representative to current point
+            if similarity_measure(point, rep) <= dist:
+                representative = rep
+                dist = similarity_measure(point, rep)
+        if dist <= delta:
+            clusters[representative] = np.vstack((clusters[representative],
+                                                point))
+        else:
+            clusters[point] = np.array(point, ndmin=2)                                                  
+                                                                                                                   
+    return pd.DataFrame(clusters.keys(), columns=df.columns.values)
