@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+
+from scipy.spatial import distance
 from matplotlib import pyplot
 
 
@@ -179,3 +181,30 @@ def delta_medoids_full(df, delta, similarity_measure):
 
     print("delta_medoids_full algorithm ended after " + str(t) + " iterations.")
     return pd.DataFrame(list(representatives[t]), columns=df.columns.values)
+
+def estimate_delta(df, similarity_measure):
+    """Estimate delta for given dataset and similarity measure.
+
+    Uses heuristic by picking 3 points from given dataframe - first, last and
+    middle one. Then it calculates distance to each other point in the dataset
+    and stores them. It returns the median * 1.05 value as a estimate delta value
+    for given dataset"""
+    similarities = np.array([])
+    
+    ref_points = [df.iloc[0].values,
+            df.iloc[len(df.index) / 2].values,
+            df.iloc[len(df.index) - 1].values]
+
+    for ref_point in ref_points:
+        for row in df.iterrows():
+            point = tuple(row[1])
+            
+            #skipping current ref_point
+            if point == tuple(ref_point):
+                continue
+
+            sim = distance.cosine(point, ref_point)
+            similarities = np.append(similarities, sim)
+
+    delta = np.median(similarities)
+    return delta * 1.05 #TODO store this value somewhere better
