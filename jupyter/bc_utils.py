@@ -203,7 +203,7 @@ def estimate_delta(df, similarity_measure):
             if point == tuple(ref_point):
                 continue
 
-            sim = distance.cosine(point, ref_point)
+            sim = similarity_measure(point, ref_point)
             similarities = np.append(similarities, sim)
 
     delta = np.median(similarities)
