@@ -206,5 +206,7 @@ def estimate_delta(df, similarity_measure):
             sim = similarity_measure(point, ref_point)
             similarities = np.append(similarities, sim)
 
-    delta = np.median(similarities)
+    # aiming to get 10 representatives for the whole dataset, though picking from sorted value of similarities
+    # this counts on uniform distribution of values
+    delta = np.sort(similarities)[similarities.size / 10]
     return delta * 1.05 #TODO store this value somewhere better
