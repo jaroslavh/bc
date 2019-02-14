@@ -145,10 +145,13 @@ def delta_medoids_full(df, delta, similarity_measure):
     t = 0
     representatives = {}
     representatives[t] = set()
-    clusters = {}
 
     while True:
         #print("\n=========== running for t = " + str(t) + "============")
+        clusters = {}
+        for item in representatives[t]:
+            clusters[item] = np.array(item, ndmin=2)
+
         t = t + 1
 
         #================== RepAssign starts ==================
