@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+
+from scipy.spatial import distance
 from matplotlib import pyplot
 
 
@@ -143,10 +145,13 @@ def delta_medoids_full(df, delta, similarity_measure):
     t = 0
     representatives = {}
     representatives[t] = set()
-    clusters = {}
 
     while True:
         #print("\n=========== running for t = " + str(t) + "============")
+        clusters = {}
+        for item in representatives[t]:
+            clusters[item] = np.array(item, ndmin=2)
+
         t = t + 1
 
         #================== RepAssign starts ==================
@@ -179,3 +184,32 @@ def delta_medoids_full(df, delta, similarity_measure):
 
     print("delta_medoids_full algorithm ended after " + str(t) + " iterations.")
     return pd.DataFrame(list(representatives[t]), columns=df.columns.values)
+
+def estimate_delta(df, similarity_measure):
+    """Estimate delta for given dataset and similarity measure.
+
+    Uses heuristic by picking 3 points from given dataframe - first, last and
+    middle one. Then it calculates distance to each other point in the dataset
+    and stores them. It returns the median * 1.05 value as a estimate delta value
+    for given dataset"""
+    similarities = np.array([])
+    
+    ref_points = [df.iloc[0].values,
+            df.iloc[len(df.index) / 2].values,
+            df.iloc[len(df.index) - 1].values]
+
+    for ref_point in ref_points:
+        for row in df.iterrows():
+            point = tuple(row[1])
+            
+            #skipping current ref_point
+            if point == tuple(ref_point):
+                continue
+
+            sim = similarity_measure(point, ref_point)
+            similarities = np.append(similarities, sim)
+
+    # aiming to get 10 representatives for the whole dataset, though picking from sorted value of similarities
+    # this counts on uniform distribution of values
+    delta = np.sort(similarities)[similarities.size / 10]
+    return delta * 1.05 #TODO store this value somewhere better
