@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import random
 
 from scipy.spatial import distance
 from matplotlib import pyplot
@@ -213,3 +214,9 @@ def estimate_delta(df, similarity_measure):
     # this counts on uniform distribution of values
     delta = np.sort(similarities)[similarities.size / 10]
     return delta * 1.05 #TODO store this value somewhere better
+
+#using random select algorithm
+def random_selection(df, delta, similarity_measure, num):
+    rows = random.sample(df.index, num)
+    representatives = df.loc[rows]
+    return representatives
