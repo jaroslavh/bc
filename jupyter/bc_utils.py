@@ -216,7 +216,49 @@ def estimate_delta(df, similarity_measure):
     return delta * 1.05 #TODO store this value somewhere better
 
 #using random select algorithm
-def random_selection(df, delta, similarity_measure, num):
+def random_selection(df, delta, num):
     rows = random.sample(df.index, num)
     representatives = df.loc[rows]
     return representatives
+
+# finding representation of a cluster with random selection
+# pandas.DataFrame in_df
+# float delta
+def greedy_select(df, delta, similarity_measure):
+    
+    medoid_indexes = np.array([])
+    index_list = np.array(df.index.values)
+    
+    while (index_list.size > 0):
+        
+        # selecting the first index
+        if not (medoid_indexes.size > 0):
+            current_index = df.loc[index_list[0]].name
+        # finding index of the most different point
+        else:
+            for index in index_list:
+                current_index = None
+                diff_sum = 0
+                tmp_sum = 0
+                for medoid in medoid_indexes:
+                    tmp_sum = tmp_sum + similarity_measure(df.loc[index].values[:],
+                                                           df.loc[medoid].values[:])
+                if tmp_sum > diff_sum:
+                    diff_sum = tmp_sum
+                    current_index = index
+    
+        rem_indexes = np.array([])
+        
+        # find indexes to drop from dataframe
+        for ix in df.index:
+            if distance.euclidean(df.loc[ix].values[:], df.loc[current_index].values[:]) <= delta:
+                rem_indexes = np.append(rem_indexes, ix)
+        
+        medoid_indexes = np.append(medoid_indexes, current_index)
+        
+        index_list = np.array([item for item in index_list if item not in rem_indexes])
+        rem_indexes = np.delete(rem_indexes, np.where(rem_indexes == current_index))
+        
+        df = df.drop(rem_indexes)
+    return df
+
