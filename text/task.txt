@@ -1,0 +1,15 @@
+The goal of this thesis is to create a memory efficient representation of
+network host behavioural clusters used in the Cognitive targeted anomaly
+detection framework. The used behavioural similarity measure does not form a
+metric space. Therefore the non-metric cluster representation is needed.
+
+Study the state-of-the-art literature on the topic of cluster representations in
+non-metric spaces.
+
+Create benchmark datasets and use them to compare the memory and computational
+requirements of existing methods for cluster representations in non-metric
+spaces.
+
+Analyze the results, select the best method, and incorporate it into the
+Cognitive targeted anomaly detection framework and fine-tune its parameters for
+the network security domain.
