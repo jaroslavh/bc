@@ -215,8 +215,16 @@ def estimate_delta(df, similarity_measure):
     delta = np.sort(similarities)[similarities.size / 10]
     return delta * 1.05 #TODO store this value somewhere better
 
-#using random select algorithm
-def random_selection(df, delta, num):
+def random_select(df, num):
+    """Returns random subset from input DataFrame of given size.
+
+    :param df: in data
+    :type df: pandas.DataFrame
+    :param num: number of representatives to select
+    :type num: int
+
+    :Example:
+    >>> ret_df = random_select(input_df, 5)"""
     rows = random.sample(df.index, num)
     representatives = df.loc[rows]
     return representatives
@@ -225,6 +233,22 @@ def random_selection(df, delta, num):
 # pandas.DataFrame in_df
 # float delta
 def greedy_select(df, delta, similarity_measure):
+    """Returns subset from input DataFrame selected by greedy algorithm that
+    that always looks for representative that if the farthest from all
+    previously selected.
+
+    All others are calculate by finding the smallest sum of similarities to all
+    representatives previously selected.
+
+    :param df: in data
+    :type df: pandas.DataFrame
+    :param delta: maximum distance of points to be considered similar
+    :type delta: float
+    :param similarity_measure: similarity function to be used in algorithm
+    :type similarity_measure: scipy.spacial.distance
+
+    :Example:
+    >>> ret_df = greedy_select(input_df, 0.25, distance.cosine)"""
     
     medoid_indexes = np.array([])
     index_list = np.array(df.index.values)
@@ -238,13 +262,13 @@ def greedy_select(df, delta, similarity_measure):
         else:
             for index in index_list:
                 current_index = None
-                diff_sum = 0
-                tmp_sum = 0
+                similarity_sum = 0 # used to store the biggest sum
+                tmp_sum = 0 # used to store the current sum
                 for medoid in medoid_indexes:
                     tmp_sum = tmp_sum + similarity_measure(df.loc[index].values[:],
                                                            df.loc[medoid].values[:])
-                if tmp_sum > diff_sum:
-                    diff_sum = tmp_sum
+                if tmp_sum > similarity_sum:
+                    similarity_sum = tmp_sum
                     current_index = index
     
         rem_indexes = np.array([])
@@ -254,11 +278,13 @@ def greedy_select(df, delta, similarity_measure):
             if distance.euclidean(df.loc[ix].values[:], df.loc[current_index].values[:]) <= delta:
                 rem_indexes = np.append(rem_indexes, ix)
         
+        # adding selected index to other representatives
         medoid_indexes = np.append(medoid_indexes, current_index)
         
+        # dropping points from the delta distance of newly selected representative
         index_list = np.array([item for item in index_list if item not in rem_indexes])
         rem_indexes = np.delete(rem_indexes, np.where(rem_indexes == current_index))
-        
         df = df.drop(rem_indexes)
+
     return df
 
