@@ -12,7 +12,7 @@
 
 \documentclass[thesis=B,english]{FITthesis}[2012/10/20]
 
-% \usepackage[utf8]{inputenc} % LaTeX source encoded as UTF-8
+\usepackage[utf8]{inputenc} % LaTeX source encoded as UTF-8
 % \usepackage[latin2]{inputenc} % LaTeX source encoded as ISO-8859-2
 % \usepackage[cp1250]{inputenc} % LaTeX source encoded as Windows-1250
 
@@ -23,6 +23,10 @@
 
 \usepackage{dirtree} %directory tree visualisation
 
+\usepackage{csquotes}
+
+%\usepackage[main=english,czech]{babel}
+   
 % % list of acronyms
 % \usepackage[acronym,nonumberlist,toc,numberedsection=autolabel]{glossaries}
 % \iflanguage{czech}{\renewcommand*{\acronymname}{Seznam pou{\v z}it{\' y}ch zkratek}}{}
@@ -32,19 +36,19 @@
 % EDIT THIS
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-\department{Department of \ldots (SPECIFY)}
-\title{Thesis title (SPECIFY)}
-\authorGN{Your Given Name(s) (SPECIFY)} %author's given name/names
-\authorFN{Your Family Name (surname, SPECIFY)} %author's surname
-\author{Your Name (SPECIFY)} %author's name without academic degrees
-\authorWithDegrees{Your Name \& degrees} %author's name with academic degrees
-\supervisor{Your Supervisor's Name (SPECIFY)}
-\acknowledgements{THANKS (remove entirely in case you do not with to thank anyone)}
+\department{Department of Computer Systems}
+\title{ Memory efficient cluster representations in non-metric spaces}
+\authorGN{Jaroslav} %author's given name/names
+\authorFN{Hlaváč} %author's surname
+\author{Jaroslav Hlaváč} %author's name without academic degrees
+\authorWithDegrees{Jaroslav Hlaváč} %author's name with academic degrees
+\supervisor{Ing. Martin Kopp}
+\acknowledgements{THANKS (remove entirely in case you do not with to thank anyone)} %TODO
 \abstractEN{Summarize the contents and contribution of your work in a few sentences in English language.}
-\abstractCS{V n{\v e}kolika v{\v e}t{\' a}ch shr{\v n}te obsah a p{\v r}{\' i}nos t{\' e}to pr{\' a}ce v {\v c}esk{\' e}m jazyce.}
+\abstractCS{V n{\v e}kolika v{\v e}t{\' a}ch shr{\v n}te obsah a p{\v r}{\' i}nos t{\' e}to pr{\' a}ce v {\v c}esk{\' e}m jazyce.} %TODO
 \placeForDeclarationOfAuthenticity{Prague}
-\keywordsCS{Replace with comma-separated list of keywords in Czech.}
-\keywordsEN{Replace with comma-separated list of keywords in English.}
+\keywordsCS{Replace with comma-separated list of keywords in Czech.} %TODO
+\keywordsEN{Replace with comma-separated list of keywords in English.} %TODO
 \declarationOfAuthenticityOption{1} %select as appropriate, according to the desired license (integer 1-6)
 % \website{http://site.example/thesis} %optional thesis URL
 
@@ -57,18 +61,117 @@
 \setsecnumdepth{part}
 \chapter{Introduction}
 
+While network communication over the Internet is very efficient and helps everyday life of many people around the world, there is a lot of security issues concerning the shared medium infrastructure of the Internet.
+Networks are becoming very complex as new services are being deployed.
+Every day security engineers are trying to prevent different kind of threats - ranging from spam flooding user inboxes to bruteforcing specific devices on the edge of internal networks.
+Once it might have been enough to set up a firewall and change default usernames and passwords.
+Now there is need for much more sophisticated defense mechanisms.
+Even though multi-layered defense systems are deployed on networks, there is still is many exploits in software and hardware that attackers can use to breach the defense mechanisms and hack themselves into a network.
+Once they are inside a network it often takes a long time to notice that something is amiss.
+This problem can tackled by comparing the networks current behavior compared to how it is expected to behave.
+Usualy a border device in that given network is gathering information about behavior and if it detects that the network behaves differently than expected security personel are notified about possible anomaly. \\
+
+In big networks of 1000 network hosts and more small anomalies can be difficult to find by the method explained above.
+For example single infected printer that is used in DDoS botnet can be easily missed in the traffic of a 3000 employee company.
+This is the scenario that is seen very often lately and few different methods were designed to find these kinds of anomalies. \\
+
+The method I focus on in this work is used in Cognitive targeted anomaly detection framework and is based on clustering the network hosts based on their behavior and each cluster is monitored separately.
+In each cluster there are devices that are behaving in similar manner, therefore any anomalous behavior for such device is easier to detect.
+The problem that arises with this method is how to represent these clusters.
+In each cluster there can be up to several thousand of hosts which is not convenient while trying to detect anomalies in real time.
+I modified, implemented and tested 4 algorithms for cluster representation in non-metric space as the similarity measure used does not form a metric space.
+
+%Why use clustering methods in network anomaly detection?
+%Why do we need representative selection?
+%What are the next sections about?
+%
+%Automatically grouping similar objects from a given set into clusters is a
+%widely used machine learning technique in many fields ranging from
+%recommendation engines and social network analysis to image segmentation and
+%medical imaging. New applications of this powerfull method are found every year.
+%Clustering is also used for Anomaly Detection in computer systems. \par
+%In this work I collected 5TODO known methods used in different fields for
+%cluster representation. What these methods have in common is possibility to use
+%them in spaces where only generic similarity measure exists (these spaces do 
+%not necessarily need to be metric).
+
+
 
 
 \setsecnumdepth{all}
 \chapter{State-of-the-art}
+How is this kind of work done nowadays? Cisco method published and working.
+Other methods used - always worse.
+Explain the specifics of this method.
 
 \chapter{Analysis and design}
+Explain what algorithms were implemented and tested.
+Explain what are the articles about and why I chose them.
+Explanation of datasets I have used.
+
+%% good to make a small paragraph what is this chapter about good for readability
+%V této kapitole provedeme analýzu požadavků a návrh včetně zdůvodnění všech
+%rozhodnutí.
+%
+%Also we could write what sections do we have here.
+%
+%\section[Requirememnts]{Requirement analysis}
+%
+%Text -- zejména ten odborný -- je nutné členit na odstavce. Každý odstavec by se
+%měl týkat jednoho tématu, myšlenky\dots{} Odstavce od sebe musí být vizuálně 
+%oddělené. K tomu existuje několik vhodných stylů, které si popíšeme v jedné z
+%následujících kapitol. Odstavce mohou být různě vysázené. V odborných textech je
+%běžná sazba ``do bloku''. Při ní je nutné vhodně měnit mezislovní mezery. Jejich
+%doporučená velikost je 0,25--0,33~čtverčíku. \enquote{something quoted} \\
+%% ~ -> nezalomitelna mezera
+%
+%
+%\noindent
+%Požadavky jsou těchto typů:
+%\begin{description}
+%    \item[funkční] objasňují, co se musí udělat a identifikují nutné aktivity;
+%    \item[nefunkční] jsou všechny, které nejsou funkční. Typicky mezi ně patří: 
+%    \begin{itemize}
+%        \item výkonnostní,
+%        \item designové.
+%    \end{itemize}
+%\end{description}
+%
+%\subsection{Funkční požadavky}
+%
+%Funkční požadavky této práce jsou:
+%\begin{enumerate}
+%    \item získat zadání, 
+%    \item sepsat práci, 
+%    \item včas odevzdat, 
+%    \item obhájit\footnote{Když se zadaří.}.
+%\end{enumerate}
+%
+%\section{Tabulky}
+%
+%V tabulce \ref{tab:body} najdete možnosti, jak získat body v předmětu BI-DPR.
+%
+%\begin{table}[th] \centering
+%\caption{Bodované činnosti předmětu BI-DPR} \label{tab:body}
+%    \begin{tabular}{|l|r|c|}
+%    \hline
+%    činnost & body & povinná \\ \hline \hline
+%    test citace & 10 & ne \\ \hline
+%    test typografie & 10 & ne \\ \hline
+%    hodnocení vedoucího & 20 & ne \\ \hline
+%    ohbahoba poziční zprávy & 60 & ano \\ \hline
+%    \end{tabular}
+%\end{table}
 
 \chapter{Realisation}
+Implementations of given algorithms with explanation and memory efficiency shown.
+Why is selecting delta a problem, how do I select it.
+Testbed realisation and results.
 
 \setsecnumdepth{part}
 \chapter{Conclusion}
-
+Algorithms has been tested.
+Which one is the best and under what circumstances?
 
 \bibliographystyle{iso690}
 \bibliography{mybibliographyfile}
