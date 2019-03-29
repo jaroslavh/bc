@@ -97,90 +97,191 @@ I modified, implemented and tested 4 algorithms for cluster representation in no
 %them in spaces where only generic similarity measure exists (these spaces do 
 %not necessarily need to be metric).
 
-
+\chapter{Goals}
+The aim of this work is to study methods used for representation of network host behavioral clusters that can be used in Cognitive targeted anomaly detection framework.
+Behavioral similarity used for clustering in this framework does form a metric space, which creates a requirement for methods used.
+%TODO incorporate more about what the output should be The output will be an algorithm that can be used in representation of network hosts in Cognitive targeted anomaly detecion framework.
+\\
+As result of this thesis should be presented a method, that can be used for representation of given clusters, so that further network hosts added to the system can be correctly added to correct cluster.
+Networks protected by this framework can have up to several tens of thousands hosts which leads to huge clusters.
+If the classification of newly added hosts would be done by comparing the new host to all others, the memory and time needed for classification would be unmanagable.
+That is why memory efficiency is emphasized.
+\\
+To reach this major goal general methods used for generic cluster representation in non-metric spaces should be studied.
+From these previously studied methods the best ones  will be selected and implemented.
+As part of this thesis, there should also be created a benchmark dataset for testing the chosen method.
+Further goal is to test the chosen methods on general clustering datasets and on the created benchmark dataset.
+Based on this testing, find the method that suits best for use in this field and incorporate it into Cognitive targeted anomaly detecion framework.
+The selected method will then be finetuned to get the best possible results in anomaly-detection.
 
 
 \setsecnumdepth{all}
-\chapter{Network anomaly detection}
+\chapter{Intrusion Detection System}
 
-Why do we need network anomaly detection?
-What are the challenges in anomaly detection?
-What are the possible methods to tackle these problems?
-How can machine learning help? What are the challenges of using machine learning?
-Introduction to Cognitive targeted anomaly detection.
+In the following chapter are explained the challenges of network anomaly detection (Section 1), methods used for fast end efficient anomaly detecion (Section 2).
+In the last Section 3 the Cognitive targeted anomaly detection system used by Cisco is presented.
 
-\chapter{Representative selection in non-metric spaces}
+\section{Network Anomaly Detection}
+%What is network anomaly detection
+Network anomaly detection is a method used in Intrusion Detection Systems (IDS).
+IDS is generaly a framework of tools that can are used to detect security threats in a computer network.
+There are many well-known IDS widely used in network monigoring infrastructures:
+\begin{itemize}
+    \item Snort
+    \item Suricata
+    \item Bro Network Security Monitor
+    %\item %TODO Get more examples
+\end{itemize}
+All of these systems are trying to detect, prevent and/or mitigate intrusion attempts or threats.
+Attackers that attempt to get into systems usualy want to access information (snooping), manipulate information(man-in-the-middle attacks) or render the system unusable (Denial of Service attacks).
+%Network Intrusion Detection System - NIDS
+Approaches of detecting thes attacks differ and different methods are more suitable for some attacks.
+Here are listed types of IDS as TODO listed them:
+\begin{itemize}
+    \item Signature-based (knowledge-based)
+    \item Anomaly-based (behavior-based)
+    \item Stateful protocol analysis (specification based)
+\end{itemize}
+Cognitive anomaly detection framework that is used in this thesis is an anomaly-based IDS.
+\\ \\
+%Network monitoring?
+To detect anomalies in a given network, monitoring is set up that collects network flows (using NetFlow protocol).
+Based on data collected IDS creates a model of behavior of given network.
+This model then serves as a baseline behaviour of given network.
+If the behavior suddenly significantly changes this anomaly is detected and reported.
+\\ \\ %TODO define network anomaly, DPI
+Even though this approach seems very straight forward, there are multiple issues that make it hard to implement.
+The environment of computer networks is a dynamic environment that changes based on time, applications run and other factors.
+Therefore creating only a static model once and then using it as a baseline without changing does not serve well to detect anomalies.
+Modern anomaly-detection systems use a great variety of static and dynamic methods for anomaly detection.
+\\ \\
+Much of company infrastructure nowadays rely on network based services. %TODO and digitalization still happens.
+Fast detection of security threats is crucial for functioning of most of companies today.
+This is why industry leading IDSs are focusing on detecting anomalies in real time, to migitage the loss of resources as soon as possible.
+Real-time anomaly detection is done online by monitoring the current traffic and running detection methods on top of them.
+If an anomaly is found, system administrator is notified right away and the threat can be anihilated before serious damage happens.
+\\ \\
+In real-time network monitoring systems the anomalies are calculated based on time windows of collected traffic.
+These time windows are most often set to 5 minutes, it depends on the monitored network.
+After collecting traffic for this time window the information gathered is compared to the model saved inside of the system. If the features differ more than certain set threshold it is considered an anomaly.
 
-Why is it a non-metric space?
-What are the algorithms that can be used for representative selection in non-metric spaces?
-Problems that need to be tackled using this method.
+\section{Challenges of Real-Time Anomaly Detection}
+%Why do we need efficient network anomaly detection?
+In theory the best way to find all all anomalies is to be able to save all traffic and calculate the model in previous section continuously on for all hosts.
+This way there would be a very specific and precise model for each host in the network.
+Approaching it this way, knowing all the information about the network it would be very easy to find anomaly in behaviour of each single host with a 100\% precision.
+In reality this is not possible.
+Calculating model for each host in even a medium (100 hosts) network is not managable at least not in real time.
+In offline anomaly detection system could take two 10GB files of network traffic and calculate different metrics from inspecting each flow, then comparing them and deciding whether a security incident happened.
+By the time this long opperation would be completed, the attacker could have done a serious damage in the system.
+From the examples above it is clearly seen that for real-time anomaly detection algorithms need to be fast and efficient.
+\\ \\
+%What are the challenges in making it fast?
+%What are the possible methods to tackle these problems?
+Making a model of each single host might not be fast enough.
+What if a model is made for the whole network.
+Then we have a lot less data to store and calculations are also faster, because the information is aggregated.
+This method is widely used and on smaller (several device) networks it is very efficient.
+However considering a big network of thousands of devices in so many information we can easily miss one infected device generating different traffic.
+The noise in the collected traffic would be too high.
+\\ \\
+To give an example imagine detection an infection one printer in a 10 story office building.
+This printer has been infected and added to a botnet to generate traffic for DDoS (Distributed Denial of Service) attacks.
+Looking at the traffic of the printer before and after infection it could easily be seen that it increased by several hundred or even thousands of percent.
+If considering the traffic of the whole office building, an anomaly detection system could hardly notice a change in all the other legitimate traffic of personel working in the building.
+\\ \\
+%TODO Reference article - network-aware behavior clusterin of internet hosts
+A way to approach this problem is explained in [X].
+The model is created by creating bi-partite graphs for comunictaion of hosts in one network prefix.
+These graphs are created by looking at hosts from perspective of whom does it communicate with.
+From these graphs an adjacency matrix is created.
+How adjacent one host is to another is calculated as a normalized weight of edges in the graph.
+This adjacency matrix then serves as a baseline model for anomaly detection.
+Assessing each time window of traffic means calculating an adjacency matrix for this timewindow and then comparing to the trained model.
+If there is a substantional difference an anomaly is detected.
+This method is proven to work, however it suffers from the noise of too many hosts explained before.
+Also it might not be a good way to look at the traffic from the perspective of a network prefix, as many times a lot of different devices are on one prefix.
+\\ \\
+%Other ways
+\\ \\
+%false positives
+There is also one more problem in creating a good network anomaly detection system - false positive detection.
+A false positive is a network anomaly that is detected and is not an actual anomaly.
+For example if we would have our anomaly detection system setup wrong it might detect an anomaly everyday at 8AM when workers come to the office, start their computers and download daily email.
+Comparing the time window from before 8AM and after 8AM would not give as any relevant information.
+This problem can be mitigated by setting window for which the model is calculated long enough, so that these mistakes does not happen.
+In other situations false positive alerts can happen and the goal of a good network anomaly detection system is to keep them as close to 0 as possible.
 
-\chapter{Comparison of methods}
+\section{Cognitive Targeted Anomaly Detection Framework}
+%cognitive threat analytics
+This section serves as an explanation of Cognitive targeted anomaly detection system for which the methos of this thesis are created.
+%TODO explain
+\\ \\
+%TODO further reading
+This chapter explained basic knowledge needed to unerstand modern approach of network anomaly detection.
+For more detailed informatoin a list for further reading is presented.
+%TODO list
+In the next chapter the theory for representative selection of clusters in non-metric spaces is explained.
 
-Testbed explanation - why is it the best etc.
-What datasets am I using and why?
+\chapter{Theoretical Overview}
+% Theoretical background to clustering and non-metric spaces
+
+This chapter serves as a theoretical background to explain clustering methods and problematics of non-metric spaces.
+
+\section{Introduction to Clustering}
+% Briefly explain what is Clustering and how is it used in machine learning
+
+\section{Non-Metric Space}
+% jenom pairwise similarity!!! - nemuzeme delat kolecka - neplati geometricka reprezentace okoli
+% centroid vubec neni v uvahu - casto nejde vubec udelat
+% Louvian Modularity - sestaveni grafu na zaklade pairwise similarit - to co se pouziva v Threat - modularity clustering, community detection
+
+\chapter{Representative Selection}
+% Representative selection
+
+\section{Approaches to Representative Selection}
+% popsani jak by se to delalo normalne
+% stezejni myslenky proc to delame takto
+
+%What are the algorithms that can be used for representative selection in non-metric spaces?
+%Problems that need to be tackled using this method.
+
+\chapter{Implementation and Performance Testing of Relevant Methods}
+
+\section{Methods Relevant to Cognitive Anomaly Detection}
+The following methods were tested and compared as a part of this thesis.
+\begin{itemize}
+    \item Random selection
+    \item Greedy Selection
+    \item Delta-Medoids One-Shot
+    \item Delta-Medoids %TODO citations
+\end{itemize}
+
+\subsection{Greedy Selection} %explanation of my method
+
+\subsection{Random Selection}
+
+\subsection{Delta-Medoids One-Shot}
+
+\subsection{Delta-Medoids}
+
 What criteria were chosen to compare algoritms?
 Algorithms comparison.
 Summary on what algorithm was chosen and why is it the best one.
 
-\chapter{Testing the best method in reality}
+\section{Datasets}
+The task of cluster representation in non-metric spaces generally is not necessarily connected only to the Security field.
+That is why the selected algorithms were tested on both generally know datasets like pendigits and multiple features and on specific data collected from network.
+What datasets am I using and why?
+
+\section{Testbed}
+
+\chapter{Results}
+% Testbed explanation - why is it the best etc.
 
 What were the parameters when this method has been used?
 How did it perform compared to random selection?
 
-%% good to make a small paragraph what is this chapter about good for readability
-%V této kapitole provedeme analýzu požadavků a návrh včetně zdůvodnění všech
-%rozhodnutí.
-%
-%Also we could write what sections do we have here.
-%
-%\section[Requirememnts]{Requirement analysis}
-%
-%Text -- zejména ten odborný -- je nutné členit na odstavce. Každý odstavec by se
-%měl týkat jednoho tématu, myšlenky\dots{} Odstavce od sebe musí být vizuálně 
-%oddělené. K tomu existuje několik vhodných stylů, které si popíšeme v jedné z
-%následujících kapitol. Odstavce mohou být různě vysázené. V odborných textech je
-%běžná sazba ``do bloku''. Při ní je nutné vhodně měnit mezislovní mezery. Jejich
-%doporučená velikost je 0,25--0,33~čtverčíku. \enquote{something quoted} \\
-%% ~ -> nezalomitelna mezera
-%
-%
-%\noindent
-%Požadavky jsou těchto typů:
-%\begin{description}
-%    \item[funkční] objasňují, co se musí udělat a identifikují nutné aktivity;
-%    \item[nefunkční] jsou všechny, které nejsou funkční. Typicky mezi ně patří: 
-%    \begin{itemize}
-%        \item výkonnostní,
-%        \item designové.
-%    \end{itemize}
-%\end{description}
-%
-%\subsection{Funkční požadavky}
-%
-%Funkční požadavky této práce jsou:
-%\begin{enumerate}
-%    \item získat zadání, 
-%    \item sepsat práci, 
-%    \item včas odevzdat, 
-%    \item obhájit\footnote{Když se zadaří.}.
-%\end{enumerate}
-%
-%\section{Tabulky}
-%
-%V tabulce \ref{tab:body} najdete možnosti, jak získat body v předmětu BI-DPR.
-%
-%\begin{table}[th] \centering
-%\caption{Bodované činnosti předmětu BI-DPR} \label{tab:body}
-%    \begin{tabular}{|l|r|c|}
-%    \hline
-%    činnost & body & povinná \\ \hline \hline
-%    test citace & 10 & ne \\ \hline
-%    test typografie & 10 & ne \\ \hline
-%    hodnocení vedoucího & 20 & ne \\ \hline
-%    ohbahoba poziční zprávy & 60 & ano \\ \hline
-%    \end{tabular}
-%\end{table}
 
 \setsecnumdepth{part}
 \chapter{Conclusion}
