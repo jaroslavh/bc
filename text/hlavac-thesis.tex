@@ -63,26 +63,29 @@
 \setsecnumdepth{part}
 \chapter{Introduction}
 
-While network communication over the Internet is very efficient and helps everyday life of many people around the world, there is a lot of security issues concerning the shared medium infrastructure of the Internet.
-Networks are becoming very complex as new services are being deployed.
-Every day security engineers are trying to prevent different kind of threats - ranging from spam flooding user inboxes to bruteforcing specific devices on the edge of internal networks.
-Once it might have been enough to set up a firewall and change default usernames and passwords.
-Now there is need for much more sophisticated defense mechanisms.
-Even though multi-layered defense systems are deployed on networks, there is still is many exploits in software and hardware that attackers can use to breach the defense mechanisms and hack themselves into a network.
-Once they are inside a network it often takes a long time to notice that something is amiss.
-This problem can tackled by comparing the networks current behavior compared to how it is expected to behave.
-Usualy a border device in that given network is gathering information about behavior and if it detects that the network behaves differently than expected security personel are notified about possible anomaly. \\
+Even after several decades after the Internet became the most used medium for communication, there are still many issues concerning its security. Businesses all around the world daily connect more of their infrastructure to the Internet thus creating a possibility for attackers to exploit the connected devices for their malicious use. Security engineers are always inventing new methods to stop the attacks and secure their networks. Attackers race to overcome these newly created methods and to gain control of protected data or devices. This race creates a need for much more sophisticated defense mechanisms. \\
 
-In big networks of 1000 network hosts and more small anomalies can be difficult to find by the method explained above.
-For example single infected printer that is used in DDoS botnet can be easily missed in the traffic of a 3000 employee company.
-This is the scenario that is seen very often lately and few different methods were designed to find these kinds of anomalies. \\
+Multi-layer defense systems are protecting contemporary networks. As attackers overcome one layer, there is another layer waiting for them after it. However, if the succeed to bypass all of them unnoticed a colossal problem can occur. They can collect user credentials,  exfiltrate data or gain control of devices without anybody's knowledge. It can take a long time before the breach is noticed. A similar thing happened in Marriot International child company Starwood last year. Names, emails, addresses and credit card numbers were stolen in an attack that was discovered in 2018 but possibly could have begun as early as in 2014\cite{hron2018breaches}. \\
+                                                                                                                                                                    
+One of several methods that are used to detect such intrusions is detecting anomalies in the behavior of network hosts - Network Behavioral Anomaly Detection (NBAD). NBAD compares the current behavior of the network to a model created from previous behavior. Devices inside of the network are used as probes to gather information about the behavior of the network or individual hosts. Models are calculated from the data collected. If a significant change in behavior is detected, security personnel are notified, and they can act accordingly. \\
+                                                                                  
+It is normal for a company to have up to millions of devices. Straight forward usage of NBAD in these big networks is not sufficient to detect breaches successfully. For example, a single infected device that can be easily missed in the traffic of a bigger company. In order to detect such anomalies in this network, it is needed to focus on smaller parts of it. Clustering based on the behavior of network hosts can be used to separate the network into smaller pieces. \\
 
-The method I focus on in this work is used in Cognitive targeted anomaly detection framework and is based on clustering the network hosts based on their behavior and each cluster is monitored separately.
-In each cluster there are devices that are behaving in similar manner, therefore any anomalous behavior for such device is easier to detect.
-The problem that arises with this method is how to represent these clusters.
-In each cluster there can be up to several thousand of hosts which is not convenient while trying to detect anomalies in real time.
-I modified, implemented and tested 4 algorithms for cluster representation in non-metric space as the similarity measure used does not form a metric space.
+Cognitive targeted anomaly detection framework from Cisco serves as an example of this clustering. Each cluster that it creates consists of hosts that behave similarly.  The main focus of this work is finding a representation of these clusters that can be used to calculate the model behavior and also be dynamically updated as the behavior of the network changes. \\ 
+                                           
+Four algorithms previously used to represent clusters in computer vision or other fields were studied and modified for usage in Cognitive anomaly detection framework. They were tested and compared on both real and test datasets. \\
 
+(Chapters and sections will be briefly explained here.)
+
+%The main focus of this work is in representing these clusters found by clustering algorithms.
+%Finding representation of clusters in Cognitive targeted anomaly detection framework is made more difficult by the fact, that similarity measure used for clustering does not form a metric space.
+%Therefore the focus on methods that can be used for selecting representatives in non-metric spaces. \\
+%                                                                                  
+%Each cluster can have up to several thousands of hosts.                              
+%Algorithms considered in this thesis were selected based on the following expectations.
+%As the hosts are clustered based on their behavior, it is safe to expect that selecting a subset of the cluster can represent its behavior without losing significant information.
+%Furthermore having fewer hosts as representatives of each cluster significantly reduce memory usage. \\
+                                                                                    
 %Why use clustering methods in network anomaly detection?
 %Why do we need representative selection?
 %What are the next sections about?
@@ -98,100 +101,101 @@ I modified, implemented and tested 4 algorithms for cluster representation in no
 %not necessarily need to be metric).
 
 \chapter{Goals}
-The aim of this work is to study methods used for representation of network host behavioral clusters that can be used in Cognitive targeted anomaly detection framework.
-Behavioral similarity used for clustering in this framework does form a metric space, which creates a requirement for methods used.
-%TODO incorporate more about what the output should be The output will be an algorithm that can be used in representation of network hosts in Cognitive targeted anomaly detecion framework.
-\\
-As result of this thesis should be presented a method, that can be used for representation of given clusters, so that further network hosts added to the system can be correctly added to correct cluster.
-Networks protected by this framework can have up to several tens of thousands hosts which leads to huge clusters.
-If the classification of newly added hosts would be done by comparing the new host to all others, the memory and time needed for classification would be unmanagable.
-That is why memory efficiency is emphasized.
-\\
-To reach this major goal general methods used for generic cluster representation in non-metric spaces should be studied.
-From these previously studied methods the best ones  will be selected and implemented.
-As part of this thesis, there should also be created a benchmark dataset for testing the chosen method.
-Further goal is to test the chosen methods on general clustering datasets and on the created benchmark dataset.
-Based on this testing, find the method that suits best for use in this field and incorporate it into Cognitive targeted anomaly detecion framework.
-The selected method will then be finetuned to get the best possible results in anomaly-detection.
 
+This work aims to study methods used for the representation of network host behavioral clusters that can be used in Cognitive targeted anomaly detection framework.
+Behavioral similarity used for clustering in this framework does form a metric space, which creates a requirement for algorithms used for representative selection. \\
+
+As a result of this thesis should be presented a method, that can be used for the representation of given clusters so that further network hosts added to the system can be correctly added to the correct cluster.
+Networks monitored by this framework can have up to several tens of thousands of hosts which leads to massive clusters.
+If the classification of newly added hosts were done by comparing the new host to all others, the memory and time needed for classification would be unmanageable.
+That is why memory efficiency is emphasized. \\
+
+To reach this goal general methods used for general cluster representation in non-metric spaces should be studied.
+From these previously studied methods, the best ones will be selected and implemented.
+As part of this thesis, there should also be created a benchmark dataset for testing the chosen method.
+A further goal is to test the chosen methods on generally used clustering datasets and the created benchmark dataset.
+Based on this testing, find the method that suits best for use in this field and incorporates it into the Cognitive targeted anomaly detection framework.
+The selected method should be finetuned to get the best possible results in anomaly-detection.
 
 \setsecnumdepth{all}
+
+%========================================CHAPTER==================================
+
 \chapter{Intrusion Detection System}
 
-In the following chapter are explained the challenges of network anomaly detection (Section 1), methods used for fast end efficient anomaly detecion (Section 2).
-In the last Section 3 the Cognitive targeted anomaly detection system used by Cisco is presented.
+The following chapter focuses on presenting ideas from network security needed to understand the main focus of this thesis.
+Different approaches of network intrusion detection systems (IDS) are explained in Section 1.
+In Section 2 the scope is narrowed to network anomaly detection IDS.
+Section 3 serves as an introduction to Cognitive targeted anomaly detection framework used by Cisco.
+Methods researched in this thesis were tested on real-life data collected from this framework. \\ 
 
-\section{Network Anomaly Detection}
-%What is network anomaly detection
-Network anomaly detection is a method used in Intrusion Detection Systems (IDS).
-IDS is generaly a framework of tools that can are used to detect security threats in a computer network.
-There are many well-known IDS widely used in network monigoring infrastructures:
+\section{Types of Intrusion Detection Systems}
+
+An intrusion detection system (IDS) is a security tool designed for identification of unauthorized use or abuse of computer systems by both system insiders and external penetrators\cite{mukherjee1994network}.
+IDS that is designed specifically for monitoring computer network is called Network IDS (NIDS).
+Few of commonly used NIDS software is listed below:
 \begin{itemize}
     \item Snort
     \item Suricata
     \item Bro Network Security Monitor
     %\item %TODO Get more examples
 \end{itemize}
-All of these systems are trying to detect, prevent and/or mitigate intrusion attempts or threats.
-Attackers that attempt to get into systems usualy want to access information (snooping), manipulate information(man-in-the-middle attacks) or render the system unusable (Denial of Service attacks).
-%Network Intrusion Detection System - NIDS
-Approaches of detecting thes attacks differ and different methods are more suitable for some attacks.
-Here are listed types of IDS as TODO listed them:
+These systems are used on computer networks to detect and sometimes even prevent attacks that are threats to one of the essential services of such a network.
+These basic services are\cite{mukherjee1994network}:
 \begin{itemize}
-    \item Signature-based (knowledge-based)
-    \item Anomaly-based (behavior-based)
-    \item Stateful protocol analysis (specification based)
+    \item Data confidentiality
+    \item Data and communication integrity
+    \item Accessibility
 \end{itemize}
-Cognitive anomaly detection framework that is used in this thesis is an anomaly-based IDS.
-\\ \\
-%Network monitoring?
-To detect anomalies in a given network, monitoring is set up that collects network flows (using NetFlow protocol).
-Based on data collected IDS creates a model of behavior of given network.
-This model then serves as a baseline behaviour of given network.
-If the behavior suddenly significantly changes this anomaly is detected and reported.
-\\ \\ %TODO define network anomaly, DPI
-Even though this approach seems very straight forward, there are multiple issues that make it hard to implement.
-The environment of computer networks is a dynamic environment that changes based on time, applications run and other factors.
-Therefore creating only a static model once and then using it as a baseline without changing does not serve well to detect anomalies.
-Modern anomaly-detection systems use a great variety of static and dynamic methods for anomaly detection.
-\\ \\
-Much of company infrastructure nowadays rely on network based services. %TODO and digitalization still happens.
-Fast detection of security threats is crucial for functioning of most of companies today.
-This is why industry leading IDSs are focusing on detecting anomalies in real time, to migitage the loss of resources as soon as possible.
-Real-time anomaly detection is done online by monitoring the current traffic and running detection methods on top of them.
-If an anomaly is found, system administrator is notified right away and the threat can be anihilated before serious damage happens.
-\\ \\
-In real-time network monitoring systems the anomalies are calculated based on time windows of collected traffic.
-These time windows are most often set to 5 minutes, it depends on the monitored network.
-After collecting traffic for this time window the information gathered is compared to the model saved inside of the system. If the features differ more than certain set threshold it is considered an anomaly.
+Attackers, on the other hand, try to disrupt these services by accessing confidential information (snooping), manipulating information (man-in-the-middle attacks) or disabling access to network services (Denial of Service attacks).
+IDS must have multiple components to detect as many of these attacks as is possible.
+As each attack kind of intrusion is better detected by a different method, there are several types of IDS:
+\begin{itemize}
+    \item Signature-based (knowledge-based) %TODO put it into sentences with an explanation
+    \item Anomaly-based (behavior-based)                                          
+    \item Stateful protocol analysis (specification based)
+\end{itemize} %TODO citation
+Anomaly-based IDS serves as a foundation for work presented in this thesis.
+
+\section{Network Anomaly Detection}                                               
+Network anomaly detection is a method used in Intrusion Detection Systems (IDS) as explained in previous section.
+This method focuses on comparing network host behavior changes in time.
+If a change greater than a certain threshold is observed, network anomaly is detected.
+In IDS when an anomaly is detected, an alert is created to inform network administrator about what has happened.
+This alert can be any kind of message ranging from a syslog message to an email sent to the admin. \\ 
+
+Host behavior is collected from devices in the network.
+There is at least one (although many times multiple) device set up for collecting network flows (using NetFlow protocol).
+Flow collection is the most widely used method for gathering data on the network. %TODO citation
+One network flow is an aggregated information about one connection that consists of source and destination addresses, source, and destination ports, begin and end timestamps for communication and number of data in each direction. % [RFC2722] TODO citation
+This aggregation of information allows much faster (even real-time) detection of problems on a network as compared to for example deep packet inspection (DPI).
+DPI is another method used to detect problems in a network.
+It focuses on exploring the payload of each packet.
+In today's networks, this method is quickly becoming obsolete as the majority of traffic is encrypted, and therefore it is hard to perform DPI. \\ 
+
+Network flows are sent via NetFlow protocol to one place where they are stored, and detection mechanisms are performed based on the data collected.
+Network anomaly detection system creates a model of the behavior of the given network, which serves as a baseline behavior of a given network for a specific time window.
+Further traffic is then collected and another model of behavior for another time window is computed.
+If the behavior suddenly significantly changes it is considered to be an anomaly that is reported by the IDS. \\ %TODO talk better about time windows
 
 \section{Challenges of Real-Time Anomaly Detection}
-%Why do we need efficient network anomaly detection?
 In theory the best way to find all all anomalies is to be able to save all traffic and calculate the model in previous section continuously on for all hosts.
 This way there would be a very specific and precise model for each host in the network.
 Approaching it this way, knowing all the information about the network it would be very easy to find anomaly in behaviour of each single host with a 100\% precision.
-In reality this is not possible.
-Calculating model for each host in even a medium (100 hosts) network is not managable at least not in real time.
-In offline anomaly detection system could take two 10GB files of network traffic and calculate different metrics from inspecting each flow, then comparing them and deciding whether a security incident happened.
-By the time this long opperation would be completed, the attacker could have done a serious damage in the system.
-From the examples above it is clearly seen that for real-time anomaly detection algorithms need to be fast and efficient.
-\\ \\
-%What are the challenges in making it fast?
-%What are the possible methods to tackle these problems?
-Making a model of each single host might not be fast enough.
-What if a model is made for the whole network.
-Then we have a lot less data to store and calculations are also faster, because the information is aggregated.
+In reality this is not possible because hosts do not generate enough traffic to create a good model of their behavior.a \\
+
+That is why models are calculated for whole networks where it is possible to create a model that reflects the behavior of the network.
 This method is widely used and on smaller (several device) networks it is very efficient.
 However considering a big network of thousands of devices in so many information we can easily miss one infected device generating different traffic.
-The noise in the collected traffic would be too high.
-\\ \\
+The noise in the collected traffic would be too high. \\
+
 To give an example imagine detection an infection one printer in a 10 story office building.
 This printer has been infected and added to a botnet to generate traffic for DDoS (Distributed Denial of Service) attacks.
 Looking at the traffic of the printer before and after infection it could easily be seen that it increased by several hundred or even thousands of percent.
-If considering the traffic of the whole office building, an anomaly detection system could hardly notice a change in all the other legitimate traffic of personel working in the building.
-\\ \\
+If considering the traffic of the whole office building, an anomaly detection system could hardly notice a change in all the other legitimate traffic of personel working in the building. \\
+
 %TODO Reference article - network-aware behavior clusterin of internet hosts
-A way to approach this problem is explained in [X].
+A way to approach this problem is explained in \cite{xu2011network}.
 The model is created by creating bi-partite graphs for comunictaion of hosts in one network prefix.
 These graphs are created by looking at hosts from perspective of whom does it communicate with.
 From these graphs an adjacency matrix is created.
@@ -213,15 +217,46 @@ This problem can be mitigated by setting window for which the model is calculate
 In other situations false positive alerts can happen and the goal of a good network anomaly detection system is to keep them as close to 0 as possible.
 
 \section{Cognitive Targeted Anomaly Detection Framework}
-%cognitive threat analytics
-This section serves as an explanation of Cognitive targeted anomaly detection system for which the methos of this thesis are created.
-%TODO explain
-\\ \\
-%TODO further reading
-This chapter explained basic knowledge needed to unerstand modern approach of network anomaly detection.
-For more detailed informatoin a list for further reading is presented.
-%TODO list
-In the next chapter the theory for representative selection of clusters in non-metric spaces is explained.
+
+% Cognitive Threat Analytics
+Algorithms studied in this thesis are tested as a part of Cognitive Targeted Anomaly Detection Framework which is a part of Cognitive Threat Analytics developed and used by Cisco.
+This framework successfuly uses community-based clustering on behaviors of each host to separate whole network into smaller groups.
+Running anomaly detection for each group then yields significantly better results as compared to traditional whole network approach.
+Not only it works better because of commynity-based clustering, but also because of the ability to adapt dynamically as the network changes.
+Thus it is able incorporate changes that happen on given network such as adding and removing devices.\\
+
+To dive into more detail the method is separated into 2 phases.
+Initial phase is used to learn the first state of the network, second ongoing phase starts when initial model is created.
+During this ongoing phase the framework is able to dynamically adjust clusters to the current state of the network. \\
+
+Initial phase starts by collecting 24 hours of traffic from given network.
+Data collected consists of network traffic flows and proxy server logs.
+Once the 24-hour period is over, clustering of hosts starts.
+Each host is represented by a tuple $h = {S^h, F^h}$, where:
+\begin{itemize}
+    \item $S^h$ represents set of all visited pairs server:port
+    \item $F^h$ represents the frequency of visits of server:port pairs
+\end{itemize}
+This frequency-based approach is chosen so that some servers like Facebook or Google do not overwhelm the statistics in the model.
+When each host has its representation the community-based clustering algorithm is started using similarity measure of:
+$$cos(h, h') = \frac{\sum_{s \in S} F_s^h F_s^{h'}} {\sqrt{\sum_{s \in S} (F_s^h)^2} \sqrt{\sum_{s \in S} (F_s^{h'})^2}}$$
+%TODO read about and explain community based clustering
+For clusters that are bigger than 30 hosts representatives are selected. %TODO check if it is really 30
+Each host is then given a random number between 1 and 12 which serves as time to live for that method. %TODO check the range
+This time to live is crucial for dynamic changes in the network, because of it clusters can change or even die if they do not maintain their behavior.
+Currently 30 hosts are selected at random for each cluster.
+In this thesis tests were made to improve this random selection method.
+
+After the initial training phase is over and the model is established, data continues to be collected.
+Every 4 hours another all hosts that are observed are assigned to existing clusters using community-based clustering explained above.
+For eaach cluster number serving as time to live is decreased and hosts that reach 0 are removed from the cluster.
+Free spaces are filled with hosts selected form hosts that were assigned to the cluster from this 4 hour period.
+This process goes on and every 4 hours clusters are updated.
+
+These clusters are then further used for in anomaly detection.
+They serve as a foundation for calculating baseline behavior for hosts belonging to it.
+
+%========================================CHAPTER==================================
 
 \chapter{Theoretical Overview}
 % Theoretical background to clustering and non-metric spaces
@@ -289,7 +324,7 @@ Algorithms has been tested.
 Which one is the best and under what circumstances?
 
 \bibliographystyle{iso690}
-\bibliography{mybibliographyfile}
+\bibliography{hlavac-thesis.bib}
 
 \setsecnumdepth{all}
 \appendix

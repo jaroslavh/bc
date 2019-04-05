@@ -17,7 +17,7 @@
 }
 \DeclareOption{english}{
 	\AtBeginDocument{\selectlanguage{english}}
-	\PassOptionsToPackage{english}{babel}
+	\PassOptionsToPackage{main=english, czech}{babel}
 	\def\@lang{0}
 }
 \DeclareOption{slovak}{
