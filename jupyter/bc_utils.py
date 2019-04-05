@@ -11,14 +11,53 @@ from matplotlib import pyplot
 class TestDf:
     train_df = None
     test_df = None
+    full_df = None
+    split = None
+    state = 0
 
     def __init__(self, init_df):
+        self.state = 0
+        self.split = [int(len(init_df) * 0.2),
+                 int(len(init_df) * 0.4),
+                 int(len(init_df) * 0.6),
+                 int(len(init_df) * 0.8)]
+        self.full_df = init_df
 
-        split_point = int(len(init_df) * 0.8)
+        self.rotate()
+    
+    #rotate for new set in cross validation    
+    def rotate(self):
+        self.state = self.state + 1
+        if (self.state == 5):
+            self.state = 0
 
-        #splitting the dataset into train (80%) and test (20%) part
-        self.train_df = init_df.iloc[:split_point]
-        self.test_df = init_df.iloc[split_point:]
+        # below are all the possible splits of full dataset
+        #   T stands for 20% of dataset used for testing
+        #   X stands for the rest 80% of dataset used for training
+        # TXXXX
+        if (self.state == 0):
+            self.test_df = self.full_df.iloc[:self.split[0]]
+            self.train_df = self.full_df.iloc[self.split[0]:]
+        # XTXXX
+        if (self.state == 1): 
+            self.test_df = self.full_df.iloc[self.split[0]:self.split[1]]
+            self.train_df = self.full_df.iloc[:self.split[0]].append(self.full_df.iloc[self.split[1]:])
+        # XXTXX
+        if (self.state == 2): 
+            self.test_df = self.full_df.iloc[self.split[1]:self.split[2]]
+            self.train_df = self.full_df.iloc[:self.split[1]].append(self.full_df.iloc[self.split[2]:])
+        # XXXTX
+        if (self.state == 3): 
+            self.test_df = self.full_df.iloc[self.split[2]:self.split[3]]
+            self.train_df = self.full_df.iloc[:self.split[2]].append(self.full_df.iloc[self.split[3]:])
+        # XXXXT
+        if (self.state == 4): 
+            self.test_df = self.full_df.iloc[self.split[3]:]
+            self.train_df = self.full_df.iloc[:self.split[3]]
+
+    # returns the internal state of current split
+    def get_state():
+        return self.state
 
     #shows plot of given dataframe
     def show_plot(self):
@@ -183,7 +222,7 @@ def delta_medoids_full(df, delta, similarity_measure):
         if representatives[t] == representatives[t-1]:
             break
 
-    print("delta_medoids_full algorithm ended after " + str(t) + " iterations.")
+    #print("delta_medoids_full algorithm ended after " + str(t) + " iterations.")
     return pd.DataFrame(list(representatives[t]), columns=df.columns.values)
 
 def estimate_delta(df, similarity_measure):
@@ -275,7 +314,7 @@ def greedy_select(df, delta, similarity_measure):
         
         # find indexes to drop from dataframe
         for ix in df.index:
-            if distance.euclidean(df.loc[ix].values[:], df.loc[current_index].values[:]) <= delta:
+            if similarity_measure(df.loc[ix].values[:], df.loc[current_index].values[:]) <= delta:
                 rem_indexes = np.append(rem_indexes, ix)
         
         # adding selected index to other representatives
@@ -288,3 +327,47 @@ def greedy_select(df, delta, similarity_measure):
 
     return df
 
+def classifyPoints(ref_df, test_df):
+
+    X_train = ref_df.iloc[:, :-1].values
+    y_train = ref_df.iloc[:, -1].values
+    X_test = test_df.iloc[:, :-1].values
+    y_test = test_df.iloc[:, -1].values
+
+    from sklearn.preprocessing import StandardScaler  
+    scaler = StandardScaler()  
+    scaler.fit(X_train)
+
+    X_train = scaler.transform(X_train)  
+    X_test = scaler.transform(X_test)
+
+    from sklearn.neighbors import KNeighborsClassifier  
+    classifier = KNeighborsClassifier(n_neighbors=1)
+    classifier.fit(X_train, y_train)
+
+    y_pred = classifier.predict(X_test)
+
+    from sklearn.metrics import classification_report, confusion_matrix
+    conf_mat = confusion_matrix(y_test, y_pred)
+    #print(conf_mat)  
+    #print(classification_report(y_test, y_pred))
+    return conf_mat
+
+#input is a precision recall matrix and this methore calculates the ratio
+#it is used for comparison of algorithms
+def get_hit_miss_rate(matrix):
+    hit = 0
+    miss = 0
+
+    i = 0
+    while i < len(matrix):
+        j = 0
+        while j < len(matrix[i]):
+            if (i == j):
+                hit = hit + matrix[i][j]
+            else:
+                miss = miss + matrix[i][j]
+            j = j + 1
+        i = i + 1
+
+    return float(miss)/float(hit)
