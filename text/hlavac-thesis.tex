@@ -25,7 +25,12 @@
 
 \usepackage{csquotes}
 
-\usepackage{todonotes}
+\usepackage{todonotes} %for TODO notes - can be removed in final
+
+\usepackage{algorithm, algcompatible} %for for creating algorithm figures
+\algnewcommand\INPUT{\item[\textbf{Input:}]}
+\algnewcommand\OUTPUT{\item[\textbf{Output:}]}
+\algdef{SE}[DOWHILE]{DO}{DOWHILE}{\algorithmicdo}[1]{\algorithmicwhile\ #1}%
 
 %\usepackage[main=english,czech]{babel}
    
@@ -49,8 +54,8 @@
 \abstractEN{Summarize the contents and contribution of your work in a few sentences in English language.}
 \abstractCS{V n{\v e}kolika v{\v e}t{\' a}ch shr{\v n}te obsah a p{\v r}{\' i}nos t{\' e}to pr{\' a}ce v {\v c}esk{\' e}m jazyce.} %TODO
 \placeForDeclarationOfAuthenticity{Prague}
-\keywordsCS{Replace with comma-separated list of keywords in Czech.} %TODO
-\keywordsEN{Replace with comma-separated list of keywords in English.} %TODO
+\keywordsCS{Výběr reprezentantů, Detekce anomálií, Komunitní clusterování, Systém detekce narušení, $\delta$-medoids, Topologický prostor, Párová podobnost} %TODO
+\keywordsEN{Representative selection, Network anomaly detection, Community-based clustering, Intrusion detection system, $\delta$-medoids, Topological space, Pair-wise similarity} %TODO
 \declarationOfAuthenticityOption{1} %select as appropriate, according to the desired license (integer 1-6)
 % \website{http://site.example/thesis} %optional thesis URL
 
@@ -63,17 +68,38 @@
 \setsecnumdepth{part}
 \chapter{Introduction}
 
-Even after several decades after the Internet became the most used medium for communication, there are still many issues concerning its security. Businesses all around the world daily connect more of their infrastructure to the Internet thus creating a possibility for attackers to exploit the connected devices for their malicious use. Security engineers are always inventing new methods to stop the attacks and secure their networks. Attackers race to overcome these newly created methods and to gain control of protected data or devices. This race creates a need for much more sophisticated defense mechanisms. \\
+Even several decades after the Internet became the most used medium for communication, there are still many issues concerning its security.
+Businesses all around the world daily connect more of their infrastructure to the Internet thus creating a possibility for attackers to exploit the connected devices for their malicious use.
+Security engineers are always inventing new methods to stop the attacks and secure their networks.
+Attackers race to overcome these newly created methods and to gain control of protected data or devices.
+This race creates a need for much more sophisticated defense mechanisms. \\
 
-Multi-layer defense systems are protecting contemporary networks. As attackers overcome one layer, there is another layer waiting for them after it. However, if the succeed to bypass all of them unnoticed a colossal problem can occur. They can collect user credentials,  exfiltrate data or gain control of devices without anybody's knowledge. It can take a long time before the breach is noticed. A similar thing happened in Marriot International child company Starwood last year. Names, emails, addresses and credit card numbers were stolen in an attack that was discovered in 2018 but possibly could have begun as early as in 2014\cite{hron2018breaches}. \\
+Multi-layer defense systems are protecting contemporary networks.
+As attackers overcome one layer, there is another layer waiting for them after it.
+However, if the attackers succeed to bypass all of them unnoticed a huge problem can occur.
+They can collect user credentials,  exfiltrate data or gain control of devices without anybody's knowledge.
+It can take a long time before the breach is noticed.
+A similar thing happened in Marriot International child company Starwood in 2018 \cite{hron2018breaches}.
+Names, emails, addresses and credit card numbers of 500 million customers were stolen in an attack that was discovered in 2018 but possibly could have begun as early as in 2014. \\
                                                                                                                                                                     
-One of several methods that are used to detect such intrusions is detecting anomalies in the behavior of network hosts - Network Behavioral Anomaly Detection (NBAD). NBAD compares the current behavior of the network to a model created from previous behavior. Devices inside of the network are used as probes to gather information about the behavior of the network or individual hosts. Models are calculated from the data collected. If a significant change in behavior is detected, security personnel are notified, and they can act accordingly. \\
+One of several methods that are used to detect such intrusions is detecting anomalies in the behavior of network hosts - Network Behavioral Anomaly Detection (NBAD).
+NBAD compares the current behavior of the network to a model created from previous behavior.
+Devices inside of the network are used as probes to gather information about the behavior of the network or individual hosts.
+Models are calculated from the data collected.
+If a significant change in behavior is detected, security personnel are notified, and they can act accordingly. \\
                                                                                   
-It is normal for a company to have up to millions of devices. Straight forward usage of NBAD in these big networks is not sufficient to detect breaches successfully. For example, a single infected device that can be easily missed in the traffic of a bigger company. In order to detect such anomalies in this network, it is needed to focus on smaller parts of it. Clustering based on the behavior of network hosts can be used to separate the network into smaller pieces. \\
+It is normal for a company to have up to millions of devices.
+Straight forward usage of NBAD in these big networks is not sufficient to detect breaches successfully.
+For example, a single infected device that can be easily missed in the traffic of a bigger company.
+In order to detect such anomalies in this network, it is needed to focus on smaller parts of it.
+Clustering based on the behavior of network hosts can be used to separate the network into smaller pieces. \\
 
-Cognitive targeted anomaly detection framework from Cisco serves as an example of this clustering. Each cluster that it creates consists of hosts that behave similarly.  The main focus of this work is finding a representation of these clusters that can be used to calculate the model behavior and also be dynamically updated as the behavior of the network changes. \\ 
+Cognitive targeted anomaly detection framework from Cisco serves as an example of such clustering.
+Each cluster that it creates consists of hosts that behave similarly.
+The main focus of this work is finding a representation of these clusters that can be used to calculate the model behavior and also be dynamically updated as the behavior of the network changes. \\ 
                                            
-Four algorithms previously used to represent clusters in computer vision or other fields were studied and modified for usage in Cognitive anomaly detection framework. They were tested and compared on both real and test datasets. \\
+Four algorithms previously used to represent clusters in computer vision or other fields were studied and modified for usage in Cognitive anomaly detection framework.
+They were tested and compared on both real and test datasets. \\
 
 (Chapters and sections will be briefly explained here.)
 
@@ -124,137 +150,156 @@ The selected method should be finetuned to get the best possible results in anom
 \chapter{Intrusion Detection System}
 
 The following chapter focuses on presenting ideas from network security needed to understand the main focus of this thesis.
-Different approaches of network intrusion detection systems (IDS) are explained in Section 1.
-In Section 2 the scope is narrowed to network anomaly detection IDS.
-Section 3 serves as an introduction to Cognitive targeted anomaly detection framework used by Cisco.
-Methods researched in this thesis were tested on real-life data collected from this framework. \\ 
-
-\section{Types of Intrusion Detection Systems}
-
+Different approaches of network intrusion detection systems (IDS) are explained in Section 1.1.
+In Section 1.2 the scope is narrowed to network anomaly detection IDS, and Section 1.3 delves deeper into the challenges of it.
+Section 1.4 serves as an introduction to Cognitive targeted anomaly detection framework used by Cisco.
+Methods researched in this thesis were tested on real data collected from this framework. \\
+                                                                                  
+\section{Types of Intrusion Detection Systems}                                    
+                                                                                  
 An intrusion detection system (IDS) is a security tool designed for identification of unauthorized use or abuse of computer systems by both system insiders and external penetrators\cite{mukherjee1994network}.
-IDS that is designed specifically for monitoring computer network is called Network IDS (NIDS).
-Few of commonly used NIDS software is listed below:
-\begin{itemize}
-    \item Snort
-    \item Suricata
-    \item Bro Network Security Monitor
-    %\item %TODO Get more examples
-\end{itemize}
+IDS that is designed specifically for monitoring computer network is called Network IDS (NIDS) as in comparison to host IDS and hybrid IDS.
+Host IDS focuses on monitoring the internal state of a computer system (e. g. mainframe computer) and its dynamic behavior.
+Hybrid IDS combines different techniques including the ones used in a host and network IDS creating an IDS that can leverage information from each of its parts for better intrusion detection.
+Examples of NIDS software are:                                                    
+\begin{itemize}                                                                   
+    \item Snort                                                                   
+    \item Suricata                                                                
+    \item Bro Network Security Monitor                                            
+\end{itemize}                                                                     
+\todo{citations for each NIDS, website enough?}                                   
 These systems are used on computer networks to detect and sometimes even prevent attacks that are threats to one of the essential services of such a network.
-These basic services are\cite{mukherjee1994network}:
-\begin{itemize}
-    \item Data confidentiality
-    \item Data and communication integrity
-    \item Accessibility
-\end{itemize}
-Attackers, on the other hand, try to disrupt these services by accessing confidential information (snooping), manipulating information (man-in-the-middle attacks) or disabling access to network services (Denial of Service attacks).
+These basic services are\cite{mukherjee1994network:1}:                            
+\begin{itemize}                                                                   
+    \item Data confidentiality                                                    
+    \item Data and communication integrity                                        
+    \item Accessibility                                                           
+\end{itemize}                                                                     
+Attackers, on the other hand, try to disrupt these services by accessing confidential information (snooping), manipulating information (data tampering attacks) or disabling access to network services (Denial of Service attacks).
 IDS must have multiple components to detect as many of these attacks as is possible.
-As each attack kind of intrusion is better detected by a different method, there are several types of IDS:
-\begin{itemize}
-    \item Signature-based (knowledge-based) %TODO put it into sentences with an explanation
-    \item Anomaly-based (behavior-based)                                          
-    \item Stateful protocol analysis (specification based)
-\end{itemize} %TODO citation
-Anomaly-based IDS serves as a foundation for work presented in this thesis.
-
+As each attack kind of intrusion is better detected by a different method, there are several types of IDS \cite{liao2013intrusion}:
+\begin{itemize}                                                                   
+    \item \textbf{Signature-based} (knowledge-based): Patterns of known attacks or threats are being compared to captured events for intrusion detection.
+    \item \textbf{Anomaly-based} (behavior-based): A static or dynamic model of a given network is created over a period of time and current network behavior is compared to expected (model) behavior for anomalies.                                         
+    \item \textbf{Stateful protocol analysis} (specification-based): The system keeps track of known protocols (e. g., pairing requests with replies) and finding unexpected behavior in these protocols.                       
+\end{itemize}                                                                                                                              
+Cognitive targeted anomaly detection framework combines all of these approaches.  
+This thesis focuses on the behavior-based part of the framework.                
+                                                                                  
 \section{Network Anomaly Detection}                                               
-Network anomaly detection is a method used in Intrusion Detection Systems (IDS) as explained in previous section.
-This method focuses on comparing network host behavior changes in time.
+Network anomaly detection is a method used in Intrusion Detection Systems (IDS) as explained in the previous section.
+This method focuses on comparing network host behavior changes in time.           
 If a change greater than a certain threshold is observed, network anomaly is detected.
 In IDS when an anomaly is detected, an alert is created to inform network administrator about what has happened.
-This alert can be any kind of message ranging from a syslog message to an email sent to the admin. \\ 
-
-Host behavior is collected from devices in the network.
+This alert can be any kind of message ranging from a syslog message to an email sent to the admin. \\
+                                                                                  
+Host behavior is collected from devices in the network.                           
 There is at least one (although many times multiple) device set up for collecting network flows (using NetFlow protocol).
-Flow collection is the most widely used method for gathering data on the network. %TODO citation
-One network flow is an aggregated information about one connection that consists of source and destination addresses, source, and destination ports, begin and end timestamps for communication and number of data in each direction. % [RFC2722] TODO citation
+Flow collection is the most widely used method for gathering data on the network.
+One network flow is an aggregated information about one connection that consists of source and destination addresses, source, and destination ports, begin and end timestamps for communication and number of data in each direction.
+\todo{[RFC2722] citation}                                                         
 This aggregation of information allows much faster (even real-time) detection of problems on a network as compared to for example deep packet inspection (DPI).
-DPI is another method used to detect problems in a network.
-It focuses on exploring the payload of each packet.
-In today's networks, this method is quickly becoming obsolete as the majority of traffic is encrypted, and therefore it is hard to perform DPI. \\ 
-
-Network flows are sent via NetFlow protocol to one place where they are stored, and detection mechanisms are performed based on the data collected.
-Network anomaly detection system creates a model of the behavior of the given network, which serves as a baseline behavior of a given network for a specific time window.
-Further traffic is then collected and another model of behavior for another time window is computed.
-If the behavior suddenly significantly changes it is considered to be an anomaly that is reported by the IDS. \\ %TODO talk better about time windows
-
-\section{Challenges of Real-Time Anomaly Detection}
-In theory the best way to find all all anomalies is to be able to save all traffic and calculate the model in previous section continuously on for all hosts.
-This way there would be a very specific and precise model for each host in the network.
-Approaching it this way, knowing all the information about the network it would be very easy to find anomaly in behaviour of each single host with a 100\% precision.
-In reality this is not possible because hosts do not generate enough traffic to create a good model of their behavior.a \\
-
+DPI is another method used to detect problems in a network.                       
+It focuses on exploring the payload of each packet and is mostly considered unusable.
+Not only the majority of traffic is encrypted, but it is also impossible to look into each packet because of the amount of traffic in today's networks. \\
+                                                                                  
+Network flows are collected and then sent via NetFlow protocol to one place where they are stored, and evaluated by detection algorithms.
+Network anomaly detection system creates a baseline model of the network behavior, which is then compared to actual traffic.
+Any sudden change is considered to be an anomaly that is reported by the IDS. \\  
+                                                                                  
+\section{Challenges of Real-Time Anomaly Detection}                               
+Even if it were possible to capture all the traffic in the world and use it for anomaly detection, it would still be impossible to achieve 100% precision.
+Not every network host generates enough traffic to create a precise model of its behavior.
+Thankfully absolute precision is not the goal of anomaly detection, as it serves as one of many layers of security in computer systems. \\
+\todo{Explain better, what is the goal of anomaly detection, Grill Thesis}                     
+                                                                                  
 That is why models are calculated for whole networks where it is possible to create a model that reflects the behavior of the network.
-This method is widely used and on smaller (several device) networks it is very efficient.
-However considering a big network of thousands of devices in so many information we can easily miss one infected device generating different traffic.
-The noise in the collected traffic would be too high. \\
-
-To give an example imagine detection an infection one printer in a 10 story office building.
-This printer has been infected and added to a botnet to generate traffic for DDoS (Distributed Denial of Service) attacks.
+This method is widely used, and on smaller (several devices) networks it is very efficient.
+However, considering a big network of thousands of devices in so many information, we can easily miss one infected device generating different traffic.
+The noise in the collected traffic would be too high. \\                          
+                                                                                  
+To give an example, imagine detection an infection of a single infected device, such as a printer in a 10 story office building.
+This printer, being a part of a botnet, was ordered to generate traffic for DDoS (Distributed Denial of Service) attacks.
 Looking at the traffic of the printer before and after infection it could easily be seen that it increased by several hundred or even thousands of percent.
-If considering the traffic of the whole office building, an anomaly detection system could hardly notice a change in all the other legitimate traffic of personel working in the building. \\
-
-%TODO Reference article - network-aware behavior clusterin of internet hosts
-A way to approach this problem is explained in \cite{xu2011network}.
-The model is created by creating bi-partite graphs for comunictaion of hosts in one network prefix.
-These graphs are created by looking at hosts from perspective of whom does it communicate with.
-From these graphs an adjacency matrix is created.
+If considering the traffic of the whole office building, an anomaly detection system could hardly notice a change in all the other legitimate traffic of personnel working in the building. \\
+                                                                                  
+/todo{comment from Martin - not sure if it is well placed in this section. I believe it is as I want to list a few methods different from ours to tackle the same problem. We can talk about it at the next meeting.}      
+A way to approach this problem is explained in \cite{xu2011network}.              
+The model is created by creating bi-partite graphs for communication of hosts in one network prefix.
+These graphs are created by looking at hosts from the perspective of whom does it communicate with.
+From these graphs, an adjacency matrix is created.                                
 How adjacent one host is to another is calculated as a normalized weight of edges in the graph.
-This adjacency matrix then serves as a baseline model for anomaly detection.
-Assessing each time window of traffic means calculating an adjacency matrix for this timewindow and then comparing to the trained model.
-If there is a substantional difference an anomaly is detected.
-This method is proven to work, however it suffers from the noise of too many hosts explained before.
-Also it might not be a good way to look at the traffic from the perspective of a network prefix, as many times a lot of different devices are on one prefix.
-\\ \\
-%Other ways
-\\ \\
-%false positives
-There is also one more problem in creating a good network anomaly detection system - false positive detection.
-A false positive is a network anomaly that is detected and is not an actual anomaly.
-For example if we would have our anomaly detection system setup wrong it might detect an anomaly everyday at 8AM when workers come to the office, start their computers and download daily email.
-Comparing the time window from before 8AM and after 8AM would not give as any relevant information.
-This problem can be mitigated by setting window for which the model is calculated long enough, so that these mistakes does not happen.
-In other situations false positive alerts can happen and the goal of a good network anomaly detection system is to keep them as close to 0 as possible.
+This adjacency matrix then serves as a baseline model for anomaly detection.      
+Assessing each time window of traffic means calculating an adjacency matrix for this time window and then comparing to the trained model.
+If there is a substantial difference, an anomaly is detected.                      
+This method is proven to work; however, it suffers from the noise of too many hosts explained before.
+Also, it might not be a good way to look at the traffic from the perspective of a network prefix, as many times a lot of different devices are on one prefix. \\
+\todo{Other ways of detection}
 
-\section{Cognitive Targeted Anomaly Detection Framework}
+If an AD system does not mark malicious traffic as an anomaly, it is considered a false negative.
+That is another challenge AD systems are struggling with, to keep the number of missed attacks as close to 0 as possible. \\
 
-% Cognitive Threat Analytics
+One more problem connected to false negatives are the false positives.
+A false positive is a network sample of benign network traffic marked as anomalous by the AD system.
+For example, if we would have our anomaly detection system set up wrong, it might detect an anomaly every day at 8 AM when workers come to the office, start their computers and download daily email.
+Comparing the time window from before 8 AM and after 8 AM would not give us any relevant information.
+This problem can be mitigated by setting a window for which the model is calculated long enough so that these mistakes do not happen.
+In other situations, false positive alerts can happen, and the goal of network anomaly detection system is to keep them as close to 0 as possible. \\
+
+In conclusion, a good anomaly detection system should detect all anomalies that are somehow connected to malicious behavior while trying to keep the number of false positives alerts as small as possible.
+The small number of false positives that are reported is then double-checked in the following layers in the IDS.
+                                                                                  
+\section{Cognitive Targeted Anomaly Detection Framework}                          
+                                             
 Algorithms studied in this thesis are tested as a part of Cognitive Targeted Anomaly Detection Framework which is a part of Cognitive Threat Analytics developed and used by Cisco.
-This framework successfuly uses community-based clustering on behaviors of each host to separate whole network into smaller groups.
-Running anomaly detection for each group then yields significantly better results as compared to traditional whole network approach.
-Not only it works better because of commynity-based clustering, but also because of the ability to adapt dynamically as the network changes.
-Thus it is able incorporate changes that happen on given network such as adding and removing devices.\\
-
-To dive into more detail the method is separated into 2 phases.
-Initial phase is used to learn the first state of the network, second ongoing phase starts when initial model is created.
-During this ongoing phase the framework is able to dynamically adjust clusters to the current state of the network. \\
-
-Initial phase starts by collecting 24 hours of traffic from given network.
-Data collected consists of network traffic flows and proxy server logs.
-Once the 24-hour period is over, clustering of hosts starts.
-Each host is represented by a tuple $h = {S^h, F^h}$, where:
-\begin{itemize}
-    \item $S^h$ represents set of all visited pairs server:port
-    \item $F^h$ represents the frequency of visits of server:port pairs
-\end{itemize}
+This framework successfully uses community-based clustering on behaviors of each host to split the whole network into smaller groups.
+Running anomaly detection for each group then yields significantly better results as compared to the traditional whole network approach.
+Not only it works better because of community-based clustering, but also because of the ability to adapt dynamically as the network changes.
+Thus it is able to incorporate changes that happen on a given network such as adding and removing devices.\\
+                                                                                  
+The method is separated into 2 phases.                   
+The initial phase is used to learn the first state of the network, and the second ongoing phase starts when the initial model is created.
+During this ongoing phase, the framework can dynamically adjust clusters to the current state of the network. \\
+                                                                                  
+The initial phase starts by collecting 24 hours of traffic from a given network.        
+Collected data consists of network traffic flows and proxy server logs.           
+Once the 24-hour period is over, clustering of hosts starts.                      
+Each host is represented by a tuple $h = {S^h, F^h}$, where:                      
+\begin{itemize}                                                                   
+    \item $S^h$ represents set of all visited pairs server:port                   
+    \item $F^h$ represents the frequency of visits of server:port pairs           
+\end{itemize}                                                                     
 This frequency-based approach is chosen so that some servers like Facebook or Google do not overwhelm the statistics in the model.
-When each host has its representation the community-based clustering algorithm is started using similarity measure of:
-$$cos(h, h') = \frac{\sum_{s \in S} F_s^h F_s^{h'}} {\sqrt{\sum_{s \in S} (F_s^h)^2} \sqrt{\sum_{s \in S} (F_s^{h'})^2}}$$
-%TODO read about and explain community based clustering
-For clusters that are bigger than 30 hosts representatives are selected. %TODO check if it is really 30
-Each host is then given a random number between 1 and 12 which serves as time to live for that method. %TODO check the range
-This time to live is crucial for dynamic changes in the network, because of it clusters can change or even die if they do not maintain their behavior.
-Currently 30 hosts are selected at random for each cluster.
-In this thesis tests were made to improve this random selection method.
+When each host has its representation the clustering algorithm is started.
+A technique called community-based clustering is used to create groups of hosts.
+This clustering works for graphs, where communities are more densely connected parts of the graph.
+In the words of this NBAD: Those hosts that communicate with similar peers are considered to be in the same community.
+Community-based clustering is explained in detail in section 2.3. \todo{link to section}. \\
 
+The density of samples in sets of data is determined by cosine similarity of frequency vectors of two hosts.
+Similarity measure between hosts \textit{a} and \textit{b} is defined as:
+$$cos(a, b) = \frac{\sum_{s \in S} F_s^a F_s^b} {\sqrt{\sum_{s \in S} (F_s^a)^2} \sqrt{\sum_{s \in S} (F_s^b)^2}}$$
+With this similarity measure it is possible to determine cluster of hosts with similar behavior. \\
+
+After the clustering is done, only clusters that are bigger than 10 hosts are selected for representative selection.
+Smaller clusters are analyzed using a fallback method - host-based anomaly detection.
+For the purpose of this work, we do not consider clusters smaller than 10 hosts. \\
+
+When clusters are determined, representatives are selected from each cluster.
+Currently, $\kappa$ hosts are selected at random for each cluster, where $\kappa$ is selected based on parameters in the whole framework.                       
+In this thesis, tests were made to improve this random selection method.
+After that, each host is then given a random number between 1 and 12 which serves as a time to live for that method. 
+This time to live is crucial for dynamic changes in the network because clusters can change or even die out if they do not maintain their behavior.
+This is one of the parameters based on which the number of representatives $\kappa$ is selected. \\
+                                                                                  
 After the initial training phase is over and the model is established, data continues to be collected.
-Every 4 hours another all hosts that are observed are assigned to existing clusters using community-based clustering explained above.
-For eaach cluster number serving as time to live is decreased and hosts that reach 0 are removed from the cluster.
-Free spaces are filled with hosts selected form hosts that were assigned to the cluster from this 4 hour period.
-This process goes on and every 4 hours clusters are updated.
+Every 4 hours all hosts that are observed are assigned to existing clusters.
+For each cluster, number serving as a time to live is decreased, and hosts that reach 0 are removed from the cluster.
+Free spaces are filled with hosts selected form hosts that were assigned to the cluster from these 4 hours.
 
-These clusters are then further used for in anomaly detection.
+These clusters are then further used for in anomaly detection.                    
 They serve as a foundation for calculating baseline behavior for hosts belonging to it.
+If a host is known to belong to a cluster $A$ and its behavior suddenly starts to differ from the behavior of representatives selected for cluster $A$, an anomaly is found and reported further into the NIDS.
 
 %========================================CHAPTER==================================
 
@@ -262,47 +307,317 @@ They serve as a foundation for calculating baseline behavior for hosts belonging
 % Theoretical background to clustering and non-metric spaces
 
 This chapter serves as a theoretical background to explain clustering methods and problematics of non-metric spaces.
+                                                                                  
+\section{Introduction to Clustering}                                              
+As \cite{guttag2016introduction} defines it, clustering is an unsupervised machine learning method that organizes objects into groups so that each group consists of members that are similar in some way.
+Without any prior knowledge of the data, this method looks for structures in feature vectors.
+Variability can be calculated for each cluster \textit{c}, and it shows how much objects in given cluster differ.
+Variability is defined as $$ variability(c) = \sum_{e \in c} distance(mean(c), e)^2 $$, where \textit{e} is an object from given cluster.
+For clustering, the aim is to keep the dissimilarity of all clusters from the dataset as low as possible.
+Dissimilarity is defined as $$ dissimilarity(C) = \sum_{c \in C} variability(c) $$, where C stands for all clusters the data was clustered into.
+Given this definition, the best way to cluster every dataset would be to put each object to its cluster, and that would not lead to any reasonable result.
+Therefore there is a constraint added for clustering methods.                     
+It can be either the maximum number of clusters or the maximum distance between 2 clusters. \\
+                                                                                                                                      
+A distance is a measure that quantifies how far two objects with the same features are.
+Many different distance measures are used in clustering.                          
+Several of commonly used ones are:                                                
+\begin{itemize}                                                                   
+    \item Euclidean distance                                                      
+    \item Minkowski distance                                                      
+    \item Manhattan distance                                                      
+    \item Cosine similarity                                                       
+\end{itemize}                                                                     
+                                                                                  
+A straight forward example of clustering is a method called hierarchical clustering.
+Given N objects in a dataset, it creates N clusters - meaning there is a cluster for each object.
+Then it looks for two closest clusters and merges them into one.                  
+This agglomerative merging continues until the constraint is met, meaning until there is a certain number of clusters or until the distance between closest clusters exceeds a certain threshold.
+This method is a greedy algorithm, and therefore it might not result in globally optimal clustering.
+Also, the algorithm has a time complexity of $\mathcal{O}(n^2)$, and therefore it cannot be used in big datasets. \\
+                                                                                  
+An example of a much faster clustering algorithm that is also greedy is K-means. \todo{How to cite that this is only taken from the book, even though rewritten and selected for my purposes.}
+The 'K' in K-means stands for the number of clusters that we want to get as a result.
+That means, to use this algorithm the number of desired clusters has to be known in advance.
+K-means randomly chooses \textit{k} centroids in the space of the dataset and then assigns each point to a centroid.
+After creating these clusters, it calculates a new centroid for each cluster and then assigns the points in datasets to the new centroids.
+The algorithm stops when the centroids of clusters stop changing.                 
+Figure X shows the pseudocode of K-means.                                         
+\begin{algorithm}                                                                 
+    \caption{k-Means pseudocode}                                                  
+    \label{k_mean_pseudocode}                                                     
+    \begin{algorithmic}[1]                                                        
+        \INPUT set of examples $\alpha$  number of clusters $k$                   
+        \STATE Randomly chose $k$ examples from $\alpha$                          
+        \WHILE True                                                               
+            \STATE Create $k$ clusters by assigning each object to the closest centroid
+            \STATE Compute $k$ new centroids by averaging objects in each cluster 
+            \IF{Centroids do not change}                                          
+                \STATE \textbf{break}                                             
+            \ENDIF                                                                
+        \ENDWHILE                                                                 
+    \end{algorithmic}                                                             
+\end{algorithm}                                                                   
+                                                                                  
+This algorithm is fast, it has time complexity $\mathcal{O}(k*n*d)$, where n is the number of objects in a dataset and d is the computation time of a distance between 2 points.
+It is the most commonly used clustering algorithm as it in most cases converges in a few iterations.
+Some of the ideas from it are used in the delta medoids algorithm that is used for clustering in this thesis. \\
+                                                                                  
+%summary                                                                          
+The clustering as explained in this section has some restrictions that make it inapplicable for anomaly detection in this work.
+Firstly the number of clusters is not previously known, so choosing k for k-Means is not an option, and secondly, the distance measure used does not form a metric space.
+Next section delves deeper into what it means when a measure does not form a metric space.
+                                                                                  
+\section{Non-Metric Space} \todo{Explain topological spaces}                      
+A metric space is a pair $(X, d)$ where $X$ is a set and $d$ is a mapping from $X \times X$ into $R$ which satisfies the following conditions:
+\begin{enumerate}                                                                 
+    \item [(i)] $d(x, y) \geq 0$;                                                 
+    \item [(ii)] $d(x, y) = 0 \iff x = y$;                                        
+    \item [(iii)] $d(x, y) = d(y, x)$                                             
+    \item [(iv)] $d(x, z) \leq d(x, y) + d(x, z) for x, y, z \in X$.              
+\end{enumerate}                                                                   
+                                                                                  
+The similarity measure that is used in this thesis as explained in section 1.4 \todo{reference} does not fulfill the last point of the definition above and therefore, it does not form a metric space but a topological space.
+A topological space is a \todo{definition}
 
-\section{Introduction to Clustering}
-% Briefly explain what is Clustering and how is it used in machine learning
+K-Means clustering from the previous section cannot be used in topological space as the centroids do not exist.
+In many cases, there is no prior knowledge of k, as is the case in this thesis.
+A popular method that is used for clustering in non-metric spaces is called community-based clustering. \\
 
-\section{Non-Metric Space}
+Community-based clustering detects communities in the data.
+A community is a subset of examples in the data, that is densely connected with each other.
+One of the ways how to detect communities in a graph is to create a full-adjacency matrix.
+This matrix contains all connections between all nodes in the given graph.
+Analyzing the matrix then can tell us about the densities in different parts of graphs.\\
+
+Louvain method is a similar approach to clustering when we do not have a simple graph but a set of samples and a pairwise similarity measure.
+This method relies on creating a full similarity matrix for the whole dataset and then looking for communities in the data. \\
+
+In Cognitive Targeted Anomaly Detection Framework Louvain method cannot be used as calculating the full similarity matrix has a complexity of $\mathcal(n^2)$, which is impossible to calculate for a large network.
+That is why an approximative clustering method is used.
+This method iteratively samples network hosts and runs the clustering algorithm on the sampled hosts.
+Each iteration creates or updates cluster prototypes.
+If the data in the current batch fit into a previously prototyped cluster, they are added to it and the cluster prototype is updated.
+If samples differ more than a predefined threshold a new cluster prototype is created.
+
 % jenom pairwise similarity!!! - nemuzeme delat kolecka - neplati geometricka reprezentace okoli
 % centroid vubec neni v uvahu - casto nejde vubec udelat
 % Louvian Modularity - sestaveni grafu na zaklade pairwise similarit - to co se pouziva v Threat - modularity clustering, community detection
 
-\chapter{Representative Selection}
-% Representative selection
+%========================================CHAPTER==================================
 
-\section{Approaches to Representative Selection}
+\chapter{Representative Selection}
+This chapter focuses on the idea of finding a representation of clusters.
+Clustering huge datasets (millions on of objects) can result in big clusters of several tens of thousands of objects in them.
+Computational operations such as assigning new objects to clusters (e. g. k-Nearest Neighbors) are dependent on the number of objects in each cluster or the representation of these clusters.
+If it were possible to represent these clusters in a different way than keeping all track of all of the objects, further operations on these clusters would run faster. \\
+
+Representation of clusters in Cognitive Targeted Anomaly Detection Framework is precisely a problem where computation on clusters needs to run in real-time, and therefore it is desirable to find a smaller representation of each given cluster.
+
+\section{Definition of Representative Selection}
+While having a large set of examples, representative selection aims to find minimal subset from these examples that carry sufficient information about the whole cluster.
+This problem was well defined in \cite{liebman2015representative} and the following definition is taken from that paper. \\
+
+Let $S$ be a data set, $d : S \times S \to R +$ be a distance measure (not necessarily a metric), and $\delta$ be a distance threshold below which samples are considered sufficiently similar.
+The task is finding a representative subset $C \subset S$that best encapsulates the data.
+Two following requirements are imposed on an algorithm for finding a representative subset:
+\begin{itemize}
+    \item \textbf{Requirement 1}: The algorithm must return a subset $C \subset S$ such that for any sample $x \in S$, there exists a sample $c \in C$ satisfying $d(x, c) \le \delta$.
+    \item \textbf{Requirement 2} : The algorithm cannot rely on a metric representation of the samples in $S$.
+\end{itemize}
+To compare the quality of different subsets returned by different algorithms, two criteria are measured:
+\begin{itemize}
+    \item \textbf{Criterion 1}: $|C|$ - seeking the smallest possible subset C that satisfies Requirement 1:.
+    \item \textbf{Criterion 2}: Representative should best fit the data on average. Given representative subsets of equal size, the preference is on the one that minimizes the average distance of samples from their respective representatives.
+\end{itemize}
+Criteria 1 and 2 are applied on a representative set solution.
+In addition, the following desiderata for a representative selection algorithm are expected.
+\begin{itemize}
+    \item \textbf{Desideratum 1}: Stable representative selection algorithms are preferred. Let $C_1$ and $C_2$ be different representative subsets for dataset $S$ obtained by two different runs of the same algorithm.
+Stability is defined as the overlap $\frac{|C_1 \cap C_2|}{|C_1 \cup C_2|}$
+ The higher the expected overlap is, the more stable the
+algorithm is. This desideratum ensures the representative set is robust to
+randomization in data ordering or the choices made by the algorithm.
+    \item \textbf{Desideratum 2}: The algorithm should be efficient and scale
+well for large datasets.
+\end{itemize}
+
+This definition of representative selection proble serves well for this paper.
+
+
+\section{Representative Selection in Metric Space}
+Representative selection in metric space heavily relies on being able to create centroids.
+A centroid is a point in space that is not necessarily part of the cluster but sits in the center of the cluster.
+A centroid is found by averaging all points of given cluster thus finding a 
 % popsani jak by se to delalo normalne
 % stezejni myslenky proc to delame takto
+
+\section{Representative Selection in Arbitrary Space}
 
 %What are the algorithms that can be used for representative selection in non-metric spaces?
 %Problems that need to be tackled using this method.
 
 \chapter{Implementation and Performance Testing of Relevant Methods}
 
+This chapter explains the implementation and testing of selected methods in multiple different scenarios.
+In the first section algorithms for selected methods are listed and explained in detail.
+The following section serves as a list of used datasets ranging from general to more specific ones.
+The last section of this chapter talks about the tests that were run and explains why they were chosen.
+
+The programming language chosen for implementation was Python 3.7.                    
+It allowed different libraries for data manipulation like Pandas library and also is an excellent choice for testing a prototype as the implementation of different algorithms is not complicated.
+                                                                                  
 \section{Methods Relevant to Cognitive Anomaly Detection}
-The following methods were tested and compared as a part of this thesis.
+
+Based on the previously explained approaches for finding representatives of clusters in non-metric spaces the following methods were chosen, tested and compared as a part of this thesis.
 \begin{itemize}
     \item Random selection
     \item Greedy Selection
     \item Delta-Medoids One-Shot
-    \item Delta-Medoids %TODO citations
+    \item Delta-Medoids \todo{cite here when I am citing it below - what are the best practices for this}
 \end{itemize}
+
+
+                                                                                  
+\subsection{Random Selection}                                                     
+                                                                                  
+This is the algorithm that serves as a baseline to measure the improvement as it is the method currently used in Cognitive targeted anomaly detection framework.
+It simply selects a given number of representatives from the cluster randomly. \\
+
+In clusters that overlap a lot, selecting random samples from each cluster leads to undesired noise.
+However as experimental results presented in \cite{kopp2018community} in the domain of computer networks the overlap of clusters is not great.
+It, of course, depends on each individual network, but given the best practices in segmentation of networks, the overlaps in clusters are not expected to be great. \\
+
+For this thesis, the random selection algorithm serves as a baseline in comparing the results to other methods.
+The number of samples selected is decided by the number of the full Delta-Medoids algorithm.
 
 \subsection{Greedy Selection} %explanation of my method
 
-\subsection{Random Selection}
+The greedy selection algorithm is a simple straightforward algorithm that selects a random sample from the set as the first representative.
+Then it looks for the most dissimilar sample in the rest of the dataset.
+Once the desired sample is found, the algorithm removes all neighboring samples with at least the similarity of $\delta$ from the set.
+Then it looks for other dissimilar samples until the whole set is covered by thus selected representatives. \\ \todo{pseudocode}
 
-\subsection{Delta-Medoids One-Shot}
+The speed of this algorithm depends on the sparsity of the given set.
+In the worst case scenario, all points would be selected as representatives while always calculating the distance to each remaining sample in the set.
+Thus reaching the time complexity of $\mathcal{O}(n^2)$.
 
-\subsection{Delta-Medoids}
+\subsection{$\delta$-Medoids}           
+The two following algorithms were first eplained in \cite{liebman2015representative}.
+They were tested on two different problems that also use clustering in non-metric space - computing distance of two musical segments and comparing trajectories of objects.
+As was explained in Chapter 2, the term centroid is not relevant in arbitrary spaces, therefore the term medoid is used.
+Medoid is a sample that is part of the cluster and that resembles most of the points in its adjacency. \\
 
-What criteria were chosen to compare algoritms?
-Algorithms comparison.
-Summary on what algorithm was chosen and why is it the best one.
+$\delta$-Medoids algorithms try to find the least of points that are needed to cover the cluster with only one given constraint of the distance of representatives - $\delta$.
+There are two versions of this algorithm.
+One-shot version is faster but less precise than the full $\delta$-medoids algorithm.
+
+\subsubsection{$\delta$-Medoids One-Shot}
+
+The idea behind this algorithm is to go through the dataset looking for representatives that differ at least by the given parameter $\delta$ from each previously selected representatives.
+By taking this approach it can in one iteration over data find the representatives that are certain to differ by $\delta$ from each other. \\
+
+The algorithm is shown in Figure \todo{label and link}, this algorithm is optimized for better memory efficiency as opposed to the version in the cited paper.
+The main ideas remain the same, only keeping track of clusters that the points are assigned to is removed for this one-shot version.
+
+\begin{algorithm}                                                                 
+    \caption{$\delta$-Medoids One-shot}                                           
+    \label{delta_medoids_one_shot}                                                
+    \begin{algorithmic}[1]                                                        
+        \INPUT data $x_0$ ... $x_m$, required distance $\delta$                   
+        \STATE Initialize \textit{representatives} = $\emptyset$                  
+        \FOR{$i = 0$ \textbf{to} $m$}                                             
+            \STATE Initialize \textit{dist} = $\infty$                            
+            \FOR{\textit{rep} in \textit{representatives}}                        
+                \IF{$d(x_i, rep) \le dist$}                                       
+                    \STATE $dist = d(x_i, rep)$                                   
+                \ENDIF                                                            
+            \ENDFOR                                                               
+            \IF{$dist > \delta$}                                                  
+                \STATE add $x_i$ to \textit{representatives}                      
+            \ENDIF                                                                
+        \ENDFOR                                                                   
+    \end{algorithmic}                                                             
+\end{algorithm}                                                                   
+
+
+Selection of the medoids to represent the cluster is strongly influenced by the choice of the first representative.
+In some cases, this one-shot approach could be misleading.
+
+\subsubsection{$\delta$-Medoids}
+
+The full version of the algorithm runs a one-shot algorithm multiple times.
+Each time it goes through the dataset it selects a better medoid than before.
+Once 2 passes through the data do not change any medoid, the algorithm stops. \\
+
+This approach is clearly slower, as the main routine from one shot algorithm has to be run multiple times.
+\todo{Mention convergence of the algorithm.}
+On the other hand, it is able to select better medoids, thus getting rid of the difficult choice of the first representative to select.
+
+\begin{algorithm}                                                                 
+    \caption{$\delta$-Medoids}                                                    
+    \label{delta_medoids_full}                                                    
+    \begin{algorithmic}[1]                                                        
+        \INPUT data $x_0$ ... $x_m$, required distance $\delta$                   
+        \STATE t = 0                                                              
+        \STATE Initialize $representatives_{t_0} = \emptyset$                     
+        \STATE Initialize \textit{clusters} = $\emptyset$                         
+        \DO                                                                       
+            \STATE $t = t + 1$                                                    
+            \FOR{$i = 0$ \textbf{to} $m$}                                         
+                \STATE Initialize \textit{dist} = $\infty$                        
+                \STATE Initialize \textit{representative = null}                  
+                \FOR{\textit{rep} in \textit{representatives}}                    
+                    \IF{$d(x_i, rep) \le dist$}                                   
+                        \STATE \textit{representative = rep}                      
+                        \STATE $dist = d(x_i, rep)$                               
+                    \ENDIF                                                        
+                \ENDFOR                                                           
+                \IF{$dist \le \delta$}                                            
+                    \STATE add $x_i$ to $cluster_{representative}$                
+                \ELSE                                                             
+                    \STATE \textit{representative = $x_i$}                        
+                    \STATE Initialize $cluster_{representative} = \emptyset$      
+                    \STATE ad $x_i$ to $cluster_{representative}$                 
+                    \STATE add $cluster_{representative}$ to \textit{clusters}    
+                \ENDIF                                                            
+            \ENDFOR                                                               
+            \STATE Initialize $representatives_t = \emptyset$                     
+            \FOR{\textit{cluster} in \textit{clusters}}                           
+                \STATE $representative = \textrm{argmin}_{s \in cluster} (\sum\limits_{x \in cluster}{d(x,s) : d(x,s) \le \delta)}$
+                \STATE add \textit{representative} to $representatives_t$         
+            \ENDFOR                                                               
+        \DOWHILE{$representatives_t = representatives_{t-1}$}                     
+    \end{algorithmic}                                                             
+\end{algorithm}             
+
+%\begin{algorithm}
+%    \caption{$\delta$-Medoids One-shot PAPER}
+%    \label{delta_medoids_one_shot}
+%    \begin{algorithmic}[1]
+%        \INPUT data $x_0$ ... $x_m$, required distance $\delta$
+%        \STATE Initialize \textit{representatives} = $\emptyset$
+%        \STATE Initialize \textit{clusters} = $\emptyset$
+%        \FOR{$i = 0$ \textbf{to} $m$}
+%            \STATE Initialize \textit{dist} = $\infty$
+%            \STATE Initialize \textit{representative = null}
+%            \FOR{\textit{rep} in \textit{representatives}}
+%                \IF{$d(x_i, rep) \le dist$}
+%                    \STATE \textit{representative = rep}
+%                    \STATE $dist = d(x_i, rep)$
+%                \ENDIF
+%            \ENDFOR  
+%            \IF{$dist \le \delta$}
+%                \STATE add $x_i$ to $cluster_{representative}$
+%            \ELSE
+%                \STATE \textit{representative = $x_i$}
+%                \STATE Initialize $cluster_{representative} = \emptyset$
+%                \STATE ad $x_i$ to $cluster_{representative}$
+%                \STATE add $cluster_{representative}$ to \textit{clusters}
+%            \ENDIF
+%        \ENDFOR  
+%    \end{algorithmic}
+%\end{algorithm}
 
 \section{Datasets}
 The task of cluster representation in non-metric spaces generally is not necessarily connected only to the Security field.
@@ -320,8 +635,19 @@ How did it perform compared to random selection?
 
 \setsecnumdepth{part}
 \chapter{Conclusion}
-Algorithms has been tested.
-Which one is the best and under what circumstances?
+Literature in both Network Anomaly Detection field and representative selection was studied.
+Approaches and algorithms thus found were combined and implemented in prototype program.
+Both general clustering datasets and specific datasets from security field were tested and compared in the prototype. \\ 
+
+For testing the selected method datasets were created and gathered from the internet to create a diverse testbed for comparing algorithms.
+From the selected algorithms both $\delta$-Medoids One Shot and $\delta$-Medoids outperformed Random selection of representatives, which is the current solution of representatives selection in the framework.
+The improvement was at least by 1\% in each dataset, while average improvement was 2\%. \todo{Double check these numbers.} \\
+
+\todo{Fine-tune the algorithms for the NBAD field and write here about it if it works.}
+
+If compared by the requirements from the definition of representative selection problem as we approach it, the following can be concluded.
+For fast representative selection that does result in more accurate result than selecting samples randomly, $\delta$-Medoids One Shot algorithm should be used.
+If the speed is not of great concern or the datastets have lower tens of thousands of samples, full version of $\delta$ medoids yields the best results.
 
 \bibliographystyle{iso690}
 \bibliography{hlavac-thesis.bib}
