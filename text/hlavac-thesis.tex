@@ -24,7 +24,7 @@
 % \usepackage{amssymb} %additional math symbols
 
 \usepackage{dirtree} %directory tree visualisation
-
+\usepackage{color} %VH for comments
 \usepackage{csquotes}
 
 \usepackage{todonotes} %for TODO notes - can be removed in final
@@ -40,6 +40,9 @@
 % \usepackage[acronym,nonumberlist,toc,numberedsection=autolabel]{glossaries}
 % \iflanguage{czech}{\renewcommand*{\acronymname}{Seznam pou{\v z}it{\' y}ch zkratek}}{}
 % \makeglossaries
+
+% ------------- Colors abbreviations ------------
+\def\cbl{\color{blue}} %VH
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 % EDIT THIS
@@ -280,8 +283,15 @@ Community-based clustering is explained in detail in section 2.3. \todo{link to 
 
 The density of samples in sets of data is determined by cosine similarity of frequency vectors of two hosts.
 Similarity measure between hosts \textit{a} and \textit{b} is defined as:
-$$cos(a, b) = \frac{\sum_{s \in S} F_s^a F_s^b} {\sqrt{\sum_{s \in S} (F_s^a)^2} \sqrt{\sum_{s \in S} (F_s^b)^2}}$$
-With this similarity measure it is possible to determine cluster of hosts with similar behavior. \\
+
+{\cbl
+\[
+cos(a, b) = \frac{\sum\limits_{s \in S} F_s^a F_s^b} {\sqrt{\sum\limits_{s \in S} (F_s^a)^2} \sqrt{\sum\limits_{s \in S} (F_s^b)^2}}
+\]
+}% end cbl
+%
+With this similarity measure it is possible to determine cluster of hosts with similar behavior.
+\\
 
 After the clustering is done, only clusters that are bigger than 10 hosts are selected for representative selection.
 Smaller clusters are analyzed using a fallback method - host-based anomaly detection.
@@ -313,9 +323,19 @@ This chapter serves as a theoretical background to explain clustering methods an
 As \cite{guttag2016introduction} defines it, clustering is an unsupervised machine learning method that organizes objects into groups so that each group consists of members that are similar in some way.
 Without any prior knowledge of the data, this method looks for structures in feature vectors.
 Variability can be calculated for each cluster \textit{c}, and it shows how much objects in given cluster differ.
-Variability is defined as $$ variability(c) = \sum_{e \in c} distance(mean(c), e)^2 $$, where \textit{e} is an object from given cluster.
+Variability is defined as 
+{\cbl
+$$ 
+\mathrm{variability}(c) = \sum_{e \in c} \mathrm{distance}(\mathrm{mean}(c), e)^2 \:,
+$$
+}% end cbl
+where \textit{e} is an object from given cluster.
 For clustering, the aim is to keep the dissimilarity of all clusters from the dataset as low as possible.
-Dissimilarity is defined as $$ dissimilarity(C) = \sum_{c \in C} variability(c) $$, where C stands for all clusters the data was clustered into.
+Dissimilarity is defined as 
+{\cbl 
+$$ \mathrm{dissimilarity}(C) = \sum_{c \in C} \mathrm{variability(c)} \:,$$ 
+}% end cbl
+where {\cbl $C$} stands for all clusters the data was clustered into.
 Given this definition, the best way to cluster every dataset would be to put each object to its cluster, and that would not lead to any reasonable result.
 Therefore there is a constraint added for clustering methods.
 It can be either the maximum number of clusters or the maximum distance between 2 clusters. \\
