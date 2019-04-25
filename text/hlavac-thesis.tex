@@ -42,8 +42,8 @@
 % \makeglossaries
 
 % ------------- Colors abbreviations ------------
-\def\cbl{\color{blue}} %VH
-
+\def\cbl{\color{blue}} %VH's suggestions
+\def\cre{\color{red}}  %JH's discussion
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 % EDIT THIS
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
@@ -323,17 +323,17 @@ This chapter serves as a theoretical background to explain clustering methods an
 As \cite{guttag2016introduction} defines it, clustering is an unsupervised machine learning method that organizes objects into groups so that each group consists of members that are similar in some way.
 Without any prior knowledge of the data, this method looks for structures in feature vectors.
 Variability can be calculated for each cluster \textit{c}, and it shows how much objects in given cluster differ.
-Variability is defined as 
+Variability is defined as
 {\cbl
-$$ 
+$$
 \mathrm{variability}(c) = \sum_{e \in c} \mathrm{distance}(\mathrm{mean}(c), e)^2 \:,
 $$
 }% end cbl
 where \textit{e} is an object from given cluster.
 For clustering, the aim is to keep the dissimilarity of all clusters from the dataset as low as possible.
-Dissimilarity is defined as 
-{\cbl 
-$$ \mathrm{dissimilarity}(C) = \sum_{c \in C} \mathrm{variability(c)} \:,$$ 
+Dissimilarity is defined as
+{\cbl
+$$ \mathrm{dissimilarity}(C) = \sum_{c \in C} \mathrm{variability(c)} \:,$$
 }% end cbl
 where {\cbl $C$} stands for all clusters the data was clustered into.
 Given this definition, the best way to cluster every dataset would be to put each object to its cluster, and that would not lead to any reasonable result.
