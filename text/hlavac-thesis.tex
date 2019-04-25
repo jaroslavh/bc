@@ -304,7 +304,6 @@ If a host is known to belong to a cluster $A$ and its behavior suddenly starts t
 %========================================CHAPTER==================================
 
 \chapter{Theoretical Overview}
-% Theoretical background to clustering and non-metric spaces
 
 This chapter serves as a theoretical background to explain clustering methods and problematics of non-metric spaces.
                                                                                   
@@ -368,7 +367,8 @@ The clustering as explained in this section has some restrictions that make it i
 Firstly the number of clusters is not previously known, so choosing k for k-Means is not an option, and secondly, the distance measure used does not form a metric space.
 Next section delves deeper into what it means when a measure does not form a metric space.
                                                                                   
-\section{Non-Metric Space} \todo{Explain topological spaces}                      
+\section{Clustering on Topological Space}
+
 A metric space is a pair $(X, d)$ where $X$ is a set and $d$ is a mapping from $X \times X$ into $R$ which satisfies the following conditions:
 \begin{enumerate}                                                                 
     \item [(i)] $d(x, y) \geq 0$;                                                 
@@ -377,8 +377,16 @@ A metric space is a pair $(X, d)$ where $X$ is a set and $d$ is a mapping from $
     \item [(iv)] $d(x, z) \leq d(x, y) + d(x, z) for x, y, z \in X$.              
 \end{enumerate}                                                                   
                                                                                   
-The similarity measure that is used in this thesis as explained in section 1.4 \todo{reference} does not fulfill the last point of the definition above and therefore, it does not form a metric space but a topological space.
-A topological space is a \todo{definition}
+The similarity measure that is used in this thesis as explained in section 1.4 \todo{reference} does not fulfill the last point of the definition above and therefore, it does not form a metric space but a more general topological space. This is how \cite{stahl2014introduction} defines it. \\
+
+Given any set $S$ a topology on S is a family $F ={F_{\alpha} | \alpha \in A}$, where $A$ is some indexing set, each $F_{\alpha}  \subseteq S$, and with the following properties:
+\begin{enumerate}                                                                 
+    \item [(i)] The empty set $\emptyset$ is in $F$.                                                 
+    \item [(ii)] The given set $S$ is in $F$.                                       
+    \item [(iii)] The intersection of any two sets of $F$ is in $F$.
+    \item [(iv)] The union of any number of sets of $F$ is in $F$.
+\end{enumerate} 
+The pair ($S, F$) is called a topological space. \\
 
 K-Means clustering from the previous section cannot be used in topological space as the centroids do not exist.
 In many cases, there is no prior knowledge of k, as is the case in this thesis.
@@ -399,6 +407,7 @@ This method iteratively samples network hosts and runs the clustering algorithm 
 Each iteration creates or updates cluster prototypes.
 If the data in the current batch fit into a previously prototyped cluster, they are added to it and the cluster prototype is updated.
 If samples differ more than a predefined threshold a new cluster prototype is created.
+%Cosine similarity represents the difference in the angle of two vectors.
 
 % jenom pairwise similarity!!! - nemuzeme delat kolecka - neplati geometricka reprezentace okoli
 % centroid vubec neni v uvahu - casto nejde vubec udelat
@@ -625,6 +634,53 @@ That is why the selected algorithms were tested on both generally know datasets 
 What datasets am I using and why?
 
 \section{Testbed}
+
+The task of cluster representation in non-metric spaces generally is not necessarily connected only to the Security field.
+That is why the selected algorithms were tested on artificially created datasets, clustering datasets previously used in literature and on specific data collected from a real network.
+Datasets that are needed for testing methods from this thesis have to be labeled.
+That means that each sample in the dataset must be assigned into a cluster so that when the representation for each cluster is found and samples are assigned to clusters, it is possible to doublecheck if the assignment was right.
+There are not many labeled datasets that have a lot of samples in each cluster and have the right features for testing. \todo{what does it mean right features, how to better write this}
+That is why for complex testing datasets from picture recognition field were used for general testing of methods before going into the area of computer networks.
+
+\subsection{Datasets Created for this Work}
+
+These datasets were created solely for this thesis and they served as a sanity check for each of the method.
+The datasets created are the following:
+\begin{itemize}
+    \item Blobs
+    \item Blobs 3D
+    \item Overlap
+    \item Noisy Circles
+    \item Noisy Circles 3D
+\end{itemize}
+All of these datasets are in 3-dimensional space so that they could be easily visualized. \todo{add pictures}
+Similarity measure used in these datasets was Euclidean distance. \\
+
+The Blobs datasets are very easy to represent with a centroid and were tested whether and how much points is needed to represent them using methods explained in Chapter X. \todo{Link to chapter} The Overlap dataset consists of 3 clusters in shapes of blocks. Noisy Circles and Noisy Circles 3D are datasets are one of the hardest datasets to represent even by methods that are designed specifically for metric space.
+There are two clusters as shown in figure X. \todo{add figure}
+
+\subsection{Image Recognition Datasets}
+One of the best-documented areas of clustering is the area of image recognition.
+That is why 2 datasets from this area were chosen for measuring the precision and complexity of each method. Both of them are labeled datasets of features collected from digits written by human hand. \\
+
+
+\subsection{Real Network Dataset}
+Confidential dataset of an anonymized network in one real company was used for finetuning and testing the methods on a real scenario.
+This dataset was created from proxy logs in that company following the workflow explained in section x \todo{Link section.}. \\
+                                                                                  
+\section{Testbed}
+Testing of each method was done in several steps:
+Data preparation - creation of pandas dataframes and loading it into special Cluster Class.
+Cross-validation of each method. 80\% of samples used for training,  20\% for testing.
+Testing was done by kNN k = 1, and creation of confusion matrix while calculating precision and recall.
+
+The testbed application was implemented in Python 3 using the Jupyter notebook technology.
+It consists of 3 steps:
+\begin{itemize}
+    \item Loading data into TestDF
+    \item Training model on 80\% of dataset sample
+    \item Testing by k-Nearest Neighbor classification method on the remaining 20\%
+\end{itemize}
 
 \chapter{Results}
 % Testbed explanation - why is it the best etc.
