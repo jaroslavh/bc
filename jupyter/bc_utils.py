@@ -77,6 +77,37 @@ class TestDf:
                    label="test_"+str(key), color=test_colors[key])
         pyplot.show()
 
+#def delta_medoids_one_shot(df, delta, similarity_measure):
+#    """Returns subset of input DataFrame, that is a good representation
+#    of given data.
+#
+#    This is a simplified delta-medoids algorithm. It finds out the
+#    representatives in one pass through the input data. Final representatives
+#    depend on the ordering of input data.
+#
+#    :param df: in data
+#    :type df: pandas.DataFrame
+#    :param delta: maximum distance of points to be considered similar
+#    :type delta: float
+#    :param similarity_measure: similarity function to be used in algorithm
+#    :type similarity_measure: scipy.spacial.distance
+#
+#    :Example:
+#    >>> TODO"""
+#    representatives = np.array(df.iloc[0], ndmin=2)
+#
+#    #here starts RepAssign routine for advanced delta-medoids
+#    for row in df.iterrows():
+#        point = tuple(row[1])
+#
+#        for rep in representatives: #needs optimalization
+#            if similarity_measure(point, rep) <= delta:
+#                break
+#        else:
+#            representatives = np.vstack((representatives, point))
+#
+#    return pd.DataFrame(representatives, columns=df.columns.values)
+
 def delta_medoids_one_shot(df, delta, similarity_measure):
     """Returns subset of input DataFrame, that is a good representation
     of given data.
@@ -96,57 +127,20 @@ def delta_medoids_one_shot(df, delta, similarity_measure):
     >>> TODO"""
     representatives = np.array(df.iloc[0], ndmin=2)
 
-    #here starts RepAssign routine for advanced delta-medoids
     for row in df.iterrows():
+        dist = float("inf")
         point = tuple(row[1])
 
-        for rep in representatives: #needs optimalization
-            if similarity_measure(point, rep) <= delta:
-                break
-        else:
+        for rep in representatives:
+            #finding the closest representative to current point
+            if similarity_measure(point, rep) <= dist:
+                dist = similarity_measure(point, rep)
+        if dist > delta:
             representatives = np.vstack((representatives, point))
 
     return pd.DataFrame(representatives, columns=df.columns.values)
 
-def delta_medoids(df, delta, similarity_measure):
-    """Returns subset of input DataFrame, that is a good representation
-    of given data.
-
-    This is a simplified delta-medoids algorithm. It finds out the
-    representatives in one pass through the input data. Final representatives
-    depend on the ordering of input data.
-
-    :param df: in data
-    :type df: pandas.DataFrame
-    :param delta: maximum distance of points to be considered similar
-    :type delta: float
-    :param similarity_measure: similarity function to be used in algorithm
-    :type similarity_measure: scipy.spacial.distance
-
-    :Example:
-    >>> TODO"""
-    clusters = {}
-
-    #here starts RepAssign routine for advanced delta-medoids
-    for row in df.iterrows():
-        dist = float("inf")
-        represenative = None
-
-        point = tuple(row[1])
-
-        for rep in clusters.keys():
-            #finding the closest representative to current point
-            if similarity_measure(point, rep) <= dist:
-                representative = rep
-                dist = similarity_measure(point, rep)
-        if dist <= delta:
-            clusters[representative] = np.vstack((clusters[representative],
-                                                point))
-        else:
-            clusters[point] = np.array(point, ndmin=2)
-
-    return pd.DataFrame(clusters.keys(), columns=df.columns.values)
-
+# this is the argmin calculation for delta_medoids_full algorithm
 def find_best_cluster_representative(cluster, similarity_measure):
     #input: np.array(of points)
     #returns a tuple
@@ -182,13 +176,13 @@ def delta_medoids_full(df, delta, similarity_measure):
 
     :Example:
     >>> TODO"""
-    t = 0
-    representatives = {}
-    representatives[t] = set()
+    t = 0 #iteration number
+    representatives = {} #selected representatives
+    representatives[t] = set() #representatives for given iteration
 
     while True:
         #print("\n=========== running for t = " + str(t) + "============")
-        clusters = {}
+        clusters = {} #subclusters inside cluster
         for item in representatives[t]:
             clusters[item] = np.array(item, ndmin=2)
 
@@ -299,7 +293,7 @@ def greedy_select(df, delta, similarity_measure):
             current_index = df.loc[index_list[0]].name
         # finding index of the most different point
         else:
-            for index in index_list:
+            for index in index_list: #TODO does this copy the list
                 current_index = None
                 similarity_sum = 0 # used to store the biggest sum
                 tmp_sum = 0 # used to store the current sum
@@ -371,3 +365,53 @@ def get_hit_miss_rate(matrix):
         i = i + 1
 
     return float(miss)/float(hit)
+
+def get_method_results(full_test_df, dataframes, similarity, delta):
+    test_res = {"delta_medoids_full" : {},
+                "delta_medoids_one_shot" : {},
+                "random_select" : {},
+                "greedy_select" : {}}
+
+    #creating training DataFrames for comparing oneshot and full delta medoids algorithm
+    train_delta_medoids_full = pd.DataFrame()
+    train_delta_medoids_one_shot = pd.DataFrame()
+    train_random_selection = pd.DataFrame()
+    train_greedy_select = pd.DataFrame()    
+
+    for name in set(full_test_df['cluster']):
+        delta_df = dataframes[name].train_df.iloc[:, :-1]
+
+        if delta == None: #estimating delta if none is set
+            delta = estimate_delta(delta_df, similarity)
+    
+        #delta medoids full
+        medoids_full_result = delta_medoids_full(delta_df, delta, similarity)
+        medoids_full_result['cluster'] = name #setting a cluster name for result
+        test_res["delta_medoids_full"][name] = medoids_full_result
+        train_delta_medoids_full = train_delta_medoids_full.append(medoids_full_result)
+    
+        #delta medoids one shot
+        one_shot_medoids_result = delta_medoids_one_shot(delta_df, delta, similarity)
+        one_shot_medoids_result['cluster'] = name
+        test_res["delta_medoids_one_shot"][name] = one_shot_medoids_result
+        train_delta_medoids_one_shot = train_delta_medoids_one_shot.append(one_shot_medoids_result)
+    
+        #random select
+        random_select_result = random_select(delta_df, medoids_full_result.shape[0])
+        random_select_result['cluster'] = name
+        test_res["random_select"][name] = random_select_result
+        train_random_selection = train_random_selection.append(random_select_result)
+    
+        #greedy select
+        greedy_select_result = greedy_select(delta_df, delta, similarity)
+        greedy_select_result['cluster'] = name
+        test_res["greedy_select"][name] = greedy_select_result
+        train_greedy_select = train_greedy_select.append(greedy_select_result)    
+    
+    matrix_full = classifyPoints(train_delta_medoids_full, full_test_df)
+    matrix_one_shot = classifyPoints(train_delta_medoids_one_shot, full_test_df)
+    matrix_random_selection = classifyPoints(train_random_selection, full_test_df)
+    matrix_greedy_select = classifyPoints(train_greedy_select, full_test_df)
+    return [matrix_full, matrix_one_shot, matrix_random_selection, matrix_greedy_select]
+
+#TODO return also sizes of selections to evaluate how many of the dataset percentagewise it is
