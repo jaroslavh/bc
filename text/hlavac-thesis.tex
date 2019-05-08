@@ -34,6 +34,9 @@
 \algnewcommand\OUTPUT{\item[\textbf{Output:}]}
 \algdef{SE}[DOWHILE]{DO}{DOWHILE}{\algorithmicdo}[1]{\algorithmicwhile\ #1}%
 
+\newcommand{\specialcell}[2][l]{%
+\begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}
+
 %\usepackage[main=english,czech]{babel}
 
 % % list of acronyms
@@ -789,6 +792,8 @@ The first experiment was run on easily the data specifically created for this th
 It served as a sanity check of the proposed methods.
 The methods that were explained in the previous chapter\todo{make reference} are designed to work in non-metric space but they still work in a metric space.
 Using them on metric data and visualizing the results helped a lot to check the assumptions about results experimentally.
+Also, the need for selection of few representatives from each dataset was tested.
+It is expected, for these simple clusters, not to exceed 30 selected representatives.
 
 \subsection{Experimental Setup}
 Datasets used for this experiment were:
@@ -804,14 +809,90 @@ The $\delta$ was estimated as \todo{how is median at lower ten percent called, p
 
 \subsection{Results}
 
-The results for different methods are listed below.
+The results for each dataset are listed below.
+\textbf{Blobs 3D}
+
+\begin{table}[]
+\begin{tabular}{l|lllll}
+\hline
+ \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+A & 400 & 21 & 23 & 23 & 23 \\
+B & 400 & 17 & 20 & 20 & 20 \\
+C & 400 & 19 & 20 & 20 &20  \\ \hline
+\end{tabular}
+\caption{Number of selected representatives for Blobs 3D dataset}
+\end{table}
+
+\begin{figure}
+   \includegraphics[width=\linewidth]{img/exp1_blobs.png}
+  \label{img:exp1_blobs}
+  \caption{Confusion matrices for Blobs 3D dataset}
+\end{figure}
+
+\textbf{Overlap}
+
+\begin{table}[]
+\begin{tabular}{l|lllll}
+\hline
+ \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+A & 800 & 25 & 23 & 23 & 23 \\
+B & 960 & 26 & 21 & 21 & 21 \\
+C & 640 & 22 & 24 & 24 & 24  \\ \hline
+\end{tabular}
+\caption{Number of selected representatives for Overlap dataset}
+\end{table}
+
+\begin{figure}
+   \includegraphics[width=\linewidth]{img/exp1_overlap.png}
+  \label{img:exp1_overlap}
+  \caption{Confusion matrices for Overlap dataset}
+\end{figure}
+
+\textbf{Moons}
+
+\begin{table}[]
+\begin{tabular}{l|lllll}
+\hline
+ \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+A & 600 & 18 & 19 & 19 & 19 \\
+B & 600 & 19 & 18 & 18 & 18 \\ \hline
+\end{tabular}
+\caption{Number of selected representatives for Moons dataset}
+\end{table}
+
+\begin{figure}
+   \includegraphics[width=\linewidth]{img/exp1_moons.png}
+  \label{img:exp1_moons}
+  \caption{Confusion matrices for Moons dataset}
+\end{figure}
+
+\textbf{Circles}
+
+\begin{table}[]
+\begin{tabular}{l|lllll}
+\hline
+ \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+A & 600 & 14 & 14 & 14 & 14 \\
+B & 600 & 8 & 7 & 7 & 7 \\ \hline
+\end{tabular}
+\caption{Number of selected representatives for Circles dataset}
+\end{table}
+
+\begin{figure}
+   \includegraphics[width=\linewidth]{img/exp1_circles.png}
+  \label{img:exp1_circles}
+  \caption{Confusion matrices for Circles dataset}
+\end{figure}
+
 
 \subsection{Conclusion}
 At first glance, all the confusion matrices look almost perfect and as expected.
+The number of representatives selected did not exceed 30 in any cluster.
+The number of missed classification is low even in overlapping or complex datasets.
 However, when the results were visualized for one cluster, the delta medoids algorithm did not result in expected selection.
 As can be seen on Figure~\ref{img:blobs_border_select}, the algorithm picked the samples on the edge of the dataset that did not cover many points in their neighborhoods.
 \begin{figure}
-  \includegraphics[width=\linewidth]{img/delta_medoids_select.png}
+   \includegraphics[width=\linewidth]{img/delta_medoids_select.png}
   \label{img:blobs_border_select}
   \caption{$\delta$-Medoids choosing the border samples of a cluster}
 \end{figure}
@@ -838,6 +919,80 @@ The $\delta$ was estimated as \todo{how is median at lower ten percent called, p
 \subsection{Results}
 
 The results for different methods are listed below.
+\textbf{Blobs 3D}
+
+\begin{table}[]
+\begin{tabular}{l|lllll}
+\hline
+ \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+A & 400 & 23 & 24 & 24 & 24 \\
+B & 400 & 21 & 22 & 22 & 22 \\
+C & 400 & 20 & 21 & 21 & 21 \\ \hline
+\end{tabular}
+\caption{Number of selected representatives for Blobs 3D dataset}
+\end{table}
+
+\begin{figure}
+   \includegraphics[width=\linewidth]{img/exp2_blobs.png}
+  \label{img:exp2_blobs}
+  \caption{Confusion matrices for Blobs 3D dataset}
+\end{figure}
+
+\textbf{Overlap}
+
+\begin{table}[]
+\begin{tabular}{l|lllll}
+\hline
+ \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+A & 800 & 22 & 21 & 21 & 21 \\
+B & 960 & 21 & 20 & 20 & 20 \\
+C & 640 & 19 & 19 & 19 & 19  \\ \hline
+\end{tabular}
+\caption{Number of selected representatives for Overlap dataset}
+\end{table}
+
+\begin{figure}
+   \includegraphics[width=\linewidth]{img/exp2_overlap.png}
+  \label{img:exp2_overlap}
+  \caption{Confusion matrices for Overlap dataset}
+\end{figure}
+
+\textbf{Moons}
+
+\begin{table}[]
+\begin{tabular}{l|lllll}
+\hline
+ \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+A & 600 & 21 & 18 & 18 & 18 \\
+B & 600 & 16 & 20 & 20 & 20 \\ \hline
+\end{tabular}
+\caption{Number of selected representatives for Moons dataset}
+\end{table}
+
+\begin{figure}
+   \includegraphics[width=\linewidth]{img/exp2_moons.png}
+  \label{img:exp2_moons}
+  \caption{Confusion matrices for Moons dataset}
+\end{figure}
+
+\textbf{Circles}
+
+\begin{table}[]
+\begin{tabular}{l|lllll}
+\hline
+ \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+A & 600 & 15 & 15 & 15 & 15 \\
+B & 600 & 8 & 8 & 8 & 8 \\ \hline
+\end{tabular}
+\caption{Number of selected representatives for Circles dataset}
+\end{table}
+
+\begin{figure}
+   \includegraphics[width=\linewidth]{img/exp2_circles.png}
+  \label{img:exp2_circles}
+  \caption{Confusion matrices for Circles dataset}
+\end{figure}
+
 
 \subsection{Conclusion}
 
