@@ -721,11 +721,11 @@ On the other hand, it is able to select better medoids, thus getting rid of the 
             \ENDFOR
         \DOWHILE{$representatives_t = representatives_{t-1}$}
     \end{algorithmic}
-\end{algorithm}
+\end{algorithm} \todo{add the hack for better results}
 
 %========================================CHAPTER==================================
 
-\chapter{Datasets}\label{ch:performance}
+\chapter{Datasets}\label{ch:datasets}
 
 This chapter explains the implementation and testing of selected methods in multiple different scenarios.
 In the first section, algorithms for selected methods are listed and explained in detail.
@@ -743,14 +743,12 @@ That is why for complex testing datasets from picture recognition field were use
 
 \subsection{Datasets Created for this Work}
 
-These datasets were created to test specific properties of tested methods.
+These datasets were created to test the specific properties of tested methods.
 The datasets created are the following:
 \begin{itemize}
-    \item Blobs
     \item Blobs 3D
     \item Overlap
-    \item Noisy Circles
-    \item Noisy Circles 3D
+    \item Circles 3D
     \item Moons
 \end{itemize}
 All of these datasets are in space of two or three dimensions.
@@ -764,9 +762,14 @@ There are two clusters as shown in figure X. \todo{add figure}
 
 \subsection{Image Recognition Datasets}
 One of the best-documented areas of clustering is the area of image recognition.
-That is why two datasets from this area were chosen for measuring the precision and complexity of each method. Both of them are labeled datasets of features collected from digits written by human hand. \\
+That is why two datasets from this area were chosen for measuring the precision and complexity of each method.
+Both of them are labeled datasets of features collected from digits written by human hand. \\
 
-The Pen-Based Recognition of Handwritten Digits Data Set \cite{dua1998pendigit} consists of \todo{explain what it is}
+The Pen-Based Recognition of Handwritten Digits Data Set \cite{dua1998pendigit} consists of 10922 samples with 16 attributes.
+Each sample represents features collected from a handwritten digit.
+Each digit is represented by a little bit more than a thousand samples.
+Features represent coordinate information about the digits as they were written on a $500\times500$ pixel frame.
+This dataset is split to train dataset (70\%) and test dataset (30\%).
 
 The Multiple Features Data Set \cite{dua1998pendigit} consist of \todo{explain how is it different} \todo{add MNIST}
 
@@ -1004,6 +1007,57 @@ The results of this experiment empirically supported the expected result of not 
 \end{figure}
 This sanity check by visualization fulfilled all of the expectation.
 
+\section{Experiment 3}\label{sec:exp3}
+
+After the algorithms were tested on visualizable data, the experiments with well known labeled datasets could start.
+The motivation for this experiment was to test the algorithm results on well explored and well-annotated datasets commonly used as a benchmark for clustering.
+
+\subsection{Experimental Setup}
+Datasets used for this experiment were:
+\begin{itemize}
+    \item Pendigit
+    \item
+\end{itemize}
+
+All 4 algorithms were run.
+The $\delta$ was estimated as \todo{how is median at lower ten percent called, put it to maths} times 1.05 from distances from one point in the data to all of the others.
+
+\subsection{Results}
+
+The results for different methods are listed below.
+
+\textbf{Pendigits}
+
+\begin{table}[]
+\begin{tabular}{l|lllll}
+\hline
+ \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+0 & 780 & 33 & 33 & 33 & 33 \\
+1 & 779 & 33 & 41 & 41 & 41 \\
+2 & 780 & 17 & 15 & 15 & 15 \\
+3 & 719 & 12 & 9 & 9 & 9 \\
+4 & 780 & 25 & 24 & 24 & 24 \\
+5 & 720 & 25 & 27 & 27 & 27 \\
+6 & 720 & 16 & 16 & 16 & 16 \\
+7 & 778 & 22 & 20 & 20 & 20 \\
+8 & 719 & 75 & 77 & 15 & 15 \\
+9 & 719 & 50 & 52 & 13 & 13 \\ \hline
+\end{tabular}
+\caption{Number of selected representatives for Pendigit dataset}
+\end{table}
+
+\begin{figure}
+   \includegraphics[width=\linewidth]{img/exp3_pendigits.png}
+  \label{img:exp3_pendigits}
+  \caption{Confusion matrices for Pendigits dataset}
+\end{figure}
+
+\subsection{Conclusion}
+Using algorithms on real datasets started to show more significant differences between results in algorithms.
+An interesting thing is that Greedy Selection and $\delta$-Medoids One-Shot select similar number of representatives and their results are also very similar.
+This is interesting as the complexity of these algorithms differs a lot, Greedy Selection being much slower with $\mathcal(n^2)$. \todo{better wording of this conclusion}
+
+
 \setsecnumdepth{part}
 
 %========================================CHAPTER==================================
@@ -1029,11 +1083,11 @@ If the speed is not of great concern or the datastets have lower tens of thousan
 \setsecnumdepth{all}
 \appendix
 
-\chapter{Acronyms}
+\chapter{Abreviations}
 % \printglossaries
 \begin{description}
-	\item[GUI] Graphical user interface
-	\item[XML] Extensible markup language
+	\item[NIDS] Intrusion Detection System
+	\item[NBAD] Network-Based Anomaly Detection
 \end{description}
 
 
