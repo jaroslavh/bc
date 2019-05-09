@@ -356,7 +356,7 @@ This method is a greedy algorithm, and therefore it might not result in globally
 Also, the algorithm has a time complexity of $\mathcal{O}(n^2)$.
 Therefore, it cannot be used in big datasets. \\
 
-An example of a much faster clustering algorithm that is also greedy is $K$-means. \todo{How to cite that this is only taken from the book, even though rewritten and selected for my purposes.}
+An example of a much faster clustering algorithm that is also greedy is $K$-means.
 The '$K$' in $K$-means stands for the number of clusters that we want to get as a result.
 To use this algorithm the number of desired clusters has to be known in advance.
 $K$-means randomly chooses $K$ centroids in the space of the dataset and then assigns each point to a centroid.
@@ -399,7 +399,7 @@ A metric space, as defined in \cite{choudhary1992elements}, is a pair $(X, d)$ w
     \item [(iv)] $d(x, z) \leq d(x, y) + d(x, z) \mathrm{for} x, y, z \in X$.
 \end{enumerate}
 
-The similarity measure that is used in this thesis as explained in section 1.4 \todo{reference} does not fulfill the last point of the definition above. Furthermore, it is a pairwise similarity that forms form a subspace for comparing each pair of samples.
+The similarity measure that is used in this thesis as explained in Section~\ref{sec:ctdaf} does not fulfill the last point of the definition above. Furthermore, it is a pairwise similarity that forms form a subspace for comparing each pair of samples.
 This is why this similarity measure forms a topological space, which is defined according to, e.g., \cite{stahl2014introduction}. \\
 
 Given any set $S$ a topology on $S$ is a family $F ={F_{\alpha} | \alpha \in A}$, where $A$ is some indexing set, each $F_{\alpha}  \subseteq S$\todo{ad poznamka proc je to tady vsunute - je to prima citace z te knihy}, and with the following properties:
@@ -441,7 +441,7 @@ Computational operations such as assigning new objects to clusters (e. g. $K$-Ne
 If it was possible to represent these clusters in a different way than keeping all track of all of the objects, further operations on these clusters would run faster. \\
 
 A cluster prototype is a data sample that represents all samples in the data cluster.
-According to \todo{ref Introduction to Data Mining}, there are three motivations for finding the most representative cluster prototypes:
+According to \cite{tan2014introduction}, there are three motivations for finding the most representative cluster prototypes:
 \begin{itemize}
     \item Summarization
     \item Compression
@@ -481,7 +481,7 @@ This definition of representative selection problem serves well for this paper.
 
 \subsection{Representative Selection in a Metric Space}\label{sec:rep_select_metric}
 \todo{Centroid by si mel zavest a vysvetlit vyhody a nevyhody. Centroid muze byt vazeny nebo aritmeticky prumer, to dokazes zapsat vzorcem a bude to hezky vypadat nebo obrazek nebo tak neco. Medoid si vubec nevysvetlil co je.}
-A dataset that has the same number of features for each sample and a metric that fulfills all the requisites shown in \todo{reference the definition} is an example of a dataset in a metric space.
+A metric dataset has to have the same number of features for each sample and a metric that fulfills all the requisites in the definition of metric space.
 Selecting a prototype from this dataset is often best achieved by calculating a centroid for a given cluster.
 A centroid can be, for example, the average of all points in the cluster.
 If such a centroid is meaningful (it does not fall away from the data), it can be selected as a prototype.
@@ -511,8 +511,8 @@ Based on the previously explained approaches for finding representatives of clus
 \begin{itemize}
     \item Random selection
     \item Greedy Selection
-    \item Delta-Medoids One-Shot
-    \item Delta-Medoids \todo{citations}
+    \item $\delta$-Medoids One-Shot
+    \item $\delta$-Medoids
 \end{itemize}
 
 \subsection{Random Selection}\label{subsec:random_select}
@@ -531,7 +531,7 @@ For this thesis, the random selection algorithm serves as a baseline in comparin
 The greedy selection algorithm is a straightforward algorithm that selects a random sample from the set as the first representative.
 Then it looks for the most different sample in the rest of the dataset.
 Once the desired sample is found, the algorithm removes all neighboring samples with at least the similarity of $\delta$ from the set.
-Then it looks for other dissimilar samples until the whole set is represented. \\ \todo{pseudocode}
+Then it looks for other dissimilar samples until the whole set is represented. \\
 
 The speed of this algorithm depends on the sparsity of the given set.
 In the worst case scenario, all points would be selected as representatives while always calculating the distance to each remaining sample in the set. Then it would reach the time complexity of $\mathcal{O}(n^2)$.
