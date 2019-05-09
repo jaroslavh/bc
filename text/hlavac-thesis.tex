@@ -727,21 +727,14 @@ On the other hand, it is able to select better medoids, thus getting rid of the 
 
 \chapter{Datasets}\label{ch:datasets}
 
-This chapter explains the implementation and testing of selected methods in multiple different scenarios.
-In the first section, algorithms for selected methods are listed and explained in detail.
-The following section serves as a list of used datasets ranging from general to more specific ones.
-The last section of this chapter talks about the tests that were run.
-It also explains why the choice of these tests.
+The task of cluster representation in non-metric spaces generally is not necessarily connected only to the security field.
+That is why, before moving to a dataset collected from the real network, the selected algorithms were first tested on artificially created datasets and well labeled datasets found in the literature. \\
 
-\section{Datasets}\label{sec:datasets}
-The task of cluster representation in non-metric spaces generally is not necessarily connected only to the Security field.
-That is why the selected algorithms were tested on artificially created datasets, clustering datasets previously used in literature and on specific data collected from a real network.
-Datasets that are needed for testing methods from this thesis have to be labeled.
-That means that each sample in the dataset must be assigned into a cluster so that when the representation for each cluster is found and samples are assigned to clusters, it is possible to doublecheck if the assignment was right.
-There are not many labeled datasets that have a lot of samples in each cluster and have the right features for testing. \todo{what does it mean right features, how to better write this}
-That is why for complex testing datasets from picture recognition field were used for general testing of methods before going into the area of computer networks.
+Below, the datasets used in this thesis are presented.
+There are three types of datasets used: artificially created, image recognition and real network dataset.
+Each section corresponds to one of the listed types. \\ \todo{is this introduction enough? What is missing?}
 
-\subsection{Datasets Created for this Work}
+\section{Datasets Created for this Work}
 
 These datasets were created to test the specific properties of tested methods.
 The datasets created are the following:
@@ -761,11 +754,12 @@ They can be easily visualized on graphs and nicely show some of the specific pro
 Similarity measure used in these datasets was Euclidean distance. \\
 
 The Blobs datasets are very easy to represent with a centroid and were tested whether and how much points is needed to represent them using methods explained in Chapter X. \todo{Link to chapter} The Overlap dataset consists of 3 clusters in shapes of blocks.
-These blocks partly overlap to test how selected algorithms cope with overlapping clusters. Noisy Circles and Noisy Circles 3D are datasets are one of the hardest datasets to represent even by methods that are designed specifically for metric space.
+These blocks partly overlap to test how selected algorithms cope with overlapping clusters.
+Circles 3D is one of the hardest datasets to represent even by methods that are designed specifically for metric space.
 These two datasets were chosen to test the resistance to noise in selecting representatives.
-There are two clusters as shown in figure X. \todo{add figure}
+There are two clusters as shown in Figure~\ref{img:datasets}.
 
-\subsection{Image Recognition Datasets}
+\section{Image Recognition Datasets}
 One of the best-documented areas of clustering is the area of image recognition.
 That is why two datasets from this area were chosen for measuring the precision and complexity of each method.
 Both of them are labeled datasets of features collected from digits written by human hand. \\
@@ -776,12 +770,15 @@ Each digit is represented by a little bit more than a thousand samples.
 Features represent coordinate information about the digits as they were written on a $500\times500$ pixel frame.
 This dataset is split to train dataset (70\%) and test dataset (30\%).
 
-The Multiple Features Data Set \cite{dua1998pendigit} consist of \todo{explain how is it different} \todo{add MNIST}
+The Multiple Features Data Set \cite{dua1998pendigit} consist of \todo{explain how is it different} \todo{add MNIST Fashion - if works remove multiple features??? Even though I have results.?}
 
-\subsection{Real Network Dataset}
-Real network traffic captured from a company with approximately 20k employees.
+\section{Real Network Dataset}
+Real network traffic captured from a company with approximately 20 thousand employees.
 The capture is from 24 hours of a working day a consists of \todo{count flows} flows.
-This dataset was created from proxy logs in that company following the workflow explained in section x \todo{Link section.}. \\
+Proxy logs were used to capture the connections.
+Hosts that appeared in that capture were clustered using the method explained in Section~\ref{sec:cluster_topo}.
+These clusters with all hosts labeled were used as real network dataset in this thesis.\\
+
 
 %========================================CHAPTER==================================
 
