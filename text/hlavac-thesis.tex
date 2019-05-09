@@ -107,17 +107,23 @@ For example, infection of a single device can be missed in the traffic of a medi
 In order to detect such anomalies, it is needed to focus on smaller parts of the network.
 Behavioral clustering of network hosts can be used to separate it into smaller pieces. \\
 
-In Cognitive targeted anomaly detection framework from Cisco behavioral clustering is used to find groups of similar hosts in a network.
+In Cognitive targeted anomaly detection framework from Cisco,
+%VH comma added
+behavioral clustering is used to find groups of similar hosts in a network.
 Each cluster created consists of hosts that have similar behavior.
 The main focus of this work is to find a representation of these clusters that are used to calculate the model behavior.
-These cluster prototypes\todo{Can I use the term cluster prototype before first explaining it?} are then updated dynamically as the behavior of the network changes. \\
+%VH
+{\cbl The representation used in this thesis, is based on cluster prototypes, which will be described in the sequel.} 
+These cluster prototypes\todo{Can I use the term cluster prototype before first explaining it? VH: I think I solved it.} are then updated dynamically as the behavior of the network changes. \\
 
 Four algorithms previously used to represent clusters in computer vision or other fields were studied and modified for usage in Cognitive anomaly detection framework.
 They were tested and compared on both real and test datasets. \\
 
-The thesis is organized as follows. Chapter~\ref{ch:ids} anomaly-based network security.
-In Chapter~\ref{ch:theory}, the theory behind clustering and representative selection in metric and non-metric spaces is explained.
-Datasets used in for testing are presented in Chapter~\ref{ch:datasets}.
+The thesis is organized as follows. 
+{\cbl
+Chapter~\ref{ch:ids} {\cbl introduces the} anomaly-based network security.
+Chapter~\ref{ch:theory} explains the theory behind clustering and representative selection in metric and non-metric spaces.
+Chapter~\ref{ch:datasets} presents datasets used for testing.}
 Chapter~\ref{ch:experiments} covers all the experiments with their results and is followed by the conclusion of this thesis.
 
 %The main focus of this work is in representing these clusters found by clustering algorithms.
