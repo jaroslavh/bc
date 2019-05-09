@@ -85,11 +85,16 @@ This race creates the drive for more and more sophisticated defense mechanisms. 
 
 Multi-layer defense systems are protecting contemporary networks.
 As attackers overcome one layer, there is yet another layer waiting for them.
-However, if the attackers succeed to bypass all of them unnoticed, a huge problem can occur.
-They can collect user credentials,  exfiltrate data or gain control of devices without anybody's knowledge.
+However, if the attackers succeed to bypass all 
+%VH of them 
+{\cbl security layers}
+unnoticed, a huge problem can occur.
+%VH They 
+{\cbl Attackers} can collect user credentials,  exfiltrate data or gain control of devices without anybody's knowledge.
 It can take a long time before somebody notices the breach.
 A similar thing happened in Marriot International child company Starwood in 2018 \cite{hron2018breaches}.
-Names, emails, addresses and credit card numbers of 500 million customers were stolen in an attack that was discovered in 2018 but possibly could have begun as early as in 2014. \\
+Names, emails, addresses and credit card numbers of 500 million customers were stolen in an attack that was discovered in 2018 but possibly could have begun as early as in 2014. 
+%VH \\
 
 One of several methods that are used to detect such intrusions is detecting anomalies in the behavior of network hosts - Network Behavioral Anomaly Detection (NBAD).
 In NBAD, devices inside of the network are used as probes to gather information about the behavior of the network or individual hosts.
@@ -102,17 +107,23 @@ For example, infection of a single device can be missed in the traffic of a medi
 In order to detect such anomalies, it is needed to focus on smaller parts of the network.
 Behavioral clustering of network hosts can be used to separate it into smaller pieces. \\
 
-In Cognitive targeted anomaly detection framework from Cisco behavioral clustering is used to find groups of similar hosts in a network.
+In Cognitive targeted anomaly detection framework from Cisco,
+%VH comma added
+behavioral clustering is used to find groups of similar hosts in a network.
 Each cluster created consists of hosts that have similar behavior.
 The main focus of this work is to find a representation of these clusters that are used to calculate the model behavior.
-These cluster prototypes\todo{Can I use the term cluster prototype before first explaining it?} are then updated dynamically as the behavior of the network changes. \\
+%VH
+{\cbl The representation used in this thesis is based on cluster prototypes, which will be described in the sequel.} 
+These cluster prototypes\todo{Can I use the term cluster prototype before first explaining it? VH: I think I solved it.} are then updated dynamically as the behavior of the network changes. \\
 
 Four algorithms previously used to represent clusters in computer vision or other fields were studied and modified for usage in Cognitive anomaly detection framework.
 They were tested and compared on both real and test datasets. \\
 
-The thesis is organized as follows. Chapter~\ref{ch:ids} anomaly-based network security.
-In Chapter~\ref{ch:theory}, the theory behind clustering and representative selection in metric and non-metric spaces is explained.
-Datasets used in for testing are presented in Chapter~\ref{ch:datasets}.
+The thesis is organized as follows. 
+{\cbl
+Chapter~\ref{ch:ids} {\cbl introduces the} anomaly-based network security.
+Chapter~\ref{ch:theory} explains the theory behind clustering and representative selection in metric and non-metric spaces.
+Chapter~\ref{ch:datasets} presents datasets used for testing.}
 Chapter~\ref{ch:experiments} covers all the experiments with their results and is followed by the conclusion of this thesis.
 
 %The main focus of this work is in representing these clusters found by clustering algorithms.
@@ -990,8 +1001,9 @@ If the speed is not of great concern or the datastets have lower tens of thousan
 \chapter{Abreviations}
 % \printglossaries
 \begin{description}
-	\item[NIDS] Intrusion Detection System
+%VH I changed the order of NBAD and NIDS to keep alphabetical order
 	\item[NBAD] Network-Based Anomaly Detection
+	\item[NIDS] Intrusion Detection System
 \end{description}
 
 
