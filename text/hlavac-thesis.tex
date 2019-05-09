@@ -159,7 +159,7 @@ The selected method should be finetuned to get the best possible results in anom
 
 %========================================CHAPTER==================================
 
-\chapter{Intrusion Detection System}
+\chapter{Intrusion Detection System}\label{ch:ids}
 
 This chapter focuses on presenting ideas from network security needed to understand the main objective of this thesis.
 Different approaches to network intrusion detection systems (IDS) are explained in Section~\ref{sec:ids}.
@@ -306,121 +306,7 @@ If a host is known to belong to a cluster $A$ and its behavior suddenly starts t
 
 %========================================CHAPTER==================================
 
-\chapter{Theoretical Overview}
-
-This chapter introduces a theoretical background to explain clustering methods, the topic of non-metric spaces and the problem of representative selection.
-
-\section{Introduction to Clustering}\label{sec:clust_intro}
-As defined in \cite{guttag2016introduction}, clustering is an unsupervised machine learning method that organizes objects into groups so that each group consists of members that are similar in some way.
-Without any prior knowledge of the data, this method looks for structures in feature vectors.
-Variability can be calculated for each cluster \textit{c}, and it shows how much objects in given cluster differ.
-Variability and dissimilarity are two properties defined for a better understanding of the data. \\
-Variability is defined as $$ \mathrm{variability}(c) = \sum_{e \in c} \mathrm{distance}(\mathrm{mean}(c), e)^2\:,$$\todo{number equations} where \textit{e} is an object from given cluster.
-The distance is a measure that quantifies how far two objects with the same features are. \todo{better wording here}
-Many different distance measures are used in clustering.
-Several of commonly used ones are:
-\begin{itemize}
-    \item Euclidean distance
-    \item Minkowski distance
-    \item Manhattan distance
-    \item Cosine similarity
-\end{itemize}
-
-Dissimilarity is defined as $$ \mathrm{dissimilarity}(C) = \sum_{c \in C} \mathrm{variability}(c)\:,$$ where $C$ stands for all clusters the data was clustered into.
-For clustering, the aim is to keep the dissimilarity of all clusters from the dataset as low as possible.
-Given this definition, the best way to cluster every dataset would be to put each object to its cluster.
-That would not lead to any reasonable result.
-Therefore there is a constraint added for clustering methods.
-It can be either the maximum number of clusters or the maximum distance between two clusters. \\
-
-A straightforward example of clustering is a method called agglomerative hierarchical clustering.
-Given $N$ objects in a dataset, it creates $N$ clusters - meaning there is a cluster for each object.
-The method looks for two closest clusters and merges them into one.
-This agglomerative merging continues until the constraint is met, meaning until there is a certain number of clusters or until the distance between closest clusters exceeds a certain threshold.
-This method is a greedy algorithm, and therefore it might not result in globally optimal clustering.
-Also, the algorithm has a time complexity of $\mathcal{O}(n^2)$.
-Therefore, it cannot be used in big datasets. \\
-
-An example of a much faster clustering algorithm that is also greedy is $K$-means. \todo{How to cite that this is only taken from the book, even though rewritten and selected for my purposes.}
-The '$K$' in $K$-means stands for the number of clusters that we want to get as a result.
-To use this algorithm the number of desired clusters has to be known in advance.
-$K$-means randomly chooses $K$ centroids in the space of the dataset and then assigns each point to a centroid.
-After creating these clusters, it calculates a new centroid for each cluster and then assigns the points in datasets to the new centroids.
-The algorithm stops when the centroids of clusters stop changing.
-Figure~\ref{alg:kmeans} shows the pseudocode of $K$-means.
-\begin{algorithm}\label{alg:kmeans}
-    \caption{K-Means pseudocode}
-    \label{k_mean_pseudocode}
-    \begin{algorithmic}[1]
-        \INPUT set of examples $X$; number of clusters $k$
-        \STATE Randomly chose $k$ examples from $X$ as centroids
-        \WHILE{True}
-            \STATE Create $k$ clusters by assigning each object to the closest centroid
-            \STATE Compute $k$ new centroids by averaging objects in each cluster
-            \IF{Centroids do not change}
-                \STATE \textbf{break}
-            \ENDIF
-        \ENDWHILE
-    \end{algorithmic}
-\end{algorithm} \todo{better pseudocode, find better book}
-
-This algorithm is fast, it has time complexity $\mathcal{O}(k \cdot n)$, where $n$ is the number of objects in a dataset and $d$ is the computation time of a distance between two points.
-It is the most common clustering algorithm as it typically converges in a few iterations.
-For more details about basic clustering algorithms see \cite{guttag2016introduction}.\\
-
-%summary
-The clustering as explained in this section has some restrictions that make it inapplicable for anomaly detection in this work.
-Firstly the number of clusters is not previously known, so choosing $K$ for $K$-means is not an option, and secondly, the distance measure used does not form a metric space.
-Next section delves deeper into what it means when a measure does not form a metric space.
-
-\section{Clustering on Topological Space}\label{sec:cluster_topo}
-This section explains the difference between metric and topological space and clustering approaches for topological spaces. \\
-
-A metric space, as defined in \cite{choudhary1992elements}, is a pair $(X, d)$ where $X$ is a set and $d$ is a mapping from  $X \times X \to \mathbb{R}$\todo{ad pripominka, ze by to melo byt NxN, takhle to je popsane v te citovane knize. Prijde mi, ze je to obecnejsi a drzim se toho jak to popsal ten matematik.} which satisfies the following conditions:
-\begin{enumerate}
-    \item [(i)] $d(x, y) \geq 0$;
-    \item [(ii)] $d(x, y) = 0 \iff x = y$;
-    \item [(iii)] $d(x, y) = d(y, x)$
-    \item [(iv)] $d(x, z) \leq d(x, y) + d(x, z) \mathrm{for} x, y, z \in X$.
-\end{enumerate}
-
-The similarity measure that is used in this thesis as explained in section 1.4 \todo{reference} does not fulfill the last point of the definition above. Furthermore, it is a pairwise similarity that forms form a subspace for comparing each pair of samples.
-This is why this similarity measure forms a topological space, which is defined according to, e.g. \cite{stahl2014introduction}. \\
-
-Given any set $S$ a topology on $S$ is a family $F ={F_{\alpha} | \alpha \in A}$, where $A$ is some indexing set, each $F_{\alpha}  \subseteq S$\todo{ad poznamka proc je to tady vsunute - je to prima citace z te knihy}, and with the following properties:
-\begin{enumerate}
-    \item [(i)] The empty set $\emptyset$ is in $F$.
-    \item [(ii)] The given set $S$ is in $F$.
-    \item [(iii)] The intersection of any two sets of $F$ is in $F$.
-    \item [(iv)] The union of any number of sets of $F$ is in $F$.
-\end{enumerate}
-The ordered pair ($S, F$) is called a topological space. \\
-
-\todo{explain about neighborhoods}
-
-K-Means clustering from the previous section cannot be used in topological space as the centroids do not exist.
-In many cases, there is no prior knowledge of k, as is the case in this thesis.
-A popular method that is used for clustering in non-metric spaces is called community-based clustering. \\
-
-Community-based clustering detects communities in the data.
-A community is a subset of examples in the data, that is densely connected with each other.
-One of the ways how to detect communities in a graph is to create a full-adjacency matrix.
-This matrix contains all connections between all nodes in the given graph.
-Analyzing the matrix then can tell us about the densities in different parts of graphs.\\
-
-Louvain method is a similar approach to clustering when we do not have a simple graph but a set of samples and a pairwise similarity measure.
-This method relies on creating a full similarity matrix for the whole dataset and then looking for communities in the data. \\
-
-In Cognitive Targeted Anomaly Detection Framework Louvain method cannot be used directly as calculating the full similarity matrix has a complexity of $\mathcal(n^2)$, which is impossible to calculate for a large network.
-That is why an approximative clustering method is used.
-This method iteratively samples network hosts and runs the clustering algorithm on the sampled hosts.
-Each iteration creates or updates cluster prototypes.
-If the data in the current batch fit into a previously prototyped cluster, they are added to it and the cluster prototype is updated.
-If samples differ more than a predefined threshold a new cluster prototype is created.
-
-%========================================CHAPTER==================================
-
-\chapter{Representative Selection}
+\chapter{Theoretical Overview}\label{ch:theory}
 
 This chapter introduces a theoretical background to explain clustering methods, the topic of non-metric spaces and the problem of representative selection.
 
@@ -721,7 +607,8 @@ On the other hand, it is able to select better medoids, thus getting rid of the 
             \ENDFOR
         \DOWHILE{$representatives_t = representatives_{t-1}$}
     \end{algorithmic}
-\end{algorithm} \todo{add the hack for better results}
+\end{algorithm}
+\todo{add my improvement to the pseudocode}
 
 %========================================CHAPTER==================================
 
@@ -782,7 +669,7 @@ These clusters with all hosts labeled were used as real network dataset in this 
 
 %========================================CHAPTER==================================
 
-\chapter{Experiments}
+\chapter{Experiments}\label{ch:experiments}
 In this chapter each experiment that was run.
 Each section is dedicated to one experiment.
 For each experiment, the motivation, experimental setup, results and conclusion are listed.
