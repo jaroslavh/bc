@@ -210,8 +210,7 @@ This alert can be any kind of message ranging from a syslog message to an email 
 Host behavior is collected from devices in the network.
 There is at least one device (although many times multiple) dedicated for collection of network flows (using NetFlow protocol).
 Flow collection is the most widely used method for gathering data on the network.
-One network flow is an aggregated information about one connection that consists of source and destination addresses, source, and destination ports, begin and end timestamps for communication and size of data transferred in each direction.
-\todo{[RFC2722] citation}
+One network flow is an aggregated information about one connection that consists of source and destination addresses, source, and destination ports, begin and end timestamps for communication and size of data transferred in each direction \cite{rfc2722}.
 This aggregation of information enables much faster (even real-time) detection of problems on a network as compared to, for example, deep packet inspection (DPI).
 DPI is another method used to detect problems in a network.
 It focuses on exploring the payload of each packet and is mostly considered unusable.
@@ -276,7 +275,10 @@ Each host is represented by a tuple $h = {S^h, F^h}$, where:
     \item $F^h$ represents the frequency of visits of server:port pairs
 \end{itemize}
 The frequency is defined as:
-$$F_s^h = \frac{i}{n}\sum\limits_{1}{n}I(t_i, s, h)\:,$$ where $n$ is the number of time windows, $I$ is the indicator function, which is 1 if the network host $h$ visited the server $s$ in the timewindow $t_i$ and 0 otherwise.
+\begin{equation}
+F_s^h = \frac{i}{n}\sum\limits_{1}{n}I(t_i, s, h)\:,
+\end{equation}
+where $n$ is the number of time windows, $I$ is the indicator function, which is 1 if the network host $h$ visited the server $s$ in the timewindow $t_i$ and 0 otherwise.
 This ratio-based frequency ensures that frequently visited servers (e.g., Google, Facebook) do not overshadow the less frequently visited servers.\\
 
 When each host is represented, the clustering algorithm is started.
@@ -287,7 +289,9 @@ Community-based clustering is explained in detail in Section~\ref{sec:cluster_to
 
 The density of samples in sets of data is determined by cosine similarity of frequency vectors of two hosts.
 Similarity measure between hosts \textit{a} and \textit{b} is defined as:
-$$\textrm{cos}(a, b) = \frac{\sum\limits_{s \in S} F_s^a F_s^b} {\sqrt{\sum\limits_{s \in S} (F_s^a)^2} \sqrt{\sum\limits_{s \in S} (F_s^b)^2}}\:,$$
+\begin{equation}
+\textrm{cos}(a, b) = \frac{\sum\limits_{s \in S} F_s^a F_s^b} {\sqrt{\sum\limits_{s \in S} (F_s^a)^2} \sqrt{\sum\limits_{s \in S} (F_s^b)^2}}\:,
+\end{equation}
 where $F_a$, $F_b$ represent the frequency and $S$ represents the union of sets of servers visited by the network hosts $a$ and $b$. \\
 
 After the clustering is done, only clusters that are bigger than 10 hosts are selected for representative selection.
@@ -318,7 +322,11 @@ As defined in \cite{guttag2016introduction}, clustering is an unsupervised machi
 Without any prior knowledge of the data, this method looks for structures in feature vectors.
 Variability can be calculated for each cluster \textit{c}, and it shows how much objects in given cluster differ.
 Variability and dissimilarity are two properties defined for a better understanding of the data. \\
-Variability is defined as $$ \mathrm{variability}(c) = \sum_{e \in c} \mathrm{distance}(\mathrm{mean}(c), e)^2\:,$$\todo{number equations} where \textit{e} is an object from given cluster.
+Variability is defined as
+\begin{equation}
+\mathrm{variability}(c) = \sum_{e \in c} \mathrm{distance}(\mathrm{mean}(c), e)^2\:,
+\end{equation}
+\todo{are these equation numbers-corresponding to sections correct?} where \textit{e} is an object from given cluster.
 The distance is a measure that quantifies how far two objects with the same features are. \todo{better wording here}
 Many different distance measures are used in clustering.
 Several of commonly used ones are:
@@ -329,7 +337,11 @@ Several of commonly used ones are:
     \item Cosine similarity
 \end{itemize}
 
-Dissimilarity is defined as $$ \mathrm{dissimilarity}(C) = \sum_{c \in C} \mathrm{variability}(c)\:,$$ where $C$ stands for all clusters the data was clustered into.
+Dissimilarity is defined as
+\begin{equation}
+\mathrm{dissimilarity}(C) = \sum_{c \in C} \mathrm{variability}(c)\:,
+\end{equation}
+ where $C$ stands for all clusters the data was clustered into.
 For clustering, the aim is to keep the dissimilarity of all clusters from the dataset as low as possible.
 Given this definition, the best way to cluster every dataset would be to put each object to its cluster.
 That would not lead to any reasonable result.
