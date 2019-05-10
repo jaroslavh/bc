@@ -320,13 +320,14 @@ If a host is known to belong to a cluster $A$ and its behavior suddenly starts t
 %========================================CHAPTER==================================
 
 \chapter{Theoretical Overview}\label{ch:theory}
+
 This chapter introduces a theoretical background to explain clustering methods, the topic of non-metric spaces and the problem of representative selection.
 
 \section{Introduction to Clustering}\label{sec:clust_intro}
 As defined in \cite{guttag2016introduction}, clustering is an unsupervised machine learning method that organizes objects into groups so that each group consists of members that are similar in some way.
 Without any prior knowledge of the data, this method looks for structures in feature vectors.
 Variability can be calculated for each cluster \textit{c}, and it shows how much objects in given cluster differ.
-Variability and dissimilarity are two properties defined for a better understanding of the data. \\
+Variability and dissimilarity are two properties defined for a better understanding of the data.
 Variability is defined as
 \begin{equation}
 \mathrm{variability}(c) = \sum_{e \in c} \mathrm{distance}(\mathrm{mean}(c), e)^2\:,
@@ -351,7 +352,7 @@ For clustering, the aim is to keep the dissimilarity of all clusters from the da
 Given this definition, the best way to cluster every dataset would be to put each object to its cluster.
 That would not lead to any reasonable result.
 Therefore there is a constraint added for clustering methods.
-It can be either the maximum number of clusters or the maximum distance between two clusters. \\
+It can be either the maximum number of clusters or the maximum distance between two clusters.
 
 A straightforward example of clustering is a method called agglomerative hierarchical clustering.
 Given $N$ objects in a dataset, it creates $N$ clusters - meaning there is a cluster for each object.
@@ -359,7 +360,7 @@ The method looks for two closest clusters and merges them into one.
 This agglomerative merging continues until the constraint is met, meaning until there is a certain number of clusters or until the distance between closest clusters exceeds a certain threshold.
 This method is a greedy algorithm, and therefore it might not result in globally optimal clustering.
 Also, the algorithm has a time complexity of $\mathcal{O}(n^2)$.
-Therefore, it cannot be used in big datasets. \\
+Therefore, it cannot be used in big datasets.
 
 An example of a much faster clustering algorithm that is also greedy is $K$-means.
 The '$K$' in $K$-means stands for the number of clusters that we want to get as a result.
@@ -386,7 +387,7 @@ Figure~\ref{alg:kmeans} shows the pseudocode of $K$-means.
 
 This algorithm is fast, it has time complexity $\mathcal{O}(k \cdot n)$, where $n$ is the number of objects in a dataset and $d$ is the computation time of a distance between two points.
 It is the most common clustering algorithm as it typically converges in a few iterations.
-For more details about basic clustering algorithms see \cite{guttag2016introduction}.\\
+For more details about basic clustering algorithms see \cite{guttag2016introduction}.
 
 %summary
 The clustering as explained in this section has some restrictions that make it inapplicable for anomaly detection in this work.
@@ -394,7 +395,7 @@ Firstly the number of clusters is not previously known, so choosing $K$ for $K$-
 Next section delves deeper into what it means when a measure does not form a metric space.
 
 \section{Clustering on Topological Space}\label{sec:cluster_topo}
-This section explains the difference between metric and topological space and clustering approaches for topological spaces. \\
+This section explains the difference between metric and topological space and clustering approaches for topological spaces.
 
 A metric space, as defined in \cite{choudhary1992elements}, is a pair $(X, d)$ where $X$ is a set and $d$ is a mapping from  $X \times X \to \mathbb{R}$\todo{ad pripominka, ze by to melo byt NxN, takhle to je popsane v te citovane knize. Prijde mi, ze je to obecnejsi a drzim se toho jak to popsal ten matematik.} which satisfies the following conditions:
 \begin{enumerate}
@@ -405,7 +406,7 @@ A metric space, as defined in \cite{choudhary1992elements}, is a pair $(X, d)$ w
 \end{enumerate}
 
 The similarity measure that is used in this thesis as explained in Section~\ref{sec:ctadf} does not fulfill the last point of the definition above. Furthermore, it is a pairwise similarity that forms form a subspace for comparing each pair of samples.
-This is why this similarity measure forms a topological space, which is defined according to, e.g., \cite{stahl2014introduction}. \\
+This is why this similarity measure forms a topological space, which is defined according to, e.g., \cite{stahl2014introduction}.
 
 Given any set $S$ a topology on $S$ is a family $F ={F_{\alpha} | \alpha \in A}$, where $A$ is some indexing set, each $F_{\alpha}  \subseteq S$\todo{ad poznamka proc je to tady vsunute - je to prima citace z te knihy}, and with the following properties:
 \begin{enumerate}
@@ -414,22 +415,22 @@ Given any set $S$ a topology on $S$ is a family $F ={F_{\alpha} | \alpha \in A}$
     \item [(iii)] The intersection of any two sets of $F$ is in $F$.
     \item [(iv)] The union of any number of sets of $F$ is in $F$.
 \end{enumerate}
-The ordered pair ($S, F$) is called a topological space. \\
+The ordered pair ($S, F$) is called a topological space.
 
-\todo{explain about neighborhoods}
+\todo{explain about neighborhoods??}
 
 K-Means clustering from the previous section cannot be used in topological space as the centroids do not exist.
 In many cases, there is no prior knowledge of k, as is the case in this thesis.
-A popular method that is used for clustering in non-metric spaces is called community-based clustering. \\
+A popular method that is used for clustering in non-metric spaces is called community-based clustering.
 
 Community-based clustering detects communities in the data.
 A community is a subset of examples in the data, that is densely connected with each other.
 One of the ways how to detect communities in a graph is to create a full-adjacency matrix.
 This matrix contains all connections between all nodes in the given graph.
-Analyzing the matrix then can tell us about the densities in different parts of graphs.\\
+Analyzing the matrix then can tell us about the densities in different parts of graphs.
 
 Louvain method is a similar approach to clustering when we do not have a simple graph but a set of samples and a pairwise similarity measure.
-This method relies on creating a full similarity matrix for the whole dataset and then looking for communities in the data. \\
+This method relies on creating a full similarity matrix for the whole dataset and then looking for communities in the data.
 
 In Cognitive Targeted Anomaly Detection Framework Louvain method cannot be used directly as calculating the full similarity matrix has a complexity of $\mathcal(n^2)$, which is impossible to calculate for a large network.
 That is why an approximative clustering method is used.
@@ -443,7 +444,7 @@ If samples differ more than a predefined threshold, a new cluster prototype is c
 This section focuses on the idea of finding a representation of clusters.
 Clustering huge datasets can result in big clusters of several tens of thousands of objects in them.
 Computational operations such as assigning new objects to clusters (e. g. $K$-Nearest Neighbors) are dependent on the number of objects in each cluster or the representation of these clusters.
-If it was possible to represent these clusters in a different way than keeping all track of all of the objects, further operations on these clusters would run faster. \\
+If it was possible to represent these clusters in a different way than keeping all track of all of the objects, further operations on these clusters would run faster.
 
 A cluster prototype is a data sample that represents all samples in the data cluster.
 According to \ref{tan2014introduction}, there are three motivations for finding the most representative cluster prototypes:
@@ -454,7 +455,7 @@ According to \ref{tan2014introduction}, there are three motivations for finding 
 \end{itemize}
 All of these apply to the NBAD aswell.
 Therefore, summarizing the behavior of the whole cluster into a cluster prototype is desirable.
-As is finding the smallest possible number of prototypes for each cluster for efficient finding nearest neighbors when adding new hosts to their corresponding clusters. \\
+As is finding the smallest possible number of prototypes for each cluster for efficient finding nearest neighbors when adding new hosts to their corresponding clusters.
 
 \subsection{Definition of Representative Selection for Non-Metric Spaces}\label{sec:def_rep_selection}
 Representative selection aims to find a minimal subset of examples from a cluster, that carries sufficient information about the whole cluster.
@@ -485,7 +486,6 @@ well for large datasets.
 This definition of representative selection problem serves well for this paper.
 
 \subsection{Representative Selection in a Metric Space}\label{sec:rep_select_metric}
-
 A metric dataset has to have the same number of features for each sample and a metric that fulfills all the requisites in the definition of metric space.
 Selecting a prototype from this dataset is often best achieved by calculating a centroid for a given cluster.
 A centroid can be calculated as the mean of the points in the cluster.
@@ -493,24 +493,34 @@ An example of a centroid in a cluster can be found in Figure~\ref{img:centroids}
 Other ways of calculating medoids can be used, e.g. weighted average of all points. \\
 
 \begin{figure}
-   \includegraphics[width=\linewidth]{img/centroids.png}
+  \includegraphics[width=\linewidth]{img/centroids.png}
+  \caption{Centroids of a cluster calculated as mean of all points.}
   \label{img:centroids}
-  \caption{Centroid of a cluster calculated as mean of all points.}
 \end{figure}
 
-However, if a calculated centroid is not meaningful (see Figure~\ref{img:centroids} b)), a medoid can be selected as a prototype.
-A medoid is the most representative point of a cluster.
+However, if a calculated centroid is not meaningful (see Figure~\ref{img:centroids} b)\todo{references not working? why?}), a medoid can be selected as an alternative to it.
+A medoid is a point that is in the set that minimizes the average distance to all the other points in the set.
+It can be thought of as a median of the dataset \todo{this is good for an explanation, but not very scientific, as it is not entirely true, how to explain better?}.
+Formally, medoid is defined as:
+\begin{equation}
+x_{medoid} = \mathrm{argmin}_{y in \{x_1, x_2, ..., x_n\}} \sum_{i=1}^{n}{d(y, x_i)}\:,
+\end{equation}
+where $x_1, x_2, ..., x_n$ is a set of $n$ points in a space with a distance function $d$. \todo{definition taken from wikipedia - similar is in xu2011network but not that nice - how to cite?? }
+In Figure~\ref{img:medoids} medoids were chosen instead of centroids.
+\begin{figure}
+  \includegraphics[width=\linewidth]{img/medoids.png}
+  \caption{Choice of medoids}
+  \label{img:medoids}
+\end{figure}
 
 \subsection{Representative Selection in a Topological Space}\label{sec:rep_select_arbitrary}
 Clearly, the concept of centroid explained in the previous section cannot be used to solve the problem of finding a representative in an arbitrary space (i.e., topological space).
-Medoids, of course, can be selected for datasets in arbitrary spaces. \\
+Medoids, of course, can be selected for datasets in arbitrary spaces.
 
-$K$-Medoids algorithm that uses the concept of medoids instead of centroids that are used in the $K$-Means algorithm.
+$K$-Medoids algorithm that uses the concept of medoids instead of centroids that are used in the $K$-Means algorithm while retaining its good properties.
+$K$-Medoids is most commonly used for representative selection in topological spaces.
 
-
-\todo{general approaches}
-
-There are not many well-known approaches to solve this problem.
+There are not many more well-explored methods for solving this problem.
 The one that is used in this thesis is explained in \cite{liebman2015representative}.
 They took the main ideas of $K$-Means clustering and transformed them for usage in a non-metric space with a pair-wise similarity measure.
 Instead of stating the $K$ in advance they state a parameter  $ 0 \leq \delta \leq 1$ that serves as a constraint.
@@ -663,8 +673,8 @@ All of these datasets are in space of two or three dimensions.
 They can be easily visualized on graphs and nicely show some of the specific properties of implemented algorithms.
 \begin{figure}
    \includegraphics[width=\linewidth]{img/datasets.png}
-  \label{img:datasets}
   \caption{Graphs of all datasets}
+  \label{img:datasets}
 \end{figure}
 Similarity measure used in these datasets was Euclidean distance. \\
 
@@ -745,8 +755,8 @@ C & 400 & 19 & 20 & 20 &20  \\ \hline
 
 \begin{figure}
    \includegraphics[width=\linewidth]{img/exp1_blobs.png}
-  \label{img:exp1_blobs}
   \caption{Confusion matrices for Blobs 3D dataset}
+  \label{img:exp1_blobs}
 \end{figure}
 
 \textbf{Overlap}
@@ -764,8 +774,8 @@ C & 640 & 22 & 24 & 24 & 24  \\ \hline
 
 \begin{figure}
    \includegraphics[width=\linewidth]{img/exp1_overlap.png}
-  \label{img:exp1_overlap}
   \caption{Confusion matrices for Overlap dataset}
+  \label{img:exp1_overlap}
 \end{figure}
 
 \textbf{Moons}
@@ -782,8 +792,8 @@ B & 600 & 19 & 18 & 18 & 18 \\ \hline
 
 \begin{figure}
    \includegraphics[width=\linewidth]{img/exp1_moons.png}
-  \label{img:exp1_moons}
   \caption{Confusion matrices for Moons dataset}
+  \label{img:exp1_moons}
 \end{figure}
 
 \textbf{Circles}
@@ -800,8 +810,8 @@ B & 600 & 8 & 7 & 7 & 7 \\ \hline
 
 \begin{figure}
    \includegraphics[width=\linewidth]{img/exp1_circles.png}
-  \label{img:exp1_circles}
   \caption{Confusion matrices for Circles dataset}
+  \label{img:exp1_circles}
 \end{figure}
 
 
@@ -813,8 +823,8 @@ However, when the results were visualized for one cluster, the delta medoids alg
 As can be seen on Figure~\ref{img:blobs_border_select}, the algorithm picked the samples on the edge of the dataset that did not cover many points in their neighborhoods.
 \begin{figure}
    \includegraphics[width=\linewidth]{img/delta_medoids_select.png}
-  \label{img:blobs_border_select}
   \caption{$\delta$-Medoids choosing the border samples of a cluster}
+  \label{img:blobs_border_select}
 \end{figure}
 Selecting the border samples clearly was not intended and the $\delta$-Medoids algorithm had to select only the relevant samples.
 The relevance of a representative was determined to the number of points that fit into its $\delta$-neighborhood. \todo{where to list the changes, here or in the theoretical chapter, theory better I think}
@@ -854,8 +864,8 @@ C & 400 & 20 & 21 & 21 & 21 \\ \hline
 
 \begin{figure}
    \includegraphics[width=\linewidth]{img/exp2_blobs.png}
-  \label{img:exp2_blobs}
   \caption{Confusion matrices for Blobs 3D dataset}
+  \label{img:exp2_blobs}
 \end{figure}
 
 \textbf{Overlap}
@@ -873,8 +883,8 @@ C & 640 & 19 & 19 & 19 & 19  \\ \hline
 
 \begin{figure}
    \includegraphics[width=\linewidth]{img/exp2_overlap.png}
-  \label{img:exp2_overlap}
   \caption{Confusion matrices for Overlap dataset}
+  \label{img:exp2_overlap}
 \end{figure}
 
 \textbf{Moons}
@@ -891,8 +901,8 @@ B & 600 & 16 & 20 & 20 & 20 \\ \hline
 
 \begin{figure}
    \includegraphics[width=\linewidth]{img/exp2_moons.png}
-  \label{img:exp2_moons}
   \caption{Confusion matrices for Moons dataset}
+  \label{img:exp2_moons}
 \end{figure}
 
 \textbf{Circles}
@@ -909,8 +919,8 @@ B & 600 & 8 & 8 & 8 & 8 \\ \hline
 
 \begin{figure}
    \includegraphics[width=\linewidth]{img/exp2_circles.png}
-  \label{img:exp2_circles}
   \caption{Confusion matrices for Circles dataset}
+  \label{img:exp2_circles}
 \end{figure}
 
 
@@ -919,8 +929,8 @@ B & 600 & 8 & 8 & 8 & 8 \\ \hline
 The results of this experiment empirically supported the expected result of not selecting the border samples from a dataset as can be seen on Figure~\ref{img:blobs_good_select}
 \begin{figure}
   \includegraphics[width=\linewidth]{img/delta_medoids_select_better.png}
-  \label{img:blobs_good_select}
   \caption{$\delta$-Medoids choosing only relevant samples of a cluster}
+  \label{img:blobs_good_select}
 \end{figure}
 This sanity check by visualization fulfilled all of the expectation.
 
@@ -965,8 +975,8 @@ The results for different methods are listed below.
 
 \begin{figure}
    \includegraphics[width=\linewidth]{img/exp3_pendigits.png}
-  \label{img:exp3_pendigits}
   \caption{Confusion matrices for Pendigits dataset}
+  \label{img:exp3_pendigits}
 \end{figure}
 
 \subsection{Conclusion}
