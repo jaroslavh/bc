@@ -160,6 +160,74 @@ def find_best_cluster_representative(cluster, similarity_measure):
     return cluster[best_repr_index]
 
 def delta_medoids_full(df, delta, similarity_measure):
+
+    t = 0 #iteration number
+    representatives = {} #selected representatives
+    representatives[t] = set() #representatives for given iteration
+    size_threshold = 0.01 * len(df.index)
+
+    while True:
+        #print("\n=========== running for t = " + str(t) + "============")
+        clusters = {} #subclusters inside cluster
+        for item in representatives[t]:
+            clusters[item] = np.array(item, ndmin=2)
+
+        t = t + 1
+
+        #================== RepAssign starts ==================
+        for row in df.iterrows():
+            dist = float("inf")
+            represenative = None
+
+            point = tuple(row[1])
+
+            for rep in clusters.keys():
+                #finding the closest representative to current point
+                if similarity_measure(point, rep) <= dist:
+                    representative = rep
+                    dist = similarity_measure(point, rep)
+            if dist <= delta:
+                clusters[representative] = np.vstack((clusters[representative], point))
+            elif t == 1:
+                clusters[point] = np.array(point, ndmin=2)
+        #================== RepAssign ends ===================
+
+        
+        if (len(clusters.keys()) > 50) or (len(clusters.keys()) > len(df.index) * 0.1):
+            for key in clusters.keys():
+                if len(clusters[key]) <= size_threshold:
+                    tmp_sim = 0
+                    max_sim = 0
+                    new_key = key
+                    for key_sim in clusters.keys():
+                        tmp_sim = similarity_measure(key, key_sim)
+                        if key_sim == key:
+                            continue
+                        elif tmp_sim > max_sim:
+                            new_key = key_sim
+                            max_sim = tmp_sim
+                
+#                     if new_key == key:
+#                         print('Dropping this cluster, it is not relevant.')
+                    if new_key != key: #else:
+                        clusters[new_key] = np.vstack((clusters[new_key], clusters[key]))
+                    del(clusters[key])
+#                     print 'clusters remaining', len(clusters.keys())
+        
+        representatives[t] = set()
+        for cluster in clusters.values():
+            representative = find_best_cluster_representative(cluster, similarity_measure)
+            #print(representative)
+            representatives[t].add(tuple(representative))
+        #print(representatives[t])
+
+        if representatives[t] == representatives[t-1]:
+            break
+
+    #print("delta_medoids_full algorithm ended after " + str(t) + " iterations.")
+    return pd.DataFrame(list(representatives[t]), columns=df.columns.values)
+
+def delta_medoids_full_old(df, delta, similarity_measure):
     """Returns subset of input DataFrame, that is a good representation
     of given data.
 
@@ -321,6 +389,42 @@ def greedy_select(df, delta, similarity_measure):
 
     return df
 
+def greedy_select_real(df, delta, similarity_measure):
+    
+    representatives = np.array([], str)                      # selected representatives
+    remaining = np.array(df.index.values, str)               # remaining indexes not covered
+    
+    while (remaining.size > 0):
+        if (representatives.size == 0):                 # selecting the first index
+            current_index = df.loc[remaining[0]].name
+        else:                                           # finding index of the most different point
+            current_index = None
+            sim_sum = representatives.size              # used to store the biggest sum
+            for index in remaining:
+                tmp_sum = 0                             # used to store the current sum
+                for medoid in representatives:          # finding different the point is
+                    tmp_sum += similarity_measure(df.loc[index]['data'], df.loc[medoid]['data'])
+                if tmp_sum < sim_sum:
+                    sim_sum = tmp_sum
+                    current_index = index
+                    
+        # adding selected index to other representatives
+        representatives = np.append(representatives, current_index)
+        
+        # find indexes to drop from dataframe
+        rem_indexes = [i for i in remaining if similarity_measure(df.loc[i]['data'], df.loc[current_index]['data']) >= delta]
+        
+        rem_indexes = np.array([], str)
+        for ix in remaining:
+            if similarity_measure(df.loc[ix]['data'], df.loc[current_index]['data']) >= delta:
+                rem_indexes = np.append(rem_indexes, ix)
+        
+        # dropping points from the delta distance of newly selected representative
+        remaining = np.array([item for item in remaining if item not in rem_indexes])
+        #TODO DELETE? rem_indexes = np.delete(rem_indexes, np.where(rem_indexes == current_index))
+        
+    return df.loc[representatives]
+
 def classifyPoints(ref_df, test_df):
 
     X_train = ref_df.iloc[:, :-1].values
@@ -344,8 +448,57 @@ def classifyPoints(ref_df, test_df):
     from sklearn.metrics import classification_report, confusion_matrix
     conf_mat = confusion_matrix(y_test, y_pred)
     #print(conf_mat)  
-    #print(classification_report(y_test, y_pred))
+    print(classification_report(y_test, y_pred))
     return conf_mat
+
+def classifyPoints_real(ref_df, test_df, similarity):
+
+    names = set(ref_df['cluster'])
+    
+    belongs = {}
+    for name in names:
+        belongs[name] = {}
+        for n in names:
+            belongs[name][n] = 0
+    
+    suc = 0
+    fai = 0
+    miss = 0
+    for row in test_df.iterrows():
+        sim = 0
+        cluster = 'NONE'
+        for ref in ref_df.iterrows():
+            tmp_sim = similarity(row[1]['data'], ref[1]['data'])
+            if tmp_sim > sim:
+                sim = tmp_sim
+                cluster = ref[1]['cluster']
+                if sim == 1:
+                    break
+        
+        if(sim == 0):
+            miss += 1
+            continue
+        else:    
+            belongs[row[1]['cluster']][cluster] += 1
+        
+        if cluster == row[1]['cluster']:
+            suc += 1
+        else:
+            fai += 1
+            
+    print('Missed: ' + str(miss))
+    print('Succeeded: ' + str(suc))
+    print('Failed: ' + str(fai))
+    print('Ratio: ' + str(float(suc) / float(suc + fai)))
+    
+    names = sorted(names)
+    matrix = [[0 for i in names] for i in names]
+
+    for i in range(0, len(names)):
+        for j in range(0, len(names)):
+            matrix[i][j] = belongs[names[i]][names[j]]
+ 
+    return np.array(matrix)
 
 #input is a precision recall matrix and this methore calculates the ratio
 #it is used for comparison of algorithms
@@ -365,6 +518,87 @@ def get_hit_miss_rate(matrix):
         i = i + 1
 
     return float(miss)/float(hit)
+
+def get_method_results_updated(full_test_df, full_train_df, similarity, delta):
+    test_res = {"delta_medoids_full" : {},
+                "delta_medoids_one_shot" : {},
+                "random_select" : {},
+                "greedy_select" : {}}
+
+    #creating training DataFrames for comparing oneshot and full delta medoids algorithm
+    train_delta_medoids_full = pd.DataFrame()
+    train_delta_medoids_one_shot = pd.DataFrame()
+    train_random_selection = pd.DataFrame()
+#     train_greedy_select = pd.DataFrame()    
+
+    for name in set(full_train_df['cluster']):
+        delta_df = full_train_df[full_train_df['cluster'] == name].iloc[:, :-1]
+        print('Running for :' + str(name))
+        print(len(delta_df.index))
+
+        if delta == None: #estimating delta if none is set
+            delta = estimate_delta(delta_df, similarity)
+    
+        #delta medoids full
+        print('Doing delta-medoids Full')
+        medoids_full_result = delta_medoids_full(delta_df, delta, similarity)
+        medoids_full_result['cluster'] = name #setting a cluster name for result
+        test_res["delta_medoids_full"][name] = medoids_full_result
+        train_delta_medoids_full = train_delta_medoids_full.append(medoids_full_result)
+    
+        print('Doing delta-medoids ONE SHOT')
+        #delta medoids one shot
+        one_shot_medoids_result = delta_medoids_one_shot(delta_df, delta, similarity)
+        one_shot_medoids_result['cluster'] = name
+        test_res["delta_medoids_one_shot"][name] = one_shot_medoids_result
+        train_delta_medoids_one_shot = train_delta_medoids_one_shot.append(one_shot_medoids_result)
+        
+        print('Doing Random Select')
+        #random select
+        random_select_result = random_select(delta_df, medoids_full_result.shape[0])
+        random_select_result['cluster'] = name
+        test_res["random_select"][name] = random_select_result
+        train_random_selection = train_random_selection.append(random_select_result)
+    
+        #greedy select
+#         greedy_select_result = greedy_select(delta_df, delta, similarity)
+#         greedy_select_result['cluster'] = name
+#         test_res["greedy_select"][name] = greedy_select_result
+#         train_greedy_select = train_greedy_select.append(greedy_select_result)    
+    
+    names = set(full_test_df['cluster'])
+    full = list()
+    greedy = []
+    one_shot = []
+    delta_med = []
+    random = []
+    for name in names:
+        full.append(len(full_train_df[full_train_df['cluster'] == name].index))
+        greedy.append(0)#len(train_greedy_select[train_greedy_select['cluster'] == name].index))
+        one_shot.append(len(train_delta_medoids_one_shot[train_delta_medoids_one_shot['cluster'] == name].index))
+        delta_med.append(len(train_delta_medoids_full[train_delta_medoids_full['cluster'] == name].index))
+        random.append(len(train_random_selection[train_random_selection['cluster'] == name].index))
+    
+
+    titles = ['Cluster', 'Full', 'Greedy', 'One Shot', 'Delta Medoids', 'Random Select']
+    data = [titles] + list(zip(names, full, greedy, one_shot, delta_med, random))
+    
+    for i, d in enumerate(data):
+        line = '|'.join(str(x).ljust(12) for x in d)
+        print(line)
+        if i == 0:
+            print('-' * len(line)) 
+    
+    print('Full Medoids')
+    matrix_full = classifyPoints(train_delta_medoids_full, full_test_df)
+    print('Delta Medoids')
+    matrix_one_shot = classifyPoints(train_delta_medoids_one_shot, full_test_df)
+    print('Random Selection')
+    matrix_random_selection = classifyPoints(train_random_selection, full_test_df)
+#     print('Greedy Selection')
+#     matrix_greedy_select = classifyPoints(train_greedy_select, full_test_df)
+    return [matrix_full, matrix_one_shot, matrix_random_selection] # matrix_greedy_select]
+
 
 def get_method_results(full_test_df, dataframes, similarity, delta):
     test_res = {"delta_medoids_full" : {},
@@ -408,10 +642,96 @@ def get_method_results(full_test_df, dataframes, similarity, delta):
         test_res["greedy_select"][name] = greedy_select_result
         train_greedy_select = train_greedy_select.append(greedy_select_result)    
     
+    names = set(full_test_df['cluster'])
+    full = list()
+    greedy = []
+    one_shot = []
+    delta_med = []
+    random = []
+    for name in names:
+        full.append(4 * len(full_test_df[full_test_df['cluster'] == name].index))
+        greedy.append(len(train_greedy_select[train_greedy_select['cluster'] == name].index))
+        one_shot.append(len(train_delta_medoids_one_shot[train_delta_medoids_one_shot['cluster'] == name].index))
+        delta_med.append(len(train_delta_medoids_full[train_delta_medoids_full['cluster'] == name].index))
+        random.append(len(train_random_selection[train_random_selection['cluster'] == name].index))
+    
+
+    titles = ['Cluster', 'Full', 'Greedy', 'One Shot', 'Delta Medoids', 'Random Select']
+    data = [titles] + list(zip(names, full, greedy, one_shot, delta_med, random))
+    
+    for i, d in enumerate(data):
+        line = '|'.join(str(x).ljust(12) for x in d)
+        print(line)
+        if i == 0:
+            print('-' * len(line)) 
+    
+    print('Full Medoids')
     matrix_full = classifyPoints(train_delta_medoids_full, full_test_df)
+    print('Delta Medoids')
     matrix_one_shot = classifyPoints(train_delta_medoids_one_shot, full_test_df)
+    print('Random Selection')
     matrix_random_selection = classifyPoints(train_random_selection, full_test_df)
+    print('Greedy Selection')
     matrix_greedy_select = classifyPoints(train_greedy_select, full_test_df)
     return [matrix_full, matrix_one_shot, matrix_random_selection, matrix_greedy_select]
 
 #TODO return also sizes of selections to evaluate how many of the dataset percentagewise it is
+
+#methods for real data
+
+#this method will take one 5min timewindow file
+# and update the data structure based on it
+def read_batch_file(path, data):
+    data_file = pd.read_csv(path, sep='\t')
+    #structure to load information from file into 
+    # {user1:{host1:freq, host2:freq}, user2:{host1:freq, host2:freq}}
+    if data == None:
+        data = {}
+        
+    for index, row in data_file.iterrows():
+        #extract information from hostnamePort
+        raw_hostnames = row['hostnamePort'].split(';')    
+        user_id = row['userID']
+
+        #update tables of userIDs
+        if user_id not in data:
+            hostnames = {}
+            for host in raw_hostnames:
+                hostnames[host] = 1
+    
+            data[user_id] = hostnames
+        else:
+            for host in raw_hostnames:
+                if host in data[user_id]:
+                    data[user_id][host] += 1
+                else:
+                    data[user_id][host] = 1
+    return data
+
+# similarity from paper
+def kopp_similarity(host_a, host_b):
+    timewindow_num = 24.0
+    common = list(set(host_a.keys() + host_b.keys()))
+    
+    #calculating similarity
+    if len(common) == 0:
+        res = 0
+    else:
+        a = 0.0
+        b = 0.0
+        c = 0.0
+    
+        for host in common:
+            f_a = float(host_a.get(host, 0)) / timewindow_num
+            f_b = float(host_b.get(host, 0)) / timewindow_num
+                
+            a += float(f_a) * float(f_b)
+            b += float(f_a)**2
+            c += float(f_b)**2
+   
+        if a == 0.0:
+            res = 0.0
+        else:
+            res = float(a) / (np.sqrt(float(b)) * np.sqrt(float(c)))
+    
+    return res
