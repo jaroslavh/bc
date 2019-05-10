@@ -320,7 +320,6 @@ If a host is known to belong to a cluster $A$ and its behavior suddenly starts t
 %========================================CHAPTER==================================
 
 \chapter{Theoretical Overview}\label{ch:theory}
-
 This chapter introduces a theoretical background to explain clustering methods, the topic of non-metric spaces and the problem of representative selection.
 
 \section{Introduction to Clustering}\label{sec:clust_intro}
@@ -347,7 +346,7 @@ Dissimilarity is defined as
 \begin{equation}
 \mathrm{dissimilarity}(C) = \sum_{c \in C} \mathrm{variability}(c)\:,
 \end{equation}
- where $C$ stands for all clusters the data was clustered into.
+where $C$ stands for all clusters the data was clustered into.
 For clustering, the aim is to keep the dissimilarity of all clusters from the dataset as low as possible.
 Given this definition, the best way to cluster every dataset would be to put each object to its cluster.
 That would not lead to any reasonable result.
@@ -405,7 +404,7 @@ A metric space, as defined in \cite{choudhary1992elements}, is a pair $(X, d)$ w
     \item [(iv)] $d(x, z) \leq d(x, y) + d(x, z) \mathrm{for} x, y, z \in X$.
 \end{enumerate}
 
-The similarity measure that is used in this thesis as explained in Section~\ref{sec:ctdaf} does not fulfill the last point of the definition above. Furthermore, it is a pairwise similarity that forms form a subspace for comparing each pair of samples.
+The similarity measure that is used in this thesis as explained in Section~\ref{sec:ctadf} does not fulfill the last point of the definition above. Furthermore, it is a pairwise similarity that forms form a subspace for comparing each pair of samples.
 This is why this similarity measure forms a topological space, which is defined according to, e.g., \cite{stahl2014introduction}. \\
 
 Given any set $S$ a topology on $S$ is a family $F ={F_{\alpha} | \alpha \in A}$, where $A$ is some indexing set, each $F_{\alpha}  \subseteq S$\todo{ad poznamka proc je to tady vsunute - je to prima citace z te knihy}, and with the following properties:
@@ -447,7 +446,7 @@ Computational operations such as assigning new objects to clusters (e. g. $K$-Ne
 If it was possible to represent these clusters in a different way than keeping all track of all of the objects, further operations on these clusters would run faster. \\
 
 A cluster prototype is a data sample that represents all samples in the data cluster.
-According to \cite{tan2014introduction}, there are three motivations for finding the most representative cluster prototypes:
+According to \ref{tan2014introduction}, there are three motivations for finding the most representative cluster prototypes:
 \begin{itemize}
     \item Summarization
     \item Compression
@@ -486,12 +485,20 @@ well for large datasets.
 This definition of representative selection problem serves well for this paper.
 
 \subsection{Representative Selection in a Metric Space}\label{sec:rep_select_metric}
-\todo{Centroid by si mel zavest a vysvetlit vyhody a nevyhody. Centroid muze byt vazeny nebo aritmeticky prumer, to dokazes zapsat vzorcem a bude to hezky vypadat nebo obrazek nebo tak neco. Medoid si vubec nevysvetlil co je.}
+
 A metric dataset has to have the same number of features for each sample and a metric that fulfills all the requisites in the definition of metric space.
 Selecting a prototype from this dataset is often best achieved by calculating a centroid for a given cluster.
-A centroid can be, for example, the average of all points in the cluster.
-If such a centroid is meaningful (it does not fall away from the data), it can be selected as a prototype.
-However, if calculated centroid is not meaningful (it falls outside of the dataset), a medoid can be selected as a prototype.
+A centroid can be calculated as the mean of the points in the cluster.
+An example of a centroid in a cluster can be found in Figure~\ref{img:centroids} a).
+Other ways of calculating medoids can be used, e.g. weighted average of all points. \\
+
+\begin{figure}
+   \includegraphics[width=\linewidth]{img/centroids.png}
+  \label{img:centroids}
+  \caption{Centroid of a cluster calculated as mean of all points.}
+\end{figure}
+
+However, if a calculated centroid is not meaningful (see Figure~\ref{img:centroids} b)), a medoid can be selected as a prototype.
 A medoid is the most representative point of a cluster.
 
 \subsection{Representative Selection in a Topological Space}\label{sec:rep_select_arbitrary}
