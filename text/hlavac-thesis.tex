@@ -697,7 +697,7 @@ This dataset is split to train dataset (70\%) and test dataset (30\%).
 
 The Multiple Features Data Set \cite{dua1998pendigit} consist of \todo{explain how is it different} \todo{add MNIST Fashion - if works remove multiple features??? Even though I have results.?}
 
-\section{Real Network Dataset}
+\section{Real Network Dataset}\label{sec:real-data}
 Real network traffic captured from a company with approximately 20 thousand employees.
 The capture is from 24 hours of a working day a consists of \todo{count flows} flows.
 Proxy logs were used to capture the connections.
@@ -986,6 +986,49 @@ Using algorithms on real datasets started to show more significant differences b
 An interesting thing is that Greedy Selection and $\delta$-Medoids One-Shot select similar number of representatives and their results are also very similar.
 This is interesting as the complexity of these algorithms differs a lot, Greedy Selection being much slower with $\mathcal(n^2)$. \todo{better wording of this conclusion}
 
+\section{Experiment 4}\label{sec:exp4}
+
+
+\subsection{Experimental Setup}
+For this experiment clustered hosts from a real network were used.
+This dataset is explained in greater detail in Section~\ref{sec:real-data}.
+From this dataset traffic for first 4 hours was used for training the model and the next 4 hours were used for testing the representatives.
+The similarity measure from Section~\ref{sec:ctadf} was used.
+
+All 4 algorithms were run.
+The $\delta$ was set to 0.8 as was the threshold used in community-based clustering for their creation.
+
+\subsection{Results}
+
+The results for different methods are listed below.
+
+%\begin{table}[H]
+%\begin{tabular}{l|lllll}
+%\hline
+% \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+%0 & 780 & 33 & 33 & 33 & 33 \\
+%1 & 779 & 33 & 41 & 41 & 41 \\
+%2 & 780 & 17 & 15 & 15 & 15 \\
+%3 & 719 & 12 & 9 & 9 & 9 \\
+%4 & 780 & 25 & 24 & 24 & 24 \\
+%5 & 720 & 25 & 27 & 27 & 27 \\
+%6 & 720 & 16 & 16 & 16 & 16 \\
+%7 & 778 & 22 & 20 & 20 & 20 \\
+%8 & 719 & 75 & 77 & 15 & 15 \\
+%9 & 719 & 50 & 52 & 13 & 13 \\ \hline
+%\end{tabular}
+%\caption{Number of selected representatives for Pendigit dataset}
+%\end{table}
+%
+\begin{figure}[H]
+   \includegraphics[width=\linewidth]{img/exp4.png}
+  \caption{Confusion matrices for Pendigits dataset}
+  \label{img:exp4}
+\end{figure} \todo{here add better cluster names for sure}
+
+\subsection{Conclusion}
+The results clearly show that the $\delta$-Medoids algorithm is significanly better than selecting random representatives from the cluster.
+The downside is the speed of the algorithm. \todo{expand the conclusion}
 
 \setsecnumdepth{part}
 
