@@ -85,15 +85,15 @@ This race creates the drive for more and more sophisticated defense mechanisms. 
 
 Multi-layer defense systems are protecting contemporary networks.
 As attackers overcome one layer, there is yet another layer waiting for them.
-However, if the attackers succeed to bypass all 
-%VH of them 
+However, if the attackers succeed to bypass all
+%VH of them
 {\cbl security layers}
 unnoticed, a huge problem can occur.
-%VH They 
+%VH They
 {\cbl Attackers} can collect user credentials,  exfiltrate data or gain control of devices without anybody's knowledge.
 It can take a long time before somebody notices the breach.
 A similar thing happened in Marriot International child company Starwood in 2018 \cite{hron2018breaches}.
-Names, emails, addresses and credit card numbers of 500 million customers were stolen in an attack that was discovered in 2018 but possibly could have begun as early as in 2014. 
+Names, emails, addresses and credit card numbers of 500 million customers were stolen in an attack that was discovered in 2018 but possibly could have begun as early as in 2014.
 %VH \\
 
 One of several methods that are used to detect such intrusions is detecting anomalies in the behavior of network hosts - Network Behavioral Anomaly Detection (NBAD).
@@ -113,13 +113,13 @@ behavioral clustering is used to find groups of similar hosts in a network.
 Each cluster created consists of hosts that have similar behavior.
 The main focus of this work is to find a representation of these clusters that are used to calculate the model behavior.
 %VH
-{\cbl The representation used in this thesis is based on cluster prototypes, which will be described in the sequel.} 
+{\cbl The representation used in this thesis is based on cluster prototypes, which will be described in the sequel.}
 These cluster prototypes\todo{Can I use the term cluster prototype before first explaining it? VH: I think I solved it.} are then updated dynamically as the behavior of the network changes. \\
 
 Four algorithms previously used to represent clusters in computer vision or other fields were studied and modified for usage in Cognitive anomaly detection framework.
 They were tested and compared on both real and test datasets. \\
 
-The thesis is organized as follows. 
+The thesis is organized as follows.
 {\cbl
 Chapter~\ref{ch:ids} {\cbl introduces the} anomaly-based network security.
 Chapter~\ref{ch:theory} explains the theory behind clustering and representative selection in metric and non-metric spaces.
@@ -151,22 +151,39 @@ Chapter~\ref{ch:experiments} covers all the experiments with their results and i
 
 \chapter{Goals}
 
-This work aims to study methods used for the representation of network host behavioral clusters that can be used in Cognitive targeted anomaly detection framework.
-Behavioral similarity used for clustering in this framework does not form a metric space, which creates a requirement for algorithms used for representative selection. \\
+This work aims to study methods used for the representation of network host behavioral clusters that can be 
+%VH used; not to repeat the same word
+{\cbl applied} in Cognitive targeted anomaly detection framework.
+Behavioral similarity used for clustering in this framework does not form a metric space, which creates a requirement for algorithms used for representative selection. {\cbl Typesetting. See \%VH comment.}
+%VH \\ This is not a good typesetting approach. Use \smallskip or \medskip or \bigskip
+%VH Even the solution above is not the best one. Changing the style would be the way.
+%VH My advice: Follow the style and do not put extra space after paragraphs.
+\medskip
 
 This thesis should present a method that can be used for finding the cluster prototypes of clusters in non-metric space.
 These cluster prototypes represent the whole cluster in a way that is convenient for further computation.
-It can be, for example, assigning newly added samples to their corresponding cluster.\\
+It can be, for example, assigning newly added samples to their corresponding cluster.
+%VH\\
+\medskip
 
 Networks monitored by Cognitive targeted anomaly detection framework can have up to several hundreds of thousands of hosts which leads to massive clusters.
 If the classification of newly added hosts were done by comparing the new host to all others, the memory and time needed for classification would be unmanageable.
-That is why the number of representatives selected from each cluster should be kept as small as possible. \\
+That is why the number of representatives selected from each cluster should be kept as small as possible. 
+%VH \\
+\medskip
 
 General methods used for general cluster representation in non-metric spaces should be studied.
 From these previously studied methods, the best ones will be selected and implemented.
-As part of this thesis, there should also be created a dataset as a benchmark for testing the chosen method.
-A further goal is to test the chosen methods on generally used clustering datasets and the created benchmark dataset.
-Based on this testing, find the method that suits best for use in this field and incorporates it into the Cognitive targeted anomaly detection framework.
+As part of this thesis, 
+%VH there should also be created a dataset as a benchmark for testing the chosen method.
+%VH Word order corrected
+{\cbl a benchmark dataset for testing the chosen method should also be created.}
+A further goal is to test the chosen methods 
+%VH on generally used clustering datasets and the created benchmark dataset.
+{\cbl on clustering datasets used by others and on a newly created benchmark dataset.}
+Based on this testing, 
+%VH find 
+{\cbl the method should be found} that suits best for use in this field and incorporates it into the Cognitive targeted anomaly detection framework.
 The selected method should be finetuned to get the best possible results in anomaly-detection.
 
 \setsecnumdepth{all}
