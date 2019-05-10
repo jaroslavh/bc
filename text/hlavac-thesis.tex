@@ -1002,33 +1002,44 @@ The $\delta$ was set to 0.8 as was the threshold used in community-based cluster
 
 The results for different methods are listed below.
 
-%\begin{table}[H]
-%\begin{tabular}{l|lllll}
-%\hline
-% \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-%0 & 780 & 33 & 33 & 33 & 33 \\
-%1 & 779 & 33 & 41 & 41 & 41 \\
-%2 & 780 & 17 & 15 & 15 & 15 \\
-%3 & 719 & 12 & 9 & 9 & 9 \\
-%4 & 780 & 25 & 24 & 24 & 24 \\
-%5 & 720 & 25 & 27 & 27 & 27 \\
-%6 & 720 & 16 & 16 & 16 & 16 \\
-%7 & 778 & 22 & 20 & 20 & 20 \\
-%8 & 719 & 75 & 77 & 15 & 15 \\
-%9 & 719 & 50 & 52 & 13 & 13 \\ \hline
-%\end{tabular}
-%\caption{Number of selected representatives for Pendigit dataset}
-%\end{table}
-%
+\begin{table}[H]
+\begin{tabular}{l|lllll}
+\hline
+ \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+1024 & 72   & 0 & 8   & 8  & 8  \\
+865  & 89   & 0 & 28  & 28 & 28 \\
+323  & 2125 & 0 & 821 & 40 & 40 \\
+68   & 116  & 0 & 82  & 36 & 36 \\
+645  & 83   & 0 & 56  & 56 & 56 \\
+1004 & 46   & 0 & 38  & 38 & 38 \\
+43   & 55   & 0 & 31  & 31 & 31 \\
+1196 & 835  & 0 & 441 & 34 & 34 \\
+253  & 59   & 0 & 47  & 47 & 47 \\
+112  & 77   & 0 & 66  & 66 & 66 \\
+946  & 2065 & 0 & 781 & 30 & 30 \\
+116  & 238  & 0 & 71  & 17 & 17 \\
+393  & 51   & 0 & 38  & 38 & 38 \\
+756  & 127  & 0 & 92  & 34 & 34 \\
+124  & 67   & 0 & 48  & 48 & 48 \\
+221  & 50   & 0 & 50  & 50 & 50 \\ \hline
+\end{tabular}
+\caption{Number of selected representatives for real network data}
+\end{table}
+\todo{greedy medoids jeste pocitam}
+
 \begin{figure}[H]
    \includegraphics[width=\linewidth]{img/exp4.png}
-  \caption{Confusion matrices for Pendigits dataset}
+  \caption{Confusion matrices for real network data}
   \label{img:exp4}
-\end{figure} \todo{here add better cluster names for sure}
+\end{figure}
+\todo{here add better cluster names for sure}
+\todo{get precision and recall values per cluster}
 
 \subsection{Conclusion}
-The results clearly show that the $\delta$-Medoids algorithm is significanly better than selecting random representatives from the cluster.
-The downside is the speed of the algorithm. \todo{expand the conclusion}
+The results show that the $\delta$-Medoids algorithm is significantly better than selecting random representatives from the cluster.
+Even for clusters with several thousand of samples few samples were selected a while retaining good properties for assigning points to clusters.
+The downside is the speed of the algorithm but this was not a part of this experiment.
+\todo{expand the conclusion}
 
 \setsecnumdepth{part}
 
