@@ -452,6 +452,7 @@ If the data in the current batch fit into a previously prototyped cluster, they 
 If samples differ more than a predefined threshold, a new cluster prototype is created.
 
 \section{Representative Selection}
+\label{sec:representative_selection}
 
 This section focuses on the idea of finding a representation of clusters.
 Clustering huge datasets can result in big clusters of several tens of thousands of objects in them.
@@ -482,7 +483,7 @@ Two following requirements are imposed on an algorithm for finding a representat
 \end{itemize}
 To compare the quality of different subsets returned by different algorithms, two criteria are measured:
 \begin{itemize}
-    \item \textbf{Criterion 1}: $|Z|$ - seeking the smallest possible subset $Z$ that satisfies Requirement 1:.
+    \item \textbf{Criterion 1}: $|Z|$ - seeking the smallest possible subset $Z$ that satisfies Requirement 1.
     \item \textbf{Criterion 2}: Representative should best fit the data on average. Given representative subsets of equal size, the preference is on the one that minimizes the average distance of samples from their respective representatives.
 \end{itemize}
 Criteria 1 and 2 are applied to a representative set solution.
@@ -587,9 +588,9 @@ By taking this approach, it can in one iteration over data find the representati
 The algorithm is shown in Figure~\ref{alg:delta_medoids_one_shot}, this algorithm is optimized for better memory efficiency as opposed to the version in the cited paper.
 The main ideas remain the same, only keeping track of clusters that the points are assigned to is removed for this one-shot version.
 
-\begin{algorithm}\label{alg:delta_medoids_one_shot}
+\begin{algorithm}
     \caption{$\delta$-Medoids One-shot}
-    \label{delta_medoids_one_shot}
+    \label{alg:delta_medoids_one_shot}
     \begin{algorithmic}[1]
         \INPUT data $x_0$ ... $x_m$, required distance $\delta$
         \STATE Initialize \textit{representatives} = $\emptyset$
@@ -617,17 +618,19 @@ The full version of the algorithm runs a one-shot algorithm multiple times.
 Each time it goes through the dataset it selects a better medoid than before.
 Once two passes through the data do not change any medoid, the algorithm stops.
 This algorithm is shown in Figure~\ref{alg:delta_medoids_full}.
+Original algorithm from \cite{liebman2015representative} lacks the routine \textit{ReduceClusters} on line 24.
+This routine is introduced in this thesis as an improvement of the algorithm because of the algorithm properties found in Section ~\ref{sec:exp1}.
 
 This approach is slower, as the main routine from one shot algorithm has to be run multiple times.
-\todo{Mention convergence of the algorithm.}
+Experimental results of \cite{liebman2015representative} show that the algorithm converges in very few (<10) cycles.
 On the other hand, it is able to select better medoids, thus getting rid of the difficult choice of the first representative to select.
 
-\begin{algorithm}\label{alg:delta_medoids_full}
+\begin{algorithm}
     \caption{$\delta$-Medoids}
-    \label{delta_medoids_full}
+    \label{alg:delta_medoids_full}
     \begin{algorithmic}[1]
         \INPUT data $x_0$ ... $x_m$, required distance $\delta$
-        \STATE t = 0
+        \STATE $t = 0$
         \STATE Initialize $representatives_{t_0} = \emptyset$
         \STATE Initialize \textit{clusters} = $\emptyset$
         \DO
@@ -646,10 +649,11 @@ On the other hand, it is able to select better medoids, thus getting rid of the 
                 \ELSE
                     \STATE \textit{representative = $x_i$}
                     \STATE Initialize $cluster_{representative} = \emptyset$
-                    \STATE ad $x_i$ to $cluster_{representative}$
+                    \STATE add $x_i$ to $cluster_{representative}$
                     \STATE add $cluster_{representative}$ to \textit{clusters}
                 \ENDIF
             \ENDFOR
+            \STATE Call \textbf{\textit{ReduceClusters}}
             \STATE Initialize $representatives_t = \emptyset$
             \FOR{\textit{cluster} in \textit{clusters}}
                 \STATE $representative = \textrm{argmin}_{s \in cluster} (\sum\limits_{x \in cluster}{d(x,s) : d(x,s) \le \delta)}$
@@ -658,7 +662,34 @@ On the other hand, it is able to select better medoids, thus getting rid of the 
         \DOWHILE{$representatives_t = representatives_{t-1}$}
     \end{algorithmic}
 \end{algorithm}
-\todo{add my improvement to the pseudocode - omezeni ze jeden reprezentant musi zabirat minimalne 1 procento vsech bodu, take reprezentantu nesmi byt vice nez 50 nebo vice nez 10 procent celeho clusteru}
+
+The subroutine \textit{ReduceClusters} shown in Figure~\ref{alg:reduce} helps to reduce the number of selected representatives to a number lower than a constant $\kappa$.
+If a representative does not cover at least 1\% of the cluster, the routine tries to add him to the coverage of the representative that is similar to it.
+If no such similar representative exists, it is considered noise and the representative is dropped from the cluster.
+
+
+\begin{algorithm}
+    \caption{ReduceClusters}
+    \label{alg:reduce}
+    \begin{algorithmic}[1]
+        \INPUT $m$ subclusters $X$ = $x_i, ..., x_m$; their representatives $R = r_0, ..., r_m$; whole cluster size$s$
+        \STATE $threshold = 0.01s$
+        \STATE Initiate $i = 0$
+        \IF{$|X| > \kappa$}
+            \WHILE{$i < m$}
+                \IF{$|x_i| \le threshold$}
+                    \STATE $j$ = index the most similar representative from $R$
+                    \IF{no such $j$ exists}
+                        \STATE Drop $x_i$ from $X$
+                    \ELSE
+                        \STATE Merge $x_i$ and $x_j$.
+                    \ENDIF
+                    \STATE Drop $r_i$ from $R$
+                \ENDIF
+            \ENDWHILE
+        \ENDIF
+    \end{algorithmic}
+\end{algorithm}
 
 %========================================CHAPTER==================================
 
@@ -835,7 +866,7 @@ The number of representatives selected did not exceed 30 in any cluster.
 The number of missed classification is low even in overlapping or complex datasets.
 However, when the results were visualized for one cluster, the delta medoids algorithm did not result in expected selection.
 As can be seen on Figure~\ref{img:blobs_border_select}, the algorithm picked the samples on the edge of the dataset that did not cover many points in their neighborhoods.
-\begin{figure}
+\begin{figure}[H]
    \includegraphics[width=\linewidth]{img/delta_medoids_select.png}
   \caption{$\delta$-Medoids choosing the border samples of a cluster}
   \label{img:blobs_border_select}
@@ -942,7 +973,7 @@ B & 600 & 8 & 8 & 8 & 8 \\ \hline
 \subsection{Conclusion}
 
 The results of this experiment empirically supported the expected result of not selecting the border samples from a dataset as can be seen on Figure~\ref{img:blobs_good_select}
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\linewidth]{img/delta_medoids_select_better.png}
   \caption{$\delta$-Medoids choosing only relevant samples of a cluster}
   \label{img:blobs_good_select}
@@ -957,8 +988,8 @@ The motivation for this experiment was to test the algorithm results on well exp
 \subsection{Experimental Setup}
 Datasets used for this experiment were:
 \begin{itemize}
-    \item Pendigit
-    \item
+    \item Pendigits
+    \item MNIST Fashion
 \end{itemize}
 
 All 4 algorithms were run.
@@ -993,6 +1024,14 @@ The results for different methods are listed below.
   \caption{Confusion matrices for Pendigits dataset}
   \label{img:exp3_pendigits}
 \end{figure}
+
+\textbf{MNIST Fashion}
+
+\begin{figure}[H]
+   \includegraphics[width=\linewidth]{img/exp3_mnist_fashion.png}
+  \caption{Confusion matrices for real network data}
+  \label{img:exp4}
+\end{figure} \todo{table with representatives selected}
 
 \subsection{Conclusion}
 Using algorithms on real datasets started to show more significant differences between results in algorithms.
@@ -1045,6 +1084,7 @@ The results for different methods are listed below.
   \caption{Confusion matrices for real network data}
   \label{img:exp4}
 \end{figure}
+
 \todo{here add better cluster names for sure}
 \todo{get precision and recall values per cluster}
 
@@ -1053,6 +1093,30 @@ The results show that the $\delta$-Medoids algorithm is significantly better tha
 Even for clusters with several thousand of samples few samples were selected a while retaining good properties for assigning points to clusters.
 The downside is the speed of the algorithm but this was not a part of this experiment.
 \todo{expand the conclusion}
+
+
+\section{Experiment 5}\label{sec:exp5}
+
+In this experiment the average data fit as defined in Section~\ref{sec:representative_selection} was tested.
+
+\subsection{Experimental Setup}
+In this experiment one cluster was represented by $\delta$-Medoids and Random Selection algorithms.
+The cluster was selected from dataset\todo{dataset, multiple clusters?}.
+After the representatives were selected, the percentage of coverage by each representative was calculated and plotted into graph.
+
+
+\subsection{Results}
+
+\begin{figure}[H]
+   \includegraphics[width=\linewidth]{img/exp5.png}
+  \caption{Average fit of representatives in one cluster}
+  \label{img:exp5}
+\end{figure}
+
+\subsection{Conclusion}
+On average, the $\delta$-Medoids algorithm covers the cluster better with each added representative.
+In the random selection, there is the possibility of selecting either the border cases or two points with overlapping neighborhoods.
+This can occur even more often in data, that do not have standard distribution and can be denser in one part of a cluster than the other.
 
 \setsecnumdepth{part}
 
