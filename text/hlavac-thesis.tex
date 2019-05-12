@@ -612,7 +612,7 @@ The main ideas remain the same, only keeping track of clusters that the points a
 The choice of the first representative strongly influences the selection of the medoids to represent the cluster.
 In some cases, this one-shot approach could be misleading.
 
-\subsection{$\delta$-Medoids}
+\subsection{$\delta$-Medoids Full}
 
 The full version of the algorithm runs a one-shot algorithm multiple times.
 Each time it goes through the dataset it selects a better medoid than before.
@@ -667,6 +667,9 @@ The subroutine \textit{ReduceClusters} shown in Figure~\ref{alg:reduce} helps to
 If a representative does not cover at least 1\% of the cluster, the routine tries to add him to the coverage of the representative that is similar to it.
 If no such similar representative exists, it is considered noise and the representative is dropped from the cluster.
 
+\subsection{$\delta$-Medoids Modified}
+
+\todo{modified algorithm betterexplained}
 
 \begin{algorithm}
     \caption{ReduceClusters}
@@ -690,6 +693,14 @@ If no such similar representative exists, it is considered noise and the represe
         \ENDIF
     \end{algorithmic}
 \end{algorithm}
+
+The time complexity is of $\delta$-Medoids is shown on Figure~\ref{img:complexity}.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{img/complexity.png}
+  \caption{Comparing run times of $\delta$-Medoids and Random Selection}
+  \label{img:complexity}
+\end{figure}
 
 %========================================CHAPTER==================================
 
@@ -716,7 +727,7 @@ The datasets created are the following:
 All of these datasets are in space of two or three dimensions.
 They can be easily visualized on graphs and nicely show some of the specific properties of implemented algorithms.
 \begin{figure}
-   \includegraphics[width=\linewidth]{img/datasets.png}
+  \includegraphics[width=\linewidth]{img/datasets.png}
   \caption{Graphs of all datasets}
   \label{img:datasets}
 \end{figure}
@@ -980,7 +991,7 @@ The results of this experiment empirically supported the expected result of not 
 \end{figure}
 This sanity check by visualization fulfilled all of the expectation.
 
-\section{Experiment 3}\label{sec:exp3}
+\section{Image Recognition Datasets}\label{sec:exp3}
 
 After the algorithms were tested on visualizable data, the experiments with well known labeled datasets could start.
 The motivation for this experiment was to test the algorithm results on well explored and well-annotated datasets commonly used as a benchmark for clustering.
@@ -992,7 +1003,6 @@ Datasets used for this experiment were:
     \item MNIST Fashion
 \end{itemize}
 
-All 4 algorithms were run.
 The $\delta$ was estimated as \todo{how is median at lower ten percent called, put it to maths} times 1.05 from distances from one point in the data to all of the others.
 
 \subsection{Results}
@@ -1026,6 +1036,28 @@ The results for different methods are listed below.
 \end{figure}
 
 \textbf{MNIST Fashion}
+
+In the experiment for this dataset the Greedy Selection algorithm was omitted as the experiments would take too long on clusters that contain 6000 samples.
+Previous experiments show that the $\delta$-Medoids agorithm chooses similar amount of representatives while getting better coverage.
+
+\begin{table}[H]
+\begin{tabular}{l|lllll}
+\hline
+ \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+0 & 6000 & 859  & 23 & 23 \\
+1 & 6000 & 176  & 16 & 16 \\
+2 & 6000 & 845  & 20 & 20 \\
+3 & 6000 & 616  & 22 & 22 \\
+4 & 6000 & 630  & 25 & 25 \\
+5 & 6000 & 1622 & 14 & 14 \\
+6 & 6000 & 1181 & 18 & 18 \\
+7 & 6000 & 266  & 19 & 19 \\
+8 & 6000 & 1971 & 16 & 16 \\
+9 & 6000 & 686  & 28 & 28 \\ \hline
+
+\end{tabular}
+\caption{Number of selected representatives for MNIST Fashion dataset}
+\end{table}
 
 \begin{figure}[H]
    \includegraphics[width=\linewidth]{img/exp3_mnist_fashion.png}
