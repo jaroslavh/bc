@@ -76,8 +76,8 @@
 \setsecnumdepth{part}
 \chapter{Introduction}
 
-There are still many security issues on the Internet even several decades after it became the dominant medium for communication.
-Companies all around the world connect more of their infrastructure to the Internet.
+The Internet became the dominant medium for communication several decades age, and there are still many issues concerning its security.
+Companies all around the world connect more and more of their infrastructure to the Internet.
 Each connected device is an opportunity for attackers.
 Security engineers are always inventing new methods to stop the attacks and keep their networks safe and secure.
 It is a never-ending race between attackers, trying to overcome new security methods, and defenders, the security personnel, trying to be always one step ahead of the attackers.
@@ -86,30 +86,27 @@ This race creates the drive for more and more sophisticated defense mechanisms.
 Multi-layer defense systems are protecting contemporary networks.
 As attackers overcome one layer, there is yet another layer waiting for them.
 However, if the attackers succeed to bypass all of them unnoticed, a huge problem can occur.
-
 Attackers can collect user credentials,  exfiltrate data or gain control of devices without anybody's knowledge.
 It can take a long time before somebody notices the breach.
 A similar thing happened in Marriot International child company Starwood in 2018 \cite{hron2018breaches}.
 Names, emails, addresses and credit card numbers of 500 million customers were stolen in an attack that was discovered in 2018 but possibly could have begun as early as in 2014.
 
-One of several methods that are used to detect such intrusions is detecting anomalies in the behavior of network hosts - Network Behavioral Anomaly Detection (NBAD).
+One of several methods that are used to detect such intrusions is looking for anomalies in the behavior of network hosts - Network Behavioral Anomaly Detection (NBAD).
 In NBAD, devices inside of the network are used as probes to gather information about the behavior of the network or individual hosts.
-The method then compares the current behavior of the network to a model created from the historical data.
-If a significant deviation in behavior occurs, the security team is notified and can act accordingly.
+The current behavior of the network is then compared to a model created from the historical data.
+If a significant deviation occurs, the security team is notified and can act accordingly.
 
 It is not uncommon for a company to have tens of thousands of devices and even more.
-Straight forward usage of NBAD in these networks is not sufficient to detect breaches successfully.
-For example, infection of a single device can be missed in the traffic of a medium sized company.
+Using a single model for the whole network may be insufficient to detect breaches successfully.
+For example, an infection of a single device can be missed in the traffic of a medium sized company.
 In order to detect such anomalies, it is needed to focus on smaller parts of the network.
-Behavioral clustering of network hosts can be used to separate it into smaller pieces.
+Behavioral clustering of network hosts can be used to divide it into smaller pieces.
 
-In Cognitive targeted anomaly detection framework from Cisco, behavioral clustering is used to find groups of similar hosts in a network.
-Each cluster created consists of hosts that have similar behavior.
-The main focus of this work is to find a representation of these clusters that are used to calculate the model behavior.
-The representation used in this thesis is based on cluster prototypes, which will be described in Chapter~\ref{ch:theory}
+In Cognitive Targeted Anomaly Detection Framework from Cisco, behavioral clustering is used to find groups of similar hosts in a network.
+The main focus of this thesis is to find a memory efficient representation of these clusters.
+Terms representation of a cluster and cluster prototype are synonymous and are used interchangeably in this thesis. \todo{MK: is this better about cluster prototypes?}
 These cluster prototypes are then updated dynamically as the behavior of the network changes.
-
-Four algorithms previously used to represent clusters in computer vision or other fields were studied and modified for usage in Cognitive anomaly detection framework.
+Four algorithms previously used to represent clusters were studied and modified for usage in Cognitive anomaly detection framework.
 They were tested and compared on both real and test datasets.
 
 The thesis is organized as follows.
@@ -118,47 +115,27 @@ Chapter~\ref{ch:theory} explains the theory behind clustering and representative
 Chapter~\ref{ch:datasets} presents datasets used for testing.
 Chapter~\ref{ch:experiments} covers all the experiments with their results and is followed by the conclusion of this thesis.
 
-%The main focus of this work is in representing these clusters found by clustering algorithms.
-%Finding representation of clusters in Cognitive targeted anomaly detection framework is made more difficult by the fact, that similarity measure used for clustering does not form a metric space.
-%Therefore the focus on methods that can be used for selecting representatives in non-metric spaces.
-%
-%Each cluster can have up to several thousands of hosts.
-%Algorithms considered in this thesis were selected based on the following expectations.
-%As the hosts are clustered based on their behavior, it is safe to expect that selecting a subset of the cluster can represent its behavior without losing significant information.
-%Furthermore having fewer hosts as representatives of each cluster significantly reduce memory usage.
-
-%Why use clustering methods in network anomaly detection?
-%Why do we need representative selection?
-%What are the next sections about?
-%
-%Automatically grouping similar objects from a given set into clusters is a
-%widely used machine learning technique in many fields ranging from
-%recommendation engines and social network analysis to image segmentation and
-%medical imaging. New applications of this powerfull method are found every year.
-%Clustering is also used for Anomaly Detection in computer systems. \par
-%In this work I collected 5TODO known methods used in different fields for
-%cluster representation. What these methods have in common is possibility to use
-%them in spaces where only generic similarity measure exists (these spaces do
-%not necessarily need to be metric).
+%========================================CHAPTER==================================
 
 \chapter{Goals}
 
-This work aims to study methods used for the representation of network host behavioral clusters that can be applied in Cognitive targeted anomaly detection framework.
+This work aims to study methods used for the representation of network host behavioral clusters that can be applied in Cognitive Targeted Anomaly Detection Framework.
 Behavioral similarity used for clustering in this framework does not form a metric space, which creates a requirement for algorithms used for representative selection.
 
-This thesis should present a method that can be used for finding the cluster prototypes of clusters in non-metric space.
-These cluster prototypes represent the whole cluster in a way that is convenient for further computation.
+This thesis should present a method that can be used for finding the cluster prototypes of clusters in a non-metric space.
+Cluster prototypes represent the whole cluster in a way that is convenient for further computation.
 It can be, for example, assigning newly added samples to their corresponding cluster.
 
-Networks monitored by Cognitive targeted anomaly detection framework can have up to several hundreds of thousands of hosts which leads to massive clusters.
+Networks monitored by Cognitive Targeted Anomaly Detection Framework can have up to several hundreds of thousands of hosts which leads to massive clusters.
 If the classification of newly added hosts were done by comparing the new host to all others, the memory and time needed for classification would be unmanageable.
-That is why the number of representatives selected from each cluster should be kept as small as possible.
+In the framework, each cluster is represented by a subset of its samples.
+The number of representatives selected from each cluster should be kept as small as possible to maintain computational and memory efficiency.
 
-General methods used for general cluster representation in non-metric spaces should be studied.
-From these previously studied methods, the best ones will be selected and implemented.
-As part of this thesis, a benchmark dataset for testing the chosen method should also be created.
+Methods used for general cluster representation in non-metric spaces should be studied.
+From these previously studied methods, the best-suited ones will be selected and implemented.
+As part of this thesis, a benchmark dataset for testing the chosen methods should also be created.
 A further goal is to test the chosen methods on clustering datasets used by others and on a newly created benchmark dataset.
-Based on this testing, the method should be found that suits best for use in this field and incorporates it into the Cognitive targeted anomaly detection framework.
+Based on this testing, a method should be found that suits best the security field and can be incorporated into the Cognitive Targeted Anomaly Detection Framework.
 The selected method should be finetuned to get the best possible results in anomaly-detection.
 
 \setsecnumdepth{all}
@@ -170,8 +147,8 @@ The selected method should be finetuned to get the best possible results in anom
 This chapter focuses on presenting ideas from network security needed to understand the main objective of this thesis.
 Different approaches to network intrusion detection systems (IDS) are explained in Section~\ref{sec:ids}.
 In Section~\ref{sec:nbad}, the scope is narrowed to network anomaly detection IDS and Section~\ref{sec:challenges}delves deeper into the challenges of it.
-Section~\ref{sec:ctadf} serves as an introduction to Cognitive targeted anomaly detection framework used by Cisco.
-Methods researched in this thesis were tested on real data collected from Cognitive targeted anomaly detection framework.
+Section~\ref{sec:ctadf} serves as an introduction to Cognitive Targeted Anomaly Detection Framework used by Cisco.
+Methods researched in this thesis were tested on real data collected from Cognitive Targeted Anomaly Detection Framework.
 
 \section{Types of Intrusion Detection Systems}\label{sec:ids}
 
@@ -200,7 +177,7 @@ As each kind of intrusion is better detected by a different method, there are se
     \item \textbf{Anomaly-based} (behavior-based): A static or dynamic model of a given network is created over a period of time, and current network behavior is compared to expected (model) behavior for anomalies.
     \item \textbf{Stateful protocol analysis} (specification-based): The system keeps track of known protocols (e. g., pairing requests with replies) and finding unexpected behavior in these protocols.
 \end{itemize}
-Cognitive targeted anomaly detection framework combines all of these approaches.
+Cognitive Targeted Anomaly Detection Framework combines all of these approaches.
 This thesis focuses on the behavior-based part of the framework.
 
 \section{Network Anomaly Detection}\label{sec:nbad}
@@ -316,7 +293,7 @@ If a host is known to belong to a cluster $A$ and its behavior suddenly starts t
 
 %========================================CHAPTER==================================
 
-\chapter{Theoretical Overview}\label{ch:theory}
+\chapter{Theoretical Overview and State of the Art}\label{ch:theory}
 
 This chapter introduces a theoretical background to explain clustering methods, the topic of non-metric spaces and the problem of representative selection.
 
@@ -553,7 +530,7 @@ Based on the previously explained approaches for finding representatives of clus
 
 \subsection{Random Selection}\label{subsec:random_select}
 
-Random selection algorithm serves as a baseline to measure the improvement as it is the method currently used in Cognitive targeted anomaly detection framework.
+Random selection algorithm serves as a baseline to measure the improvement as it is the method currently used in Cognitive Targeted Anomaly Detection Framework.
 It selects a given number of representatives from the cluster randomly.
 
 In clusters dense clusters, selecting random samples from each cluster leads to undesired noise.
@@ -1179,6 +1156,7 @@ If the speed is not of great concern or the datastets have lower tens of thousan
 % \printglossaries
 \begin{description}
 %VH I changed the order of NBAD and NIDS to keep alphabetical order
+    \item[IDS]  Intrusion Detection System
 	\item[NBAD] Network-Based Anomaly Detection
 	\item[NIDS] Intrusion Detection System
 \end{description}
