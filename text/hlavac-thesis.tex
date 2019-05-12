@@ -1021,13 +1021,12 @@ The downside is the speed of the algorithm but this was not a part of this exper
 \todo{expand the conclusion}
 
 
-\section{Experiment 5}\label{sec:exp5}
+\section{Average Fit of Data}\label{sec:exp5}
 
 In this experiment the average data fit as defined in Section~\ref{sec:representative_selection} was tested.
 
 \subsection{Experimental Setup}
-In this experiment one cluster was represented by $\delta$-Medoids and Random Selection algorithms.
-The cluster was selected from dataset\todo{dataset, multiple clusters?}.
+In this experiment one complex cluster (cluster 'C') from Network Security Dataset was represented by $\delta$-Medoids and Random Selection algorithms.
 After the representatives were selected, the percentage of coverage by each representative was calculated and plotted into graph.
 
 
@@ -1043,6 +1042,7 @@ After the representatives were selected, the percentage of coverage by each repr
 On average, the $\delta$-Medoids algorithm covers the cluster better with each added representative.
 In the random selection, there is the possibility of selecting either the border cases or two points with overlapping neighborhoods.
 This can occur even more often in data, that do not have standard distribution and can be denser in one part of a cluster than the other.
+
 
 \setsecnumdepth{part}
 
