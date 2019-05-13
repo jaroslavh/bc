@@ -27,6 +27,8 @@
 
 \usepackage{todonotes}
 
+\usepackage{tabularx}
+
 \usepackage{amssymb}
 
 \usepackage{algorithm, algcompatible} %for for creating algorithm figures
@@ -35,7 +37,7 @@
 \algdef{SE}[DOWHILE]{DO}{DOWHILE}{\algorithmicdo}[1]{\algorithmicwhile\ #1}%
 
 \newcommand{\specialcell}[2][l]{%
-\begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}
+\begin{tabularx}{0.2\linewidth}[#1]{@{}l@{}}#2\end{tabularx}}
 
 \usepackage{amsmath}
 
@@ -46,9 +48,6 @@
 % \iflanguage{czech}{\renewcommand*{\acronymname}{Seznam pou{\v z}it{\' y}ch zkratek}}{}
 % \makeglossaries
 
-% ------------- Colors abbreviations ------------
-\def\cbl{\color{blue}} %VH's suggestions
-\def\cre{\color{red}}  %JH's discussion
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 % EDIT THIS
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
@@ -60,12 +59,14 @@
 \author{Jaroslav Hlaváč} %author's name without academic degrees
 \authorWithDegrees{Jaroslav Hlaváč} %author's name with academic degrees
 \supervisor{Ing. Martin Kopp}
-\acknowledgements{THANKS (remove entirely in case you do not with to thank anyone)} %TODO
-\abstractEN{Summarize the contents and contribution of your work in a few sentences in English language.}
-\abstractCS{V n{\v e}kolika v{\v e}t{\' a}ch shr{\v n}te obsah a p{\v r}{\' i}nos t{\' e}to pr{\' a}ce v {\v c}esk{\' e}m jazyce.} %TODO
+ \acknowledgements{I would like to express my thanks to my supervisor Ing. Martin Kopp for the inspiration I always brought from our meetings, for the opportunity to work on a real problem and last but not least his patience.}
+\abstractEN{Precise and fast network behavior anomaly detection highly depends on the models created for the network monitored. Whole network models tend to be full of hosts with very diverse behavior. Creating a model for each host is often not possible, because each host does not generate enough traffic. Network hosts can be separated into smaller groups by community-based clustering. On big networks of tens of thousands, these clusters can contain several thousands of hosts.
+
+This thesis explores the options of finding a representative selection as a cluster prototype for each cluster in Cognitive Targeted Anomaly Detection Framework. Because of the dynamic nature of networks, only a pair-wise similarity exists between each host pair. This is why representative selection methods for topological spaces have to be used. A modification to $\delta$-Medoids algorithm is proposed with the ability to select a low number of representatives while maintaining the best possible coverage of the cluster. This algorithm improves the coverage of clusters as compared to the currently used method, selecting the representatives randomly.}
+\abstractCS{V n{\v e}kolika v{\v e}t{\' a}ch shr{\v n}te obsah a p{\v r}{\' i}nos t{\' e}to pr{\' a}ce v {\v c}esk{\' e}m jazyce.}
 \placeForDeclarationOfAuthenticity{Prague}
-\keywordsCS{Výběr reprezentantů, Detekce anomálií, Komunitní clusterování, Systém detekce narušení, $\delta$-medoids, Topologický prostor, Párová podobnost} %TODO
-\keywordsEN{Representative selection, Network anomaly detection, Community-based clustering, Intrusion detection system, $\delta$-medoids, Topological space, Pair-wise similarity} %TODO
+\keywordsCS{Výběr reprezentantů, Detekce anomálií, Komunitní clusterování, Systém detekce narušení, algoritmus $\delta$-Medoids, Topologický prostor, Párová podobnost} %TODO
+\keywordsEN{Representative selection, Network anomaly detection, Community-based clustering, Intrusion detection system, $\delta$-Medoids algorithm, Topological space, Pair-wise similarity} %TODO
 \declarationOfAuthenticityOption{1} %select as appropriate, according to the desired license (integer 1-6)
 % \website{http://site.example/thesis} %optional thesis URL
 
@@ -77,6 +78,7 @@
 
 \setsecnumdepth{part}
 \chapter{Introduction}
+\todo{translate abstract to czech after checking it}
 
 The Internet became the dominant medium for communication several decades age, and there are still many issues concerning its security.
 Companies all around the world connect more and more of their infrastructure to the Internet.
@@ -202,17 +204,19 @@ Network flows are collected and then sent via NetFlow protocol to one place wher
 Network anomaly detection system creates a baseline model of the network behavior, which is then compared to the actual traffic.
 Any sudden change is considered to be an anomaly that is reported by the IDS.
 
-\section{Challenges of Real-Time Anomaly Detection}\label{sec:challenges} \todo{prepsat prvni dva odstavce lepe}
-Having access to all the traffic in a network does not necessarily mean that every anomaly that occurs can be detected.
-Not every network host generates enough traffic to create a precise model of its behavior.
-Thankfully absolute precision is not the goal of anomaly detection, as it serves as one of many layers of security in computer systems.
-\todo{Explain better, what is the goal of anomaly detection, Grill Thesis - toto ma ted malou prioritu}
+\section{Challenges of Real-Time Anomaly Detection}\label{sec:challenges}
 
-That is why models are calculated for whole networks where it is possible to create a model that reflects the behavior of the network.
-This method is widely used, and very efficient on smaller (several devices) networks.
-However, capturing flow data from a big network of thousands of devices can result in too much information.
-One can easily miss one infected device generating different traffic.
-The noise in the collected data is too high.
+There are several challenges in anomaly-based network intrusion detection.
+A huge volume of data needs to be processed very fast to keep the real-time reaction rate to anomalies.
+Also, each normal behaviour that is identified as anomalous creates unwanted load for postprocessing of the occurence.
+Having a big amount of these false positives slows the process down.
+Finally there is a lack of labeled training data to create models of wanted network behavior ~\cite{grill2016combining}.
+
+Therefore, even having access to all the traffic in a network does not necessarily mean that every anomaly that occurs can be detected.
+Maintaining a model for each host is not an option as not every network host generates enough traffic to create a precise model of its behavior.
+Creating a behavioral model for the whole network is not a very good option either.
+The behavior of each host is different and combining them together leads to a very diverse model.
+A small amount of infected devices or a single intrusion attempt can be easily missed in this model due to the volume of information given by the rest of the network.
 
 To give an example, imagine detection of a single infected device, such as a printer in a 10 story office building.
 This printer, being a part of a botnet, was ordered to generate traffic for DDoS (Distributed Denial of Service) attacks.
@@ -272,6 +276,7 @@ Community-based clustering is explained in detail in Section~\ref{sec:cluster_to
 The density of samples in sets of data is determined by cosine similarity of frequency vectors of two hosts.
 Similarity measure between hosts \textit{a} and \textit{b} is defined as:
 \begin{equation}
+\label{eq:kopp}
 \textrm{sim}(a, b) = \frac{\sum\limits_{s \in S} F_s^a F_s^b} {\sqrt{\sum\limits_{s \in S} (F_s^a)^2} \sqrt{\sum\limits_{s \in S} (F_s^b)^2}}\:, \tag{2}
 \end{equation}
 where $F^a$, $F^b$ represent the frequency and $S$ represents the union of sets of servers visited by the network hosts $a$ and $b$.
@@ -302,7 +307,8 @@ This chapter introduces a theoretical background to explain clustering methods, 
 \section{Introduction to Clustering}\label{sec:clust_intro}
 As defined in \cite{guttag2016introduction}, clustering is an unsupervised machine learning method that organizes objects into groups so that each group consists of members that are similar in some way.
 Without any prior knowledge of the data, this method looks for structures in feature vectors.
-Variability can be calculated for each cluster \textit{c}, and it shows how much objects in given cluster differ.
+For each cluster $c$, a variability can be calculated.
+It shows how much objects in given cluster differ.
 Variability and dissimilarity are two properties defined for a better understanding of the data.
 Variability is defined as
 \begin{equation}
@@ -344,11 +350,11 @@ To use this algorithm, the number of desired clusters has to be known in advance
 $K$-means randomly chooses $K$ centroids in the space of the dataset and then assigns each point to a centroid.
 After creating these clusters, it calculates a new centroid for each cluster and then assigns the points in datasets to the new centroids.
 The algorithm stops when the centroids of clusters stop changing.
-Algorithm~\ref{alg:kmeans} shows the pseudocode of $K$-means algorithm.
+Algorithm~\ref{alg:k_mean_pseudocode} shows the pseudocode of $K$-means algorithm.
 
-\begin{algorithm}[t]\label{alg:kmeans}
+\begin{algorithm}[t]
     \caption{$K$-means}
-    \label{k_mean_pseudocode}
+    \label{alg:k_mean_pseudocode}
     \begin{algorithmic}[1]
         \INPUT data $X = x_0, x_1, ..., x_n$; number of clusters $k$
         \OUTPUT $k$ clusters; $k$ centroids
@@ -385,19 +391,23 @@ Firstly, the number of clusters is not previously known, so choosing $K$ for $K$
 Next section delves deeper into what it means when a measure does not form a metric space.
 
 \section{Clustering in Topological Space}\label{sec:cluster_topo}
-This section explains the difference between metric and topological spaces and clustering approaches for topological spaces.
+This section explains how does clustering approaches differ in topological spaces.
+A metric space is a topological space with special properties, that are given in its definition.
+Therefore, each clustering algorithm that works on a topological space will work on a metric space also.
+However, there are algorithms that give better results in metric spaces that will not work by definition on a topological space, i.e. $K$-Means algorithm.
 
-A metric space, as defined in \cite{choudhary1992elements}, is a pair $(X, d)$ where $X$ is a set and $d$ is a mapping $X \times X \to \mathbb{R}$ which satisfies the following conditions:
+A metric space (see e.g. \cite{choudhary1992elements}) is a pair $(X, d)$ where $X$ is a set and $d$ is a mapping $X \times X \to \mathbb{R}$ which satisfies the following conditions:
 \begin{enumerate}
     \item [(i)] $d(x, y) \geq 0$;
     \item [(ii)] $d(x, y) = 0 \iff x = y$;
     \item [(iii)] $d(x, y) = d(y, x)$
-    \item [(iv)] $d(x, z) \leq d(x, y) + d(x, z) \mathrm{for} x, y, z \in X$.
+    \item [(iv)] $d(x, z) \leq d(x, y) + d(x, z) \  \mathrm{for} \  x, y, z \in X$.
 \end{enumerate}
 Any function $d$ following these conditions is called distance. \todo{is this realy true?}
 
-The similarity measure that is used in this thesis as explained in Section~\ref{sec:ctadf} does not fulfill the last point of the definition above. Consequently, it is not a distance and does not form a metric space. Furthermore, it is a pairwise similarity that forms a subspace for comparing each pair of samples.
-This is why this similarity measure forms a topological space, which is defined according to, e.g., \cite{stahl2014introduction}.
+The similarity measure in Equation~\ref{eq:kopp} does not fulfill the last point of the definition above, as is explained in Section~\ref{sec:ctadf}.
+Consequently, it is not a distance and does not form a metric space. Furthermore, it is a pairwise similarity that forms a subspace for comparing each pair of samples.
+This is why that similarity measure forms a topological space, which is defined as follows (see e.g., \cite{stahl2014introduction}).
 
 Given any set $S$ a topology on $S$ is a family $F ={F_{\alpha} | \alpha \in A}$, where $A$ is some indexing set, each $F_{\alpha}  \subseteq S$, and with the following properties:
 \begin{enumerate}
@@ -408,17 +418,14 @@ Given any set $S$ a topology on $S$ is a family $F ={F_{\alpha} | \alpha \in A}$
 \end{enumerate}
 The ordered pair ($S, F$) is called a topological space.
 
-\todo{explain about neighborhoods??}
-
-$K$-means clustering from the previous section cannot be used in topological space as the centroids do not exist.
-In many cases, there is no prior knowledge of the desired number of clusters $K$, as is the case in this thesis.
+$K$-means clustering from the previous section cannot be used, because centroids do not exist in topological spaces.
 A popular method that is used for clustering in non-metric spaces is called community-based clustering.
 
 Community-based clustering detects communities in the data \cite{kopp2018community}.
 A community is a subset of examples in the data, that is densely connected with each other.
 One of the ways how to detect communities in a graph is to create a full-adjacency matrix.
 This matrix contains all connections between all nodes in the given graph.
-Analyzing the matrix then can tell us about the densities in different parts of graphs.
+Analyzing the matrix can tell us about the densities in different parts of graphs.
 
 Louvain method is a similar approach to clustering when we do not have a simple graph but a set of samples and a pairwise similarity measure \cite{kopp2018community}.
 This method relies on creating a full similarity matrix for the whole dataset and then looking for communities in the data.
@@ -445,9 +452,10 @@ According to \cite{tan2014introduction}, there are three motivations for finding
     \item Compression
     \item Efficient Finding Nearest Neighbors
 \end{itemize}
-All of these apply to the NBAD aswell.
+All of these apply to the NBAD.
 Therefore, summarizing the behavior of the whole cluster into a cluster prototype is desirable.
-As is finding the smallest possible number of prototypes for each cluster for efficient finding nearest neighbors when adding new hosts to their corresponding clusters.
+As is finding the smallest possible number of prototypes for each cluster for efficient finding nearest or most similar neighbors when adding new hosts to their corresponding clusters.
+
 
 \subsection{Definition of Representative Selection for Non-Metric Spaces}\label{sec:def_rep_selection}
 Representative selection aims to find a minimal subset of examples from a cluster, that carries sufficient information about the whole cluster.
@@ -457,7 +465,7 @@ Let $X$ be a data set, $d \colon X \times X \to \mathbb{R} +$ be a distance meas
 The task is finding a representative subset $Z \subseteq S$ that best encapsulates the data.
 Two following requirements are imposed on an algorithm for finding a representative subset:
 \begin{itemize}
-    \item \textbf{Requirement 1}: The algorithm must return a subset $Z \subseteq S$ such that for any sample $x \in S$, there exists a sample $z \in C$ satisfying $d(x, z) \le \delta$.
+    \item \textbf{Requirement 1}: The algorithm must return a subset $Z \subseteq S$ such that for any sample $x \in S$, there exists a sample $z \in Z$ satisfying $d(x, z) \le \delta$.
     \item \textbf{Requirement 2} : The algorithm cannot rely on a metric representation of the samples in $S$.
 \end{itemize}
 To compare the quality of different subsets returned by different algorithms, two criteria are measured:
@@ -469,7 +477,8 @@ Criteria 1 and 2 are applied to a representative set solution.
 In addition, the following desiderata for a representative selection algorithm are expected.
 \begin{itemize}
     \item \textbf{Desideratum 1}: Stable representative selection algorithms are preferred. Let $Z_1$ and $Z_2$ be different representative subsets for dataset $S$ obtained by two different runs of the same algorithm.
-Stability is defined as the overlap $\frac{|Z_1 \cap Z_2|}{|Z_1 \cup Z_2|}$      The higher the expected overlap is, the more stable the algorithm is.
+Stability is defined as the overlap $\frac{|Z_1 \cap Z_2|}{|Z_1 \cup Z_2|}$.
+The higher the expected overlap is, the more stable the algorithm is.
 This desideratum ensures the representative set is robust to randomization in data ordering or the choices made by the algorithm.
     \item \textbf{Desideratum 2}: The algorithm should be efficient and scale
 well for large datasets.
@@ -478,11 +487,11 @@ well for large datasets.
 This definition of representative selection problem serves well for this paper.
 
 \subsection{Representative Selection in a Metric Space}\label{sec:rep_select_metric}
-A metric dataset has to have the same number of features for each sample and a metric that fulfills all the requisites in the definition of the metric space.
+A dataset that hase the same number of features for each sample and there is a metric metric that fulfills all the requisites in the definition of the metric space is a metric dataset.
 Selecting a prototype from this dataset is often best achieved by calculating a centroid for a given cluster.
 A centroid can be calculated as the mean of the points in the cluster.
 An example of a centroid in a cluster can be found in Figure~\ref{img:centroids} a).
-Other ways of calculating medoids can be used, e.g. weighted average of all points.
+Other ways of calculating centroids can be used, e.g. weighted average of all points.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{img/centroids.png}
@@ -496,7 +505,7 @@ It can be thought of as a median of the dataset.
 Formally, medoid is defined as:
 \begin{equation}
 x_{medoid} = \mathrm{argmin}_{y \in \{x_1, x_2, ..., x_n\}} \sum_{i=1}^{n}{d(y, x_i)}\:, \tag{5}
-\end{equation} \todo{zavest matematicky symbol pokud chci pouzitlimits}
+\end{equation}
 where $x_1, x_2, ..., x_n$ is a set of $n$ points in a space with a distance function $d$.
 In Figure~\ref{img:medoids}, medoids were chosen instead of centroids.
 \begin{figure}
@@ -506,16 +515,16 @@ In Figure~\ref{img:medoids}, medoids were chosen instead of centroids.
 \end{figure}
 
 \subsection{Representative Selection in a Topological Space}\label{sec:rep_select_arbitrary}
-Clearly, the concept of centroid explained in the previous section cannot be used to solve the problem of finding a representative in an arbitrary space (i.e., topological space).
-Medoids, of course, can be selected for datasets in arbitrary spaces.
+According to the previous section, the concept of centroid cannot be used to solve the problem of finding a representative in an arbitrary space (i.e., topological space).
+Instead, medoids can be selected for datasets in arbitrary spaces.
 
 $K$-Medoids algorithm resembles $K$-means algorithm in breaking the dataset into $K$ groups.
 In these groups it finds a medoid that is minimizes the distance to each other point in the group.
 $K$-Medoids is most commonly used for representative selection in topological spaces.
 
-There are not many more well-explored methods for solving this problem.
+There are not many other well-explored methods for solving the problem of finding medoids.
 The one that is used in this thesis is explained in \cite{liebman2015representative}.
-They took the main ideas of $K$-means clustering and transformed them for usage in a non-metric space with a pair-wise similarity measure.
+The main ideas from $K$-means clustering were taken and transformed for usage in a non-metric space with a pair-wise similarity measure.
 Instead of stating the $K$ in advance they state a parameter  $ 0 \leq \delta \leq 1$ that serves as a constraint.
 Then they separate the cluster into subclusters based on this parameter.
 Each of these subclusters is represented by a medoid.
@@ -523,7 +532,7 @@ A set of these medoids then serves as a cluster prototype for the whole cluster.
 This method is explained in greater detail in the Section~\ref{subsec:delta_medoids}.
 
 \section{Algorithms Relevant for Topological Space}\label{sec:relevant_methods}
-Based on the previously explained approaches for finding representatives of clusters in non-metric, spaces the following methods were chosen, tested and compared as a part of this thesis.
+Based on the previously explained approaches for finding representatives of clusters in non-metric spaces, the following methods were chosen, tested and compared as a part of this thesis.
 \begin{itemize}
     \item Random selection
     \item Greedy Selection
@@ -537,7 +546,7 @@ Random selection algorithm serves as a baseline to measure the improvement as it
 It selects a given number of representatives from the cluster randomly.
 
 In dense clusters, selecting random samples from each cluster leads to undesired noise.
-However as experimental results presented in \cite{kopp2018community} in the domain of computer networks the density of clusters is not significant.
+However as experimental results presented in \cite{kopp2018community} in the domain of computer networks, the density of clusters is not significant.
 It, of course, depends on each network, but given the best practices in segmentation of networks, the overlaps in clusters are not expected to be great.
 
 \subsection{Greedy Selection}\label{subsec:greedy_select}
@@ -550,7 +559,7 @@ The speed of this algorithm depends on the sparsity of the given set.
 In the worst case scenario, all points would be selected as representatives while always calculating the distance to each remaining sample in the set. Then it would reach the time complexity of $\mathcal{O}(n^2)$.
 
 \subsection{$\delta$-Medoids}\label{subsec:delta_medoids}
-The two following algorithms were first eplained in \cite{liebman2015representative}.
+The two following algorithms were first explained in \cite{liebman2015representative}.
 They were tested on two different problems that also use clustering in non-metric space - computing distance of two musical segments and comparing trajectories of objects.
 
 $\delta$-Medoids algorithm tries to find a minimal subset of points that are needed to cover the cluster with only one given constraint, that distance of the representatives would be at least $\delta$.
@@ -562,7 +571,7 @@ One-shot version is faster but less precise than the full $\delta$-medoids algor
 The idea behind this algorithm is to go through the dataset looking for representatives that differ at least by the given parameter $\delta$ from each previously selected representatives.
 By taking this approach, it can in one iteration over data find the representatives that are certain to differ by $\delta$ from each other.
 
-The algorithm is shown in Algorithm~\ref{alg:delta_medoids_one_shot}.
+The pseudocode of this algorithm is shown in Algorithm~\ref{alg:delta_medoids_one_shot}.
 It have been optimized for better memory efficiency as opposed to the version in the cited paper.
 The main ideas remain the same, only keeping track of clusters that the points are assigned to is removed for this one-shot version.
 
@@ -658,7 +667,7 @@ If no such similar representative exists, it is considered noise and the represe
     \caption{ReduceClusters}
     \label{alg:reduce}
     \begin{algorithmic}[1]
-        \INPUT $m$ subclusters $X$ = $x_i, ..., x_m$; their representatives $R = r_0, ..., r_m$; whole cluster size$s$
+        \INPUT $m$ subclusters $X$ = $x_i, ..., x_m$; their representatives $R = r_0, ..., r_m$; whole cluster size$s$; constant $\kappa$
         \STATE $threshold = 0.01s$
         \STATE Initiate $i = 0$
         \IF{$|X| > \kappa$}
@@ -716,7 +725,7 @@ They can be easily visualized on graphs and nicely show some of the specific pro
   \label{img:datasets}
 \end{figure}
 
-The Blobs datasets are very easy to represent with a centroid and were tested whether and how much points is needed to represent them using methods explained in Chapter~\ref{ch:theory}.
+The Blobs datasets are very easy to represent with a centroid and were tested whether and how many points is needed to represent them using methods explained in Chapter~\ref{ch:theory}.
 The Overlap dataset consists of 3 clusters in shapes of blocks.
 These blocks overlap partly to test how selected algorithms cope with overlapping clusters.
 Circles 3D and Moons are one of the hardest datasets to represent even by methods that are designed specifically for the metric space.
@@ -742,7 +751,7 @@ This problem is much more complex than handwritten digits and is currently used 
 
 \section{Network Security Dataset}\label{sec:real-data}
 Real network traffic captured from a company with approximately 20 thousand employees.
-The capture is from 24 hours of a working day and consists of \todo{count flows} flows.
+The capture is from 24 hours of a working day and consists of 33.5 milion flows.
 Proxy logs were used to capture the connections.
 Hosts that appeared in that capture were clustered using the method explained in Section~\ref{sec:cluster_topo}.
 These clusters with all hosts labeled were used as real network dataset in this thesis.
@@ -752,19 +761,22 @@ Cluster sizes range from less than a hundred to several thousand of network host
 %========================================CHAPTER==================================
 
 \chapter{Experiments}\label{ch:experiments}
-In this chapter each experiment that was run.
+In this chapter, all the experiments that were run are described.
 Each section is dedicated to one experiment.
 For each experiment, the motivation, experimental setup, results and conclusion are listed.
 
 All experiments were made in Jupyter Notebook technology using Python 3.7 kernel.
 For loading data from files and storing them in memory the Pandas library version 0.23.4 was used \cite{mckinney2010data}.
+The algorithms $K$-Nearest Neighbors with $K=1$ was used for classification of the test data based on the cluster prototypes created by selected algorithms.
+For each experiment a confusion matrix was created from this test classification.
 
 \section{Visualizable datasets}\label{sec:exp1}
 
-The first experiment was run on the data specifically created for this thesis.
+The first experiment was run on the visualizable datasets specifically created for this thesis.
+Seeing clustering results on visualizable datasets provides humans the insight into algorithms performance.
 
 The methods that were explained in Section~\ref{sec:relevant_methods} are designed to work in non-metric space but they still work in a metric space.
-Using them on visualisable benchmark datasets with known problems helped to determine their properties.
+Using them on visualisable benchmark datasets with known problems helped to determine their properties such as how many representatives each algorithm selects and how well does the representatives work in classification in newly added samples.
 
 \subsection{Experimental Setup}
 Datasets used for this experiment were:
@@ -772,30 +784,36 @@ Datasets used for this experiment were:
     \item Blobs 3D
     \item Overlap
     \item Moons
-    \item Noisy Circles 3D
+    \item Circles 3D
 \end{itemize}
 
-All 5 algorithms were run.
+All five algorithms were run.
 The $\delta$ was estimated as 5\% quantile of distances from one random point in the data to all of the others.
 The similarity measure used in these datasets was Euclidean distance.
+
+This experiment was performed in five runs using cross-validation.
+Each dataset was split to five 20\% parts.
+In each run four parts were combined to form the training data and the remaining part was used to simulate newly added samples to be classified to their corresponding cluster.
 
 \subsection{Results}
 
 The results for each dataset are listed below.
-\todo{make references to each table and picture or put hard placement for them?}
+A table with the number of representatives selected from each cluster is presented as well as confusion matrix with correct and incorrect classifiactions of each test sample.
+\medskip
 
 \textbf{Blobs 3D}
-
-\begin{table}[t]
+\begin{table}[H]
+\resizebox{\textwidth}{!}{
 \begin{tabular}{l|llllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
 A & 400 & 21 & 23 & 25 & 16 & 16 \\
 B & 400 & 17 & 20 & 23 & 20 & 20 \\
 C & 400 & 19 & 20 & 22 & 20 & 20 \\ \hline
-\end{tabular}
+\end{tabular}}
 \caption{Number of selected representatives for Blobs 3D dataset}
 \end{table}
+\noindent The confusion matrix can be seen in Figure~\ref{img:exp1_blobs}
 
 \begin{figure}[t]
    \includegraphics[width=\linewidth]{img/exp1_blobs.png}
@@ -805,16 +823,18 @@ C & 400 & 19 & 20 & 22 & 20 & 20 \\ \hline
 
 \textbf{Overlap}
 
-\begin{table}[t]
+\begin{table}[H]
+\resizebox{\textwidth}{!}{
 \begin{tabular}{l|llllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
 A & 800 & 25 & 23 & 23 & 23 & 23 \\
 B & 960 & 26 & 21 & 23 & 21 & 21 \\
 C & 640 & 22 & 24 & 24 & 24 & 24 \\ \hline
-\end{tabular}
+\end{tabular}}
 \caption{Number of selected representatives for Overlap dataset}
 \end{table}
+\noindent The confusion matrix can be seen in Figure~\ref{img:exp1_overlap}
 
 \begin{figure}[t]
    \includegraphics[width=\linewidth]{img/exp1_overlap.png}
@@ -824,13 +844,14 @@ C & 640 & 22 & 24 & 24 & 24 & 24 \\ \hline
 
 \textbf{Moons}
 
-\begin{table}[t]
+\begin{table}[H]
+\resizebox{\textwidth}{!}{
 \begin{tabular}{l|llllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
 A & 600 & 22 & 21 & 22 & 21 & 21 \\
 B & 600 & 21 & 24 & 25 & 24 & 24 \\ \hline
-\end{tabular}
+\end{tabular}}
 \caption{Number of selected representatives for Moons dataset}
 \end{table}
 
@@ -839,18 +860,21 @@ B & 600 & 21 & 24 & 25 & 24 & 24 \\ \hline
   \caption{Confusion matrices for Moons dataset}
   \label{img:exp1_moons}
 \end{figure}
+\noindent The confusion matrix can be seen in Figure~\ref{img:exp1_moons}
 
 \textbf{Circles}
 
-\begin{table}[t]
+\begin{table}[H]
+\resizebox{\textwidth}{!}{
 \begin{tabular}{l|llllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
 A & 600 & 15 & 13 & 13 & 13 & 13 \\
 B & 600 & 6  & 8  & 8  & 8  &  8 \\ \hline
-\end{tabular}
+\end{tabular}}
 \caption{Number of selected representatives for Circles dataset}
 \end{table}
+\noindent The confusion matrix can be seen in Figure~\ref{img:exp1_circles}
 
 \begin{figure}[t]
    \includegraphics[width=\linewidth]{img/exp1_circles.png}
@@ -872,7 +896,7 @@ This experiment has shown that with a well chosen $\delta$ representatives can b
 On these two datasets the Random Selection algorithm clearly peforming worse. \todo{clearly from confusion matrices, how to write this}
 
 From the results listed the difference between $\delta$-Medoids Full and Modified is not easily distinguishable.
-The difference between these two algorithms can be seen on Figure~\ref{img:difference_modified}.
+The difference between these two algorithms can be seen in Figure~\ref{img:difference_modified}.
 The full version of the algorithm tends to select the border samples of dataset as representatives.
 In these datasets the results do not show this because they are relatively dense and have normal distribution.
 On datasets that are more sparse this leads to a high number of representatives selected.
@@ -887,7 +911,7 @@ On datasets that are more sparse this leads to a high number of representatives 
 
 After the algorithms were tested on visualizable data, the experiments with well known labeled datasets could start.
 The motivation for this experiment was to test the algorithm results on well explored and well-annotated datasets commonly used as a benchmark for clustering.
-In this and the following experiments only the $\delta$-Medoids Modified was tested.
+In this and the following experiments, the $\delta$-Medoids Full algorithm was not used and only the Modified algorithm was tested.
 
 \subsection{Experimental Setup}
 Datasets used for this experiment were:
@@ -904,8 +928,8 @@ The similarity measure used in these datasets was Euclidean distance.
 The results for different methods are listed below.
 
 \textbf{Pendigits}
-\todo{make references to each table and picture or put hard placement for them?}
-\begin{table}[t]
+\begin{table}[H]
+\resizebox{\textwidth}{!}{
 \begin{tabular}{l|lllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
@@ -919,9 +943,10 @@ The results for different methods are listed below.
 7 & 778 & 22 & 20 & 20 & 20 \\
 8 & 719 & 75 & 77 & 15 & 15 \\
 9 & 719 & 50 & 52 & 13 & 13 \\ \hline
-\end{tabular}
+\end{tabular}}
 \caption{Number of selected representatives for Pendigit dataset}
 \end{table}
+\noindent The confusion matrix can be seen in Figure~\ref{img:exp3_pendigits}
 
 \begin{figure}[t]
    \includegraphics[width=\linewidth]{img/exp3_pendigits.png}
@@ -934,7 +959,8 @@ The results for different methods are listed below.
 In the experiment for this dataset the Greedy Selection algorithm was omitted as the experiments would take too long on clusters that contain 6000 samples.
 Previous experiments show that the $\delta$-Medoids agorithm chooses similar amount of representatives while getting better coverage.
 
-\begin{table}[t]
+\begin{table}[H]
+\resizebox{\textwidth}{!}{
 \begin{tabular}{l|lllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
@@ -948,10 +974,10 @@ Previous experiments show that the $\delta$-Medoids agorithm chooses similar amo
 7 & 6000 & 266  & 19 & 19 \\
 8 & 6000 & 1971 & 16 & 16 \\
 9 & 6000 & 686  & 28 & 28 \\ \hline
-
-\end{tabular}
+\end{tabular}}
 \caption{Number of selected representatives for MNIST Fashion dataset}
 \end{table}
+\noindent The confusion matrix can be seen in Figure~\ref{img:exp4}
 
 \begin{figure}[t]
    \includegraphics[width=\linewidth]{img/exp3_mnist_fashion.png}
@@ -961,27 +987,31 @@ Previous experiments show that the $\delta$-Medoids agorithm chooses similar amo
 
 \subsection{Conclusion for Image Recognition Datasets}
 Using algorithms on real datasets shows more significant differences between results in algorithms.
-Especially the difference in numbers of representatives chosen for different methods.
+Especially the difference in numbers of representatives chosen with $\delta$-Medoids Modified while still perforimning the best in classification test.
 The $\delta$-Medoids Modified choses the lowest number of representatives while getting the best results.
 Greedy Selection and $\delta$-Medoids One-Shot select similar number of representatives and their results are also very similar.
-This is interesting as the complexity of these algorithms differs a lot, Greedy Selection being much slower with $\mathcal(n^2)$.
+This is interesting as the complexity of these algorithms differs a lot, Greedy Selection being much slower with $\mathcal{O}(n^2)$.
 
 \section{Network Security Data}\label{sec:exp4}
 
+This experiment tests the functionality of selected methods as if they were plugged into the toolchain of Cognitive Targeted Anomaly Detection described in Section~\ref{sec:ctadf}.
+The data for it were collected from the framework and the experiment was made separately on a different machine.
+
 \subsection{Experimental Setup}
-For this experiment clustered hosts from a real network were used.
+Clustered hosts from a real network were used for this experiment.
 This dataset is explained in greater detail in Section~\ref{sec:real-data}.
 From this dataset traffic for first 4 hours was used for training the model and the next 4 hours were used for testing the representatives.
 The similarity measure from Section~\ref{sec:ctadf} was used.
 
-All 4 algorithms were run.
+Four algorithms were run, $\delta$-Medoids Full was omitted for reasons listed before.
 The $\delta$ was set to 0.8 as was the threshold used in community-based clustering for their creation.
 
 \subsection{Results}
 
 The results for different methods are listed below.
 
-\begin{table}[t]
+\begin{table}[H]
+\resizebox{\textwidth}{!}{
 \begin{tabular}{l|lllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
@@ -1001,9 +1031,11 @@ M & 51   & 38  & 38  & 38 & 38 \\
 N & 127  & 91  & 91  & 34 & 34 \\
 O & 67   & 48  & 48  & 48 & 48 \\
 P & 50   & 50  & 50  & 50 & 50 \\ \hline
-\end{tabular}
+\end{tabular}}
 \caption{Number of selected representatives for real network data}
 \end{table}
+\noindent The confusion matrix can be seen in Figure~\ref{img:exp4}
+$\delta$-Medoids One Shot algorithm shows better results in classification as the number of representatives selected by this algorithm is significantly higher containing on average 30\% of each cluster.
 
 \begin{figure}[t]
    \includegraphics[width=\linewidth]{img/exp4.png}
@@ -1011,27 +1043,34 @@ P & 50   & 50  & 50  & 50 & 50 \\ \hline
   \label{img:exp4}
 \end{figure}
 
+\todo{add average precision and recall values to results}
+
 \subsection{Conclusion for Network Security Data}
 The results show that the $\delta$-Medoids algorithm is significantly better than selecting random representatives from the cluster.
-Even for clusters with several thousand of samples few samples were selected a while retaining good properties for assigning points to clusters.
-The downside is the speed of the algorithm but this was not a part of this experiment.
+The classification routine was able to classify most of the test samples correctly for it.
+In most of the clusters the methods perform in a very similar way.
+The difference can clearly be seen in cluster H, that is complex and the $\delta$-Medoids algorithm was able to represent it the best.
+Even for clusters with several thousands of samples few samples were selected a while retaining good properties for assigning points to clusters.
+
+The downside is the speed of the algorithm but this was not a part of this experiment and is already explained in Section~\ref{sec:relevant_methods}.
+
 \todo{expand the conclusion}
 
+\section{Fit of Data}\label{sec:exp5}
 
-\section{Average Fit of Data}\label{sec:exp5}
-
-In this experiment the average data fit as defined in Section~\ref{sec:representative_selection} was tested.
+In this experiment the data fit as defined in Section~\ref{sec:representative_selection} was tested.
+The motivation was to test how many samples are covered by each added sample and whether on average the $\delta$-Medoids algorithm performs better than Random Selection algorithm.
 
 \subsection{Experimental Setup}
-In this experiment one complex cluster (cluster 'C') from Network Security Dataset was represented by $\delta$-Medoids and Random Selection algorithms.
+In this experiment one, complex cluster (cluster 'C') from Network Security Dataset was represented by $\delta$-Medoids and Random Selection algorithms.
 After the representatives were selected, the percentage of coverage by each representative was calculated and plotted into graph.
-
+\todo{Make average fit or at least give more examples}
 
 \subsection{Results}
 
-\begin{figure}[t]
+\begin{figure}[H]
   \includegraphics[width=\linewidth]{img/exp5.png}
-  \caption{\cbl Average fit of representatives in one cluster}
+  \caption{Average fit of representatives in one cluster}
   \label{img:exp5}
 \end{figure}
 
@@ -1047,7 +1086,7 @@ This can occur even more often in data, that do not have standard distribution a
 
 \chapter{Conclusion}
 
-A method to represent clusters in non-metric space by a small subset of the whole cluster was implemented and tested in this thesis.
+The method to represent clusters in non-metric space by a small subset of the whole cluster was implemented and tested in this thesis.
 This method was adjusted so that it can be incorporated into Cognitive Targeted Anomaly Detection Framework in the future.
 
 Methods that are relevant for creating cluster prototypes in a non-metric space were studied.
@@ -1057,16 +1096,14 @@ As a result of these tests new algorithm, $\delta$-Medoids Modified - a modified
 All algorithms were then further tested on image recognition datasets Pendigits and MNIST Fashion.
 Finally, the methods were fine-tuned and tested on a real Network Security Dataset captured in a medium-sized company.
 
-The experiments that were performed have shown that the $\delta$-Medoids Modified fulfills the requirements the best.
-It selects a small number of representatives from each cluster and is more precise than currently used Random Selection algorithm.
-The average fit by representatives of the data was also tested.
-A cluster prototype created by $\delta$-Medoids algorithm fits clusters significantly better than randomly selected representatives.
+The results presented in this thesis show that the modification done to $\delta$-Medoids improve its performance on network security datasets.
+The $\delta$-Medoids Modified algorithm is able to find a small number of representative with a decent coverage of the whole dataset.
+Representatives selected this way do fit the dataset on average better than selecting them randomly, which is the method currently used.
 
-This thesis explored the nature of the clusters collected on the Internet.
 \todo{jak zminit possible future work s kNN graphs atd.}
 
 \bibliographystyle{iso690}
-\bibliography{hlavac-thesis.bib}
+\bibliography{hlavac-thesis.bib} \todo{check bibliography correctness}
 
 \setsecnumdepth{all}
 \appendix
@@ -1080,7 +1117,8 @@ This thesis explored the nature of the clusters collected on the Internet.
     \item[DPI] Deep Packet Inspection
     \item[IDS] Intrusion Detection System
 	\item[NBAD] Network-Based Anomaly Detection
-	\item[NIDS] Intrusion Detection System
+	\item[NIDS] Network Intrusion Detection System
+    \item[RFC] Request for Comment
 \end{description}
 
 
