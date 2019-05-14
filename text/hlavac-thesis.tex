@@ -61,13 +61,40 @@
 \supervisor{Ing. Martin Kopp}
  \acknowledgements{I would like to express my thanks to my supervisor Ing. Martin Kopp for the inspiration I always brought from our meetings, for the opportunity to work on a real problem and last but not least his patience.}
 \abstractEN{
-Making computer networks secure is essential today as the Internet is the dominant medium for communication. One approach for securing networks is monitoring their behavior patterns. Precise and fast network behavior anomaly detection highly depends on the models created for the monitored network. To create a model that is not clogged by noise from the whole network, hosts can be separated into smaller groups by community-based clustering. On big networks of tens of thousands, these clusters can contain several thousands of hosts.
+Making computer networks secure is essential today as the Internet is the dominant medium for communication.
+One approach for securing networks is monitoring their behavior patterns.
+Precise and fast network behavior anomaly detection highly depends on the models created for the monitored network.
+To create a model that is not clogged by noise from the whole network, hosts can be separated into smaller groups by community-based clustering.
+On big networks of tens of thousands, these clusters can contain several thousands of hosts.
 
-This thesis presents an algorithm for finding cluster prototypes for clusters in Cognitive Targeted Anomaly Detection Framework. In the framework, representatives are currently selected randomly. Because of the dynamic nature of networks, only a pair-wise similarity exists between each host pair. Therefore, representative selection methods for topological spaces have to be used. A modification to $\delta$-Medoids algorithm is proposed with the ability to select a low number of representatives while maintaining the best possible coverage of the cluster. This algorithm improves the coverage of clusters in real network dataset by more than 4\% as compared to selecting the representatives randomly.}
-\abstractCS{V n{\v e}kolika v{\v e}t{\' a}ch shr{\v n}te obsah a p{\v r}{\' i}nos t{\' e}to pr{\' a}ce v {\v c}esk{\' e}m jazyce.}
+This thesis presents an algorithm for finding cluster prototypes for clusters in Cognitive Targeted Anomaly Detection Framework.
+In the framework, a number of samples is currently selected randomly as a representation of a cluster.
+Because of the dynamic nature of networks, only a pair-wise similarity exists between each host pair.
+Therefore, representative selection methods for topological spaces have to be used.
+A modification to $\delta$-Medoids algorithm is proposed with the ability to select a low number of representatives while maintaining the best possible coverage of the cluster.
+This algorithm improves the coverage of clusters in real network dataset by more than 4\% as compared to selecting the representatives randomly.
+}
+\abstractCS{
+Internet je dnes nejpoužívanějším komunikačním médiem a proto je zabezpečení komunikace na počítačových sítích důležitým tématem.
+Monitorování opakujících se vzorů v chování jednotlivých sítí je jeden z možných přístupů k jejich zabezpečování.
+Přesnost a rychlost detekce anomálií je závislá na kvalitě modelu vytvořeného pro danou síť.
+Na základě chování jednotlivých prvků lze síť rozdělit na menší části.
+Tím se předejde příliš robustnímu modelu zanesenému šumem z různorodých prvků v síti.
+Jeden z možných přístupů k vytvoření těchto částí je komunitní shlukování.
+
+Algoritmus pro vytváření shlukových prototypů v Cognitive Targeted Anomaly Detection Framework je prezentován v této práci.
+Momentálně jsou shluky v tomto frameworku reprezentovány náhodnou podmnožinou prvků z celého shluku.
+Vzhledem k dynamickým změnám v síti existuje pouze párová podobnost mezi jednotlivými prvky.
+Proto je potřeba využít medodu pro výběr reprezentantů, která je použitelná i v topologických prostorech.
+Jako nejlepší metoda pro vytváření shlukových prototypů je představen modifikovaný algoritmus $\delta$-Medoids.
+Pro každý shluk zajišťuje výběr malého množství reprezentantů s maximálním množstvím zachované informace.
+Při použití na reálných síťových datech, tento algoritmus vylepšuje pokrytí shluku jeho reprezentanty minimálně o 4\%.
+\todo{opravit zalamovani}
+}
 \placeForDeclarationOfAuthenticity{Prague}
-\keywordsCS{Výběr reprezentantů, Detekce anomálií, Komunitní clusterování, Systém detekce narušení, algoritmus $\delta$-Medoids, Topologický prostor, Párová podobnost} %TODO
-\keywordsEN{Representative selection, Network anomaly detection, Community-based clustering, Intrusion detection system, $\delta$-Medoids algorithm, Topological space, Pair-wise similarity} %TODO
+\keywordsCS{Výběr reprezentantů, Detekce anomálií, Komunitní shlukování, Systém detekce narušení, algoritmus $\delta$-Medoids, Topologický prostor, Párová podobnost \newpage
+ }
+\keywordsEN{Representative selection, Network anomaly detection, Community-based clustering, Intrusion detection system, $\delta$-Medoids algorithm, Topological space, Pair-wise similarity}
 \declarationOfAuthenticityOption{1} %select as appropriate, according to the desired license (integer 1-6)
 % \website{http://site.example/thesis} %optional thesis URL
 
@@ -79,7 +106,6 @@ This thesis presents an algorithm for finding cluster prototypes for clusters in
 
 \setsecnumdepth{part}
 \chapter{Introduction}
-\todo{translate abstract to czech after checking it}
 
 The Internet became a dominant medium for communication several decades ago, and there are still many issues concerning its security.
 Companies all around the world connect more and more of their infrastructure to the Internet.
@@ -401,7 +427,7 @@ A metric space (see e.g. \cite{choudhary1992elements}) is a pair $(X, d)$ where 
     \item [(iii)] $d(x, y) = d(y, x)$
     \item [(iv)] $d(x, z) \leq d(x, y) + d(x, z) \  \mathrm{for} \  x, y, z \in X$.
 \end{enumerate}
-Any function $d$ following these conditions is called distance. \todo{is this realy true?}
+Any function $d$ following these conditions is called distance.
 
 The similarity measure in Equation~\ref{eq:kopp} does not fulfill the last point of the definition above, as is explained in Section~\ref{sec:ctadf}.
 Consequently, it is not a distance and does not form a metric space. Furthermore, it is a pairwise similarity that forms a subspace for comparing each pair of samples.
