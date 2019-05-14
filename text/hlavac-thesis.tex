@@ -59,20 +59,19 @@
 \author{Jaroslav Hlaváč} %author's name without academic degrees
 \authorWithDegrees{Jaroslav Hlaváč} %author's name with academic degrees
 \supervisor{Ing. Martin Kopp}
- \acknowledgements{I would like to express my thanks to my supervisor Ing. Martin Kopp for the inspiration I always brought from our meetings, for the opportunity to work on a real problem and last but not least his patience.}
+ \acknowledgements{I would like to express my thanks to my supervisor Ing. Martin Kopp for the inspiration I always brought from our meetings, for the opportunity to work on a real problem and last but not least for his patience.}
 \abstractEN{
-Making computer networks secure is essential today as the Internet is the dominant medium for communication.
+The Internet is a dominant medium for communication, therefore securing computer network is a crucial task.
 One approach for securing networks is monitoring their behavior patterns.
 Precise and fast network behavior anomaly detection highly depends on the models created for the monitored network.
 To create a model that is not clogged by noise from the whole network, hosts can be separated into smaller groups by community-based clustering.
 On big networks of tens of thousands, these clusters can contain several thousands of hosts.
 
 This thesis presents an algorithm for finding cluster prototypes for clusters in Cognitive Targeted Anomaly Detection Framework.
-In the framework, a number of samples is currently selected randomly as a representation of a cluster.
-Because of the dynamic nature of networks, only a pair-wise similarity exists between each host pair.
+In the framework, a pair-wise similarity measure is used for clustering.
+Clusters are then represented by a number of randomly selected samples.
 Therefore, representative selection methods for topological spaces have to be used.
-A modification to $\delta$-Medoids algorithm is proposed with the ability to select a low number of representatives while maintaining the best possible coverage of the cluster.
-This algorithm improves the coverage of clusters in real network dataset by more than 4\% as compared to selecting the representatives randomly.
+A modification of $\delta$-Medoids algorithm is proposed with the ability to select a low number of representatives while maintaining the best possible coverage of the cluster.
 }
 \abstractCS{
 Internet je dnes nejpoužívanějším komunikačním médiem a proto je zabezpečení komunikace na počítačových sítích důležitým tématem.
@@ -88,13 +87,14 @@ Vzhledem k dynamickým změnám v síti existuje pouze párová podobnost mezi j
 Proto je potřeba využít medodu pro výběr reprezentantů, která je použitelná i v topologických prostorech.
 Jako nejlepší metoda pro vytváření shlukových prototypů je představen modifikovaný algoritmus $\delta$-Medoids.
 Pro každý shluk zajišťuje výběr malého množství reprezentantů s maximálním množstvím zachované informace.
-Při použití na reálných síťových datech, tento algoritmus vylepšuje pokrytí shluku jeho reprezentanty minimálně o 4\%.
+Při použití na reálných síťových datech, tento algoritmus vylepšuje pokrytí shluku jeho reprezentanty minimálně o 10\%.
 \todo{opravit zalamovani}
+\todo{predelat podle anglickeho}
 }
 \placeForDeclarationOfAuthenticity{Prague}
 \keywordsCS{Výběr reprezentantů, Detekce anomálií, Komunitní shlukování, Systém detekce narušení, algoritmus $\delta$-Medoids, Topologický prostor, Párová podobnost \newpage
  }
-\keywordsEN{Representative selection, Network anomaly detection, Community-based clustering, Intrusion detection system, $\delta$-Medoids algorithm, Topological space, Pair-wise similarity}
+\keywordsEN{$\delta$-Medoids algorithm, Community-based clustering, Intrusion detection system, Network anomaly detection, Pair-wise similarity, Representative selection, Topological space}
 \declarationOfAuthenticityOption{1} %select as appropriate, according to the desired license (integer 1-6)
 % \website{http://site.example/thesis} %optional thesis URL
 
@@ -778,33 +778,45 @@ The MNIST Fashion dataset was introduced quite recently, in 2017.
 
 \section{Network Security Dataset}\label{sec:real-data}
 Real network traffic captured from a company with approximately 20 thousand employees.
-The capture is from 24 hours of a working day and consists of 33.5  million flows.
-Proxy logs were used to capture the connections.
+The capture is from more than 24 hours of a working day and consists of 33.5  million flows.
 Hosts that appeared in that capture were clustered using the method explained in Section~\ref{sec:cluster_topo}.
+There are 16 clusters with sizes ranging from less than a hundred to several thousand.
 These clusters with all hosts labeled were used as real network dataset in this thesis.
-Cluster sizes range from less than a hundred to several thousand of network hosts.
 Labels provided for this dataset are the output of community-based clustering in Cognitive Targeted Anomaly Detection Framework.
-Similarity threshold used for the clustering was 0.8 which is why the $\delta$ was set to 0.8 in Section~\ref{sec:exp4}.
+Similarity threshold used for the clustering was 0.8.
+
+Each sample represents one device on the network.
+For such a big network the behaviors of devices are very diverse.
+This leads to heterogeneous clusters with behavior that changes over time.
+Only a pair-wise similarity between each host pair exists.
+Representation of cluster created is a complex problem, suitable for testing the properties of algorithms selected in this thesis.
+\todo{expand this if there is time}
 
 %========================================CHAPTER==================================
 
 \chapter{Experiments}\label{ch:experiments}
 
-In this chapter, all the experiments that were run are described.
-Each section is dedicated to one experiment.
-For each experiment, the motivation, experimental setup, results and conclusion are listed.
+In this chapter, all performed experiments are described.
+Each section represents one experiment with its motivation, experimental setup and results.
 
 All experiments were made in Jupyter Notebook technology using Python 3.7 kernel.
 For loading data from files and storing them in memory the Pandas library version 0.23.4 was used \cite{mckinney2010data}.
-The algorithms $K$-Nearest Neighbors with $K=1$ was used for classification of the test data based on the cluster prototypes created by selected algorithms.
-For each experiment, a confusion matrix was created from this classification.
+
+There are two main criteria for evaluating the result of each experiment.
+One is the number of selected samples.
+The other one is the coverage provided by these representatives.
+A table with these two measures is presented for each experiment.
+
+For testing the ability to assign new samples to its corresponding cluster a part of each dataset was separated as test data.
+The algorithms $K$-Nearest Neighbors with $K=1$ was then used to classify the test data based on the cluster prototypes created by selected algorithms.
+For each dataset, a confusion matrix was created to visualize the results of the classification test.
 
 \section{Visualizable datasets}\label{sec:exp1}
 
 The first experiment was run on the visualizable datasets created explicitly for this thesis.
 Seeing clustering results on visualizable datasets provides insight into algorithms performance.
 
-The methods that were explained in Section~\ref{sec:relevant_methods} are designed to work in a topological space, but they work in a metric space as well.
+The methods that were explained in Section~\ref{sec:relevant_methods} are usable on metric space with a distance measure as metric space is a special case of a topological space for which they are desiged.
 Using them on visualizable benchmark datasets designed to address specific problems helped to determine their properties such as how many representatives each algorithm selects and how well does the representatives work in classification in newly added samples.
 
 \subsection{Experimental Setup}
@@ -818,6 +830,7 @@ Datasets used for this experiment were:
 
 All five algorithms were run.
 The $\delta$ was estimated as 5\% quantile of distances from one random point in the data to all of the others.
+This choice was made because the desired number of samples selected is around 20.
 The similarity measure used in these datasets was Euclidean distance.
 
 This experiment was performed in five runs using cross-validation.
@@ -836,15 +849,25 @@ A table with the number of representatives selected from each cluster is present
 \begin{tabular}{l|llllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-A & 400 & 21 & 23 & 25 & 16 & 16 \\
-B & 400 & 17 & 20 & 23 & 20 & 20 \\
-C & 400 & 19 & 20 & 22 & 20 & 20 \\ \hline
+A & 400 & 21 (100)& 23 (100)& 25 (100)& 16 (96.75)& 16 (86.25)\\
+B & 400 & 17 (100)& 20 (100)& 23 (100)& 20 (99)& 20 (92.75)\\
+C & 400 & 19 (100)& 20 (100)& 22 (100)& 20 (99.25)& 20 (92)\\ \hline
 \end{tabular}}
-\caption{Number of selected representatives for Blobs 3D dataset}
+\caption{Number of selected representatives with coverate in percent for the Blobs 3D dataset}
 \end{table}
-\noindent The confusion matrix can be seen in Figure~\ref{img:exp1_blobs}.
 
-\begin{figure}[t]
+\noindent For the Blobs dataset, which is an easy representation problem, all algorithms were able to cover the dataset almost perfectly.
+Lower coverage for Random Selection can be seen but the density and distribution of samples still makes it cover most of the cluster.
+The lower coverage of $\delta$-Medoids Modified falls into a 5\% ratio, which rules out the extreme borders of the cluster.
+This is very good as the algorithm is not expected to cover samples that are too distant from the rest of the custer.
+
+The number of representatives selected is aproximately 20, that highly corresponds with the choice of $\delta$.
+This does is not a problem as the number is still relatively small (less than 10\% of the dataset).
+Also, in Cognitive Targeted Anomaly Detection Framework, clusters do dynamically change, and a around 20 representatives is requested to keep track of the cluster over time.
+
+The confusion matrix of classification test can be seen in Figure~\ref{img:exp1_blobs}.
+
+\begin{figure}[H]
    \includegraphics[width=\linewidth]{img/exp1_blobs.png}
   \caption{Confusion matrices for Blobs 3D dataset}
   \label{img:exp1_blobs}
@@ -858,81 +881,78 @@ C & 400 & 19 & 20 & 22 & 20 & 20 \\ \hline
 \begin{tabular}{l|llllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-A & 800 & 25 & 23 & 23 & 23 & 23 \\
-B & 960 & 26 & 21 & 23 & 21 & 21 \\
-C & 640 & 22 & 24 & 24 & 24 & 24 \\ \hline
+A & 800 & 25 (100)& 23 (100)& 23 (100)& 23 (99.75)& 23 (87.88)\\
+B & 960 & 26 (100)& 21 (100)& 23 (100)& 21 (100)& 21 (81.15)\\
+C & 640 & 22 (100)& 24 (100)& 24 (100)& 24 (99.84)& 24 (88.6)\\ \hline
 \end{tabular}}
-\caption{Number of selected representatives for Overlap dataset}
+\caption{Number of selected representatives with coverate in percent for the Overlap dataset}
 \end{table}
-\noindent The confusion matrix can be seen in Figure~\ref{img:exp1_overlap}.
+\noindent In the Overlap dataset, the average fit of the data remains similar to the Blobs 3D dataset as it is calculated for each cluster separately.
+Therefore, the number of representatives selected remains determined only by the choice of $\delta$.
 
-\begin{figure}[t]
+The results of the classification test show, classifying border samples from overlapping clusters is not a simple task.
+Confusion matrices present a slightly better results with the representatives selected by $\delta$-Medoids modified.
+However the number of misclassified samples for each dataset is not significant when compared to the number of samples in the cluster.
+The confusion matrix can be seen in Figure~\ref{img:exp1_overlap}.
+
+\begin{figure}[H]
    \includegraphics[width=\linewidth]{img/exp1_overlap.png}
   \caption{Confusion matrices for Overlap dataset}
   \label{img:exp1_overlap}
 \end{figure}
 \medskip
-\textbf{Moons}
+\textbf{Moons and Circles 3D}
 
 \begin{table}[H]
 \resizebox{\textwidth}{!}{
 \begin{tabular}{l|llllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-A & 600 & 22 & 21 & 22 & 21 & 21 \\
-B & 600 & 21 & 24 & 25 & 24 & 24 \\ \hline
+A & 600 & 22 (100)& 21 (100)& 22 (100)& 21 (100)& 21 (88.67)\\
+B & 600 & 21 (100)& 24 (100)& 25 (100)& 24 (100)& 24 (67)\\ \hline
 \end{tabular}}
-\caption{Number of selected representatives for Moons dataset}
+\caption{Number of selected representatives with coverate in percent for the Moons dataset}
 \end{table}
 
-\begin{figure}[t]
+\begin{table}[H]
+\resizebox{\textwidth}{!}{
+\begin{tabular}{l|llllll}
+\hline
+ \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+A & 600 & 15 (100)& 13 (100)& 13 (100)& 13 (100)& 13 (87.5)\\
+B & 600 & 6  (100)& 8  (100)& 8  (100)& 8  (99.83)&  8 (83.5)\\ \hline
+\end{tabular}}
+\caption{Number of selected representatives with coverate in percent for the Circles 3D dataset}
+\end{table}
+
+\noindent Selecting representatives both Moons and Circles 3D datasets is harder problem than for the compact clusters in Blobs 3D and Ovverlap datasets.
+Clusters in the Moons dataset are not easily represented by one centroid.
+The results show that medoid selection is a good option for representing this type of clusters.
+Each method, excluding Random Selection was able to cover the whole cluster.
+Randomly selected representatives suffer from the uneven distribution of samples in the space, thus covering a lower portion of the cluster.
+On these two datasets, the Random Selection algorithm performs worse as can be seen in the corresponding confusion metrices.
+The confusion matrix for the Moons dataset can be seen in Figure~\ref{img:exp1_moons}, for the Circles 3D dataset in Figure~\ref{img:exp1_circles}
+
+
+\begin{figure}[h]
    \includegraphics[width=\linewidth]{img/exp1_moons.png}
   \caption{Confusion matrices for Moons dataset}
   \label{img:exp1_moons}
 \end{figure}
-\noindent The confusion matrix can be seen in Figure~\ref{img:exp1_moons}.
-\medskip
 
-\textbf{Circles 3D}
-
-\begin{table}[H]
-\resizebox{\textwidth}{!}{
-\begin{tabular}{l|llllll}
-\hline
- \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-A & 600 & 15 & 13 & 13 & 13 & 13 \\
-B & 600 & 6  & 8  & 8  & 8  &  8 \\ \hline
-\end{tabular}}
-\caption{Number of selected representatives for Circles 3D dataset}
-\end{table}
-\noindent The confusion matrix can be seen in Figure~\ref{img:exp1_circles}
-
-\begin{figure}[t]
+\begin{figure}[h]
    \includegraphics[width=\linewidth]{img/exp1_circles.png}
   \caption{Confusion matrices for Circles 3D dataset}
   \label{img:exp1_circles}
 \end{figure}
 
-
-\subsection{Conclusion for Visualizable Datasets}
-For the Blobs dataset, which is an easy representation problem, all algorithms were able to represent clusters perfectly.
-The number of representatives selected is higher because of the choice of $\delta$.
-This does is not a problem as the number is still relatively small (less than 10\% of the dataset).
-Also, in Cognitive Targeted Anomaly Detection Framework, clusters do dynamically change, and a higher number of representatives is requested to keep track of the cluster over time.
-
-The Overlap dataset represents a harder problem with overlapping clusters the results are sufficient as for each cluster both precision and recall are above 0.85.
-
-Both Moons and Circles 3D are harder problems for selecting representatives.
-This experiment has shown that with a well-chosen $\delta$ representatives can be chosen with each of the algorithms to form a decent cluster prototype.
-On these two datasets, the Random Selection algorithm performs worse as can be seen in Figure~\ref{img:exp1_moons} and Figure~\ref{img:exp1_circles}.
-
 From the results listed the difference between $\delta$-Medoids Full and Modified are not easily distinguishable.
 The difference between these two algorithms can be seen in Figure~\ref{img:difference_modified}.
 The full version of the algorithm tends to select the border samples of a dataset as representatives.
 In these datasets, the results do not show this because they are relatively dense and have a normal distribution.
-On sparser datasets, this leads to a high number of representatives selected, while many of them are not relevant.
+On sparser datasets, this leads to a high number of representatives selected, while many of them are not relevant. \todo{make a dataset for this or delete it, time reasons ;( }
 
-\begin{figure}[t]
+\begin{figure}[h]
    \includegraphics[width=\linewidth]{img/delta_medoids_select.png}
   \caption{Difference between $\delta$-Medoids Full and Modified}
   \label{img:difference_modified}
@@ -940,9 +960,8 @@ On sparser datasets, this leads to a high number of representatives selected, wh
 
 \newpage
 
-\section{Image Recognition Datasets}\label{sec:exp3}
+\section{Test on Image Recognition Datasets}\label{sec:exp3}
 
-After the algorithms were tested on visualizable data, the experiments with well known labeled datasets could start.
 The motivation for this experiment was to test the algorithm results on well-explored and well-annotated datasets commonly used as a benchmark for clustering.
 
 \subsection{Experimental Setup}
@@ -966,18 +985,18 @@ The results for different methods are listed below.
 \begin{tabular}{l|lllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-0 & 780 & 33 & 33 & 33 & 33 \\
-1 & 779 & 33 & 41 & 41 & 41 \\
-2 & 780 & 17 & 15 & 15 & 15 \\
-3 & 719 & 12 & 9  & 9  & 9  \\
-4 & 780 & 25 & 24 & 24 & 24 \\
-5 & 720 & 25 & 27 & 27 & 27 \\
-6 & 720 & 16 & 16 & 16 & 16 \\
-7 & 778 & 22 & 20 & 20 & 20 \\
-8 & 719 & 75 & 77 & 15 & 15 \\
-9 & 719 & 50 & 52 & 13 & 13 \\ \hline
+0 & 780 & 33 (100)& 33 (100)& 33 (100)& 33 (93.46)\\
+1 & 779 & 33 (100)& 41 (100)& 41 (100)& 41 (94.48)\\
+2 & 780 & 17 (100)& 15 (100)& 15 (100)& 15 (95.71)\\
+3 & 719 & 12 (100)& 9  (100)& 9  (100)& 9  (94.64)\\
+4 & 780 & 25 (100)& 24 (100)& 24 (100)& 24 (93.59)\\
+5 & 720 & 25 (100)& 27 (100)& 27 (100)& 27 (93.89)\\
+6 & 720 & 16 (100)& 16 (100)& 16 (100)& 16 (97.3)\\
+7 & 778 & 22 (100)& 20 (100)& 20 (100)& 20 (94.24)\\
+8 & 719 & 75 (100)& 77 (100)& 15 (100)& 15 (91.24)\\
+9 & 719 & 50 (100)& 52 (100)& 13 (100)& 13 (92.65)\\ \hline
 \end{tabular}}
-\caption{Number of selected representatives for Pendigit dataset}
+\caption{Number of selected representatives with coverate in percent for the Pendigit dataset}
 \end{table}
 \noindent The confusion matrix can be seen in Figure~\ref{img:exp3_pendigits}
 \medskip
@@ -1009,7 +1028,7 @@ Previous experiments show that the $\delta$-Medoids algorithm chooses a similar 
 8 & 6000 & 1971 & 16 & 16 \\
 9 & 6000 & 686  & 28 & 28 \\ \hline
 \end{tabular}}
-\caption{Number of selected representatives for MNIST Fashion dataset}
+\caption{Number of selected representatives with coverate in percent for the MNIST Fashion dataset}
 \end{table}
 \noindent The confusion matrix can be seen in Figure~\ref{img:exp4}
 \medskip
@@ -1036,6 +1055,7 @@ The data for it was collected from the framework, and the experiment was done se
 Clustered hosts from a real network were used for this experiment.
 This dataset is explained in greater detail in Section~\ref{sec:real-data}.
 From this dataset traffic for 24 hours was used for training the model.
+Data from the following 4 hours was used for testing the representatives selected.
 The similarity measure from Section~\ref{sec:ctadf} was used.
 
 Three algorithms were run, $\delta$-Medoids Full and Greedy Selection were omitted for reasons listed in the previous section.
@@ -1049,25 +1069,25 @@ The results for different methods are listed below.
 \resizebox{\textwidth}{!}{
 \begin{tabular}{l|lllll}
 \hline
- \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-A & 72   & 8   & 8   & 8  & 8  \\
-B & 89   & 28  & 28  & 28 & 28 \\
-C & 2125 & 821 & 821 & 40 & 40 \\
-D & 116  & 83  & 82  & 36 & 36 \\
-E & 83   & 57  & 56  & 56 & 56 \\
-F & 46   & 38  & 38  & 38 & 38 \\
-G & 55   & 32  & 31  & 31 & 31 \\
-H & 835  & 460 & 441 & 34 & 34 \\
-I & 59   & 47  & 47  & 47 & 47 \\
-J & 77   & 66  & 66  & 66 & 66 \\
-K & 2065 & 846 & 788 & 30 & 30 \\
-L & 238  & 78  & 71  & 17 & 17 \\
-M & 51   & 38  & 38  & 38 & 38 \\
-N & 127  & 91  & 91  & 34 & 34 \\
-O & 67   & 48  & 48  & 48 & 48 \\
-P & 50   & 50  & 50  & 50 & 50 \\ \hline
+ \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
+A & 72   & 7    & 7  & 7  \\
+B & 127  & 23   & 27 & 27 \\
+C & 2263 & 1480 & 46 & 46 \\
+D & 124  & 76   & 17 & 17 \\
+E & 89   & 68   & 16 & 16 \\
+F & 54   & 38   & 38 & 38 \\
+G & 87   & 41   & 42 & 42 \\
+H & 1149 & 503  & 34 & 34 \\
+I & 60   & 53   & 12 & 12 \\
+J & 77   & 73   & 14 & 14 \\
+K & 2692 & 912  & 25 & 25 \\
+L & 137  & 109  & 22 & 22 \\
+M & 53   & 35   & 35 & 35 \\
+N & 259  & 15   & 16 & 16 \\
+O & 76   & 58   & 13 & 13 \\
+P & 76   & 76   & 7  & 7  \\ \hline
 \end{tabular}}
-\caption{Number of selected representatives for real network data}
+\caption{Number of selected representatives with coverate in percent for the real network data}
 \end{table}
 \noindent The confusion matrix can be seen in Figure~\ref{img:exp4}
 $\delta$-Medoids One Shot algorithm shows better results in classification as the number of representatives selected by this algorithm is significantly higher containing on average 30\% of each cluster.
@@ -1077,9 +1097,11 @@ $\delta$-Medoids One Shot algorithm shows better results in classification as th
   \caption{Confusion matrices for real network data}
   \label{img:exp4}
 \end{figure}
-\todo{get current images and data here}
 
-\todo{add average precision and recall values to results}
+For $\delta$-Medoids One Shot 77\% of samples were classified correctly.
+Such a high percentage is given by the fact, that the algorithm selects sometimes even more than half of the dataset.
+For Random Selection this percentage is 63\%.
+The $\delta$-Medoids Modified algorithm surpassed it at 79\% of samples correctly assigned to their cluster in classification.
 
 \subsection{Conclusion for Network Security Dataset}
 The results show that the $\delta$-Medoids algorithm is better than selecting random representatives from the cluster.
@@ -1093,19 +1115,20 @@ In random selection, a constant is needed which is hard to guess without prior k
 For some clusters, 20 representatives might be enough, and for others, a higher number might be needed.
 Selecting the higher number to be safe leads to unwanted computational overhead.
 
-\section{Fit of Data}\label{sec:exp5}
+\section{Fit of the Data}\label{sec:exp5}
 
 In this experiment the data fit as defined in Section~\ref{sec:representative_selection} was tested.
 The motivation was to test how many samples are covered by each added sample and whether on average the $\delta$-Medoids algorithm performs better than Random Selection algorithm.
 
 \subsection{Experimental Setup}
-In this experiment, one complex cluster (cluster H) from Network Security Dataset was represented by $\delta$-Medoids and Random Selection algorithms.
+In this experiment, one complex cluster (cluster K) from Network Security Dataset was represented by $\delta$-Medoids and Random Selection algorithms.
 After the representatives were selected, the percentage of coverage by each representative was calculated and plotted into a graph.
 
 \subsection{Results}
+Figure~\ref{img:exp5} shows the fit of representatives selected from cluster K.
 
-\begin{figure}[H]
-  \includegraphics[width=\linewidth]{img/exp5.png}
+\begin{figure}[t]
+  \includegraphics[width=\linewidth]{img/exp5-usable.png}
   \caption{Average fit of representatives in one cluster}
   \label{img:exp5}
 \end{figure}
@@ -1137,9 +1160,60 @@ The method to represent clusters in non-metric space by a small subset of the wh
 This method was adjusted so that it can be incorporated into Cognitive Targeted Anomaly Detection Framework in the future.
 
 \todo{jak zminit possible future work s kNN graphs atd.}
+\todo{zlepseni algoritmu ho zrychlilo}
 
-\bibliographystyle{iso690}
-\bibliography{hlavac-thesis.bib} \todo{check bibliography correctness}
+%\bibliographystyle{iso690}
+%\bibliography{hlavac-thesis.bib} \todo{check bibliography correctness}
+\begin{thebibliography}{99}
+\bibitem{hron2018breaches}
+HRON, Martin. The 10 Biggest Data Breaches in 2018. In: \textit{Avast Blog} [online]. Avast Software s.r.o., 2018. [2019-04-05]. Avaiable at: \url{https://blog.avast.com/biggest-data-breaches}
+
+\bibitem{mukherjee1994network}
+MUKHERJEE, Biswanath; HEBERLEIN, L. Todd; LEVITT, Karl N. Network intrusion detection. \textit{IEEE network}, 1994, 8.3: 26-41.
+
+\bibitem{cooper2019bestids}
+COOPER, Stephen. 2019 Best Intrusion Detection Systems (10+ IDS Tools Reviewed). In: \textit{comparitech} [online]. Comparitech Limited, 2019. [2019-04-27]. Available from: \url{https://www.comparitech.com/net-admin/network-intrusion-detection-tools/}
+
+\bibitem{liao2013intrusion}
+LIAO, Hung-Jen, et al. Intrusion detection system: A comprehensive review. \textit{Journal of Network and Computer Applications}, 2013, 36.1: 16-24.
+
+\bibitem{ref2722}
+BROWNLEE, N.; MILLS, C.; RUTH, G. Traffic Flow Measurement: Architecture. RFC 2722, October 1999.
+
+\bibitem{grill2016combining}
+GRILL, Martin. \textit{Combining network anomaly detectors}. Praha, 2016. Doctoral Thesis. Czech Technical University in Prague. PEVNÝ, Tomáš; REHÁK, Martin.
+
+\bibitem{kopp2018community}
+KOPP, Martin; GRILL, Martin; KOHOUT, Jan. Community-based anomaly detection. In: \textit{2018 IEEE International Workshop on Information Forensics and Security (WIFS)}. IEEE, 2018. p. 1-6.
+
+\bibitem{guttag2016introduction}
+GUTTAG, John. \textit{Introduction to Computation and Programming Using Python: With Application to Understanding Data}. Second. Cambridge, MA: MIT Press, 2016. ISBN 978-0-262-52962-4.
+
+\bibitem{choudhary1992elements}
+CHOUDHARY, B. \textit{The Elements of Complex Analysis}. New Age International, 1993. ISBN 9788122403992.
+
+\bibitem{stahl2014introduction}
+STAHL, Saul and Catherine STENSON. \textit{Introduction to Topology and Geometry} [online]. Somerset: John Wiley \& Sons, Incorporated, 2014. ISBN 9781118108109.
+
+\bibitem{tan2014introduction}
+TAN, Pang-Ning; STEINBACH, Michael; KUMAR, Vipin. \textit{Introduction to data mining}. Harlow: Pearson, 2014. ISBN 9781292026152.
+
+\bibitem{liebman2015representative}
+LIEBMAN, Elad; CHOR, Benny; STONE, Peter. Representative Selection in Nonmetric Datasets. \textit{Applied Artificial Intelligence}, 2015, 29.8: 807-838.
+
+\bibitem{scikit-learn}
+PEDREGOSA, Fabian, et al. Scikit-learn: Machine learning in Python. \textit{Journal of machine learning research}, 2011, 12.Oct: 2825-2830.
+
+\bibitem{dua1998pendigit}
+Dua, D.; Graff, C. UCI Machine Learning Repository. 2017. Available from: \url{http://archive.ics.uci.edu/ml}
+
+\bibitem{xiao2017fashion}
+XIAO, Han; RASUL, Kashif; VOLLGRAF, Roland. Fashion-mnist: a novel image dataset for benchmarking machine learning algorithms. \textit{arXiv preprint arXiv:1708.07747}, 2017.
+
+\bibitem{mckinney2010data}
+MCKINNEY, Wes, et al. Data structures for statistical computing in python. In: \textit{Proceedings of the 9th Python in Science Conference}. 2010. p. 51-56.
+
+\end{thebibliography}
 
 \setsecnumdepth{all}
 \appendix
@@ -1154,7 +1228,7 @@ This method was adjusted so that it can be incorporated into Cognitive Targeted 
     \item[IDS] Intrusion Detection System
 	\item[NBAD] Network-Based Anomaly Detection
 	\item[NIDS] Network Intrusion Detection System
-    \item[RFC] Request for Comment
+    \item[RFC] Request for Comments
 \end{description}
 
 
