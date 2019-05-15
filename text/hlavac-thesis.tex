@@ -802,9 +802,10 @@ Each section represents one experiment with its motivation, experimental setup a
 All experiments were made in Jupyter Notebook technology using Python 3.7 kernel.
 For loading data from files and storing them in memory the Pandas library version 0.23.4 was used \cite{mckinney2010data}.
 
-There are two main criteria for evaluating the result of each experiment.
+There are two main criteria for evaluating the result of each experiment corresponding with the definition of the problem in Section~\ref{sec:def_rep_selection}.
 One is the number of selected samples.
 The other one is the coverage provided by these representatives.
+The coverage represents the percentage of samples from the whole cluster that are closer than $\delta$ to one of the selected representatives.
 A table with these two measures is presented for each experiment.
 
 For testing the ability to assign new samples to its corresponding cluster a part of each dataset was separated as test data.
@@ -816,7 +817,7 @@ For each dataset, a confusion matrix was created to visualize the results of the
 The first experiment was run on the visualizable datasets created explicitly for this thesis.
 Seeing clustering results on visualizable datasets provides insight into algorithms performance.
 
-The methods that were explained in Section~\ref{sec:relevant_methods} are usable on metric space with a distance measure as metric space is a special case of a topological space for which they are desiged.
+The methods that were explained in Section~\ref{sec:relevant_methods} are usable on metric space with a distance measure as metric space is a special case of a topological space for which they are designed.
 Using them on visualizable benchmark datasets designed to address specific problems helped to determine their properties such as how many representatives each algorithm selects and how well does the representatives work in classification in newly added samples.
 
 \subsection{Experimental Setup}
@@ -849,21 +850,22 @@ A table with the number of representatives selected from each cluster is present
 \begin{tabular}{l|llllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-A & 400 & 21 (100)& 23 (100)& 25 (100)& 16 (96.75)& 16 (86.25)\\
-B & 400 & 17 (100)& 20 (100)& 23 (100)& 20 (99)& 20 (92.75)\\
-C & 400 & 19 (100)& 20 (100)& 22 (100)& 20 (99.25)& 20 (92)\\ \hline
+A & 400 & 21 (100\%)& 23 (100\%)& 25 (100\%)& 16 (96.75\%)& 16 (86.25\%)\\
+B & 400 & 17 (100\%)& 20 (100\%)& 23 (100\%)& 20 (99\%)& 20 (92.75\%)\\
+C & 400 & 19 (100\%)& 20 (100\%)& 22 (100\%)& 20 (99.25\%)& 20 (92\%)\\ \hline
 \end{tabular}}
-\caption{Number of selected representatives with coverate in percent for the Blobs 3D dataset}
+\caption{Number of selected representatives with coverage in percent for the Blobs 3D dataset}
 \end{table}
 
-\noindent For the Blobs dataset, which is an easy representation problem, all algorithms were able to cover the dataset almost perfectly.
-Lower coverage for Random Selection can be seen but the density and distribution of samples still makes it cover most of the cluster.
-The lower coverage of $\delta$-Medoids Modified falls into a 5\% ratio, which rules out the extreme borders of the cluster.
-This is very good as the algorithm is not expected to cover samples that are too distant from the rest of the custer.
+\noindent For the Blobs dataset, which is a straightforward representation problem, all algorithms were able to cover the dataset almost entirely.
+Lower coverage for Random Selection can be seen, but the density and distribution of samples still make it cover most of the cluster.
+It is expected of the $\delta$-Medoids Modified not to cover the extreme borders of the dataset which are expected to represent up to 5\% of the dataset.
+Even though the coverage is not 100\%, the clusters are represented sufficiently for new samples to be classified correctly.
+It is a useful feature, as the algorithm is not expected to cover samples that are too distant from the rest of the cluster.
 
-The number of representatives selected is aproximately 20, that highly corresponds with the choice of $\delta$.
-This does is not a problem as the number is still relatively small (less than 10\% of the dataset).
-Also, in Cognitive Targeted Anomaly Detection Framework, clusters do dynamically change, and a around 20 representatives is requested to keep track of the cluster over time.
+The number of representatives selected is approximately 20 that highly corresponds with the choice of $\delta$.
+This is not a problem as the number is still relatively small (less than 10\% of the dataset).
+Also, in Cognitive Targeted Anomaly Detection Framework, clusters do dynamically change, and around 20 representatives are requested to keep track of the cluster over time.
 
 The confusion matrix of classification test can be seen in Figure~\ref{img:exp1_blobs}.
 
@@ -881,18 +883,18 @@ The confusion matrix of classification test can be seen in Figure~\ref{img:exp1_
 \begin{tabular}{l|llllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-A & 800 & 25 (100)& 23 (100)& 23 (100)& 23 (99.75)& 23 (87.88)\\
-B & 960 & 26 (100)& 21 (100)& 23 (100)& 21 (100)& 21 (81.15)\\
-C & 640 & 22 (100)& 24 (100)& 24 (100)& 24 (99.84)& 24 (88.6)\\ \hline
+A & 800 & 25 (100\%)& 23 (100\%)& 23 (100\%)& 23 (99.75\%)& 23 (87.88\%)\\
+B & 960 & 26 (100\%)& 21 (100\%)& 23 (100\%)& 21 (100\%)&\% 21 (81.15\%)\\
+C & 640 & 22 (100\%)& 24 (100\%)& 24 (100\%)& 24 (99.84\%)& 24 (88.6\%)\\ \hline
 \end{tabular}}
-\caption{Number of selected representatives with coverate in percent for the Overlap dataset}
+\caption{Number of selected representatives with coverage in percent for the Overlap dataset}
 \end{table}
 \noindent In the Overlap dataset, the average fit of the data remains similar to the Blobs 3D dataset as it is calculated for each cluster separately.
-Therefore, the number of representatives selected remains determined only by the choice of $\delta$.
+Therefore, the number of representatives selected remains determined only by choice of $\delta$.
 
-The results of the classification test show, classifying border samples from overlapping clusters is not a simple task.
-Confusion matrices present a slightly better results with the representatives selected by $\delta$-Medoids modified.
-However the number of misclassified samples for each dataset is not significant when compared to the number of samples in the cluster.
+The results of the classification test show that classifying border samples from overlapping clusters is not a simple task.
+Confusion matrices present slightly better results with the representatives selected by $\delta$-Medoids modified.
+However, the number of misclassified samples for each dataset is not significant when compared to the number of samples in the cluster.
 The confusion matrix can be seen in Figure~\ref{img:exp1_overlap}.
 
 \begin{figure}[H]
@@ -908,10 +910,10 @@ The confusion matrix can be seen in Figure~\ref{img:exp1_overlap}.
 \begin{tabular}{l|llllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-A & 600 & 22 (100)& 21 (100)& 22 (100)& 21 (100)& 21 (88.67)\\
-B & 600 & 21 (100)& 24 (100)& 25 (100)& 24 (100)& 24 (67)\\ \hline
+A & 600 & 22 (100\%)& 21 (100\%)& 22 (100\%)& 21 (100\%)& 21 (88.67\%)\\
+B & 600 & 21 (100\%)& 24 (100\%)& 25 (100\%)& 24 (100\%)& 24 (67\%)\\ \hline
 \end{tabular}}
-\caption{Number of selected representatives with coverate in percent for the Moons dataset}
+\caption{Number of selected representatives with coverage in percent for the Moons dataset}
 \end{table}
 
 \begin{table}[H]
@@ -919,20 +921,19 @@ B & 600 & 21 (100)& 24 (100)& 25 (100)& 24 (100)& 24 (67)\\ \hline
 \begin{tabular}{l|llllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{Training}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Full}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-A & 600 & 15 (100)& 13 (100)& 13 (100)& 13 (100)& 13 (87.5)\\
-B & 600 & 6  (100)& 8  (100)& 8  (100)& 8  (99.83)&  8 (83.5)\\ \hline
+A & 600 & 15 (100\%)& 13 (100\%)& 13 (100\%)& 13 (100\%)& 13 (87.5\%)\\
+B & 600 & 6  (100\%)& 8  (100\%)& 8  (100\%)& 8  (99.83\%)&  8 (83.5\%)\\ \hline
 \end{tabular}}
-\caption{Number of selected representatives with coverate in percent for the Circles 3D dataset}
+\caption{Number of selected representatives with coverage in percent for the Circles 3D dataset}
 \end{table}
 
-\noindent Selecting representatives both Moons and Circles 3D datasets is harder problem than for the compact clusters in Blobs 3D and Ovverlap datasets.
+\noindent Selecting representatives both Moons and Circles 3D datasets is a harder problem than for the compact clusters in Blobs 3D and Overlap datasets.
 Clusters in the Moons dataset are not easily represented by one centroid.
 The results show that medoid selection is a good option for representing this type of clusters.
-Each method, excluding Random Selection was able to cover the whole cluster.
+Each method, excluding Random Selection, was able to cover the whole cluster.
 Randomly selected representatives suffer from the uneven distribution of samples in the space, thus covering a lower portion of the cluster.
-On these two datasets, the Random Selection algorithm performs worse as can be seen in the corresponding confusion metrices.
+On these two datasets, the Random Selection algorithm performs worse as can be seen in the corresponding confusion matrices.
 The confusion matrix for the Moons dataset can be seen in Figure~\ref{img:exp1_moons}, for the Circles 3D dataset in Figure~\ref{img:exp1_circles}
-
 
 \begin{figure}[h]
    \includegraphics[width=\linewidth]{img/exp1_moons.png}
@@ -952,7 +953,7 @@ The full version of the algorithm tends to select the border samples of a datase
 In these datasets, the results do not show this because they are relatively dense and have a normal distribution.
 On sparser datasets, this leads to a high number of representatives selected, while many of them are not relevant. \todo{make a dataset for this or delete it, time reasons ;( }
 
-\begin{figure}[h]
+\begin{figure}[H]
    \includegraphics[width=\linewidth]{img/delta_medoids_select.png}
   \caption{Difference between $\delta$-Medoids Full and Modified}
   \label{img:difference_modified}
@@ -962,7 +963,11 @@ On sparser datasets, this leads to a high number of representatives selected, wh
 
 \section{Test on Image Recognition Datasets}\label{sec:exp3}
 
+
 The motivation for this experiment was to test the algorithm results on well-explored and well-annotated datasets commonly used as a benchmark for clustering.
+Samples in these datasets are distributed more sparsely, and the clusters overlap.
+This experiment intended to see the difference in numbers of representatives selected by the $\delta$-Medoids One Shot and the $\delta$-Medoids Modified algorithms.
+Also,  how this difference influences the classification tests.
 
 \subsection{Experimental Setup}
 Datasets used for this experiment were:
@@ -985,52 +990,70 @@ The results for different methods are listed below.
 \begin{tabular}{l|lllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{Greedy}\\ \textbf{Selection}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-0 & 780 & 33 (100)& 33 (100)& 33 (100)& 33 (93.46)\\
-1 & 779 & 33 (100)& 41 (100)& 41 (100)& 41 (94.48)\\
-2 & 780 & 17 (100)& 15 (100)& 15 (100)& 15 (95.71)\\
-3 & 719 & 12 (100)& 9  (100)& 9  (100)& 9  (94.64)\\
-4 & 780 & 25 (100)& 24 (100)& 24 (100)& 24 (93.59)\\
-5 & 720 & 25 (100)& 27 (100)& 27 (100)& 27 (93.89)\\
-6 & 720 & 16 (100)& 16 (100)& 16 (100)& 16 (97.3)\\
-7 & 778 & 22 (100)& 20 (100)& 20 (100)& 20 (94.24)\\
-8 & 719 & 75 (100)& 77 (100)& 15 (100)& 15 (91.24)\\
-9 & 719 & 50 (100)& 52 (100)& 13 (100)& 13 (92.65)\\ \hline
+0 & 780 & 33 (100\%)& 33 (100\%)& 33 (100\%)& 33 (93.46\%)\\
+1 & 779 & 33 (100\%)& 41 (100\%)& 41 (100\%)& 41 (94.48\%)\\
+2 & 780 & 17 (100\%)& 15 (100\%)& 15 (100\%)& 15 (95.71\%)\\
+3 & 719 & 12 (100\%)& 9  (100\%)& 9  (100\%)& 9  (94.64\%)\\
+4 & 780 & 25 (100\%)& 24 (100\%)& 24 (100\%)& 24 (93.59\%)\\
+5 & 720 & 25 (100\%)& 27 (100\%)& 27 (100\%)& 27 (93.89\%)\\
+6 & 720 & 16 (100\%)& 16 (100\%)& 16 (100\%)& 16 (97.3\%)\\
+7 & 778 & 22 (100\%)& 20 (100\%)& 20 (100\%)& 20 (94.24\%)\\
+8 & 719 & 75 (100\%)& 77 (100\%)& 15 (100\%)& 15 (91.24\%)\\
+9 & 719 & 50 (100\%)& 52 (100\%)& 13 (100\%)& 13 (92.65\%)\\ \hline
 \end{tabular}}
-\caption{Number of selected representatives with coverate in percent for the Pendigit dataset}
+\caption{Number of selected representatives with coverage in percent for the Pendigit dataset}
 \end{table}
-\noindent The confusion matrix can be seen in Figure~\ref{img:exp3_pendigits}
-\medskip
 
+\noindent The results for Pendigits dataset show that the $\delta$-Medoids algorithm was able to represent the whole dataset with perfect precision.
+The Random Selection lacks behind in percentage.
+The confusion matrix in Figure~\ref{img:exp3_pendigits} shows that the clusters partly overlap (i.e., digits 1 and 7).
+Even with these overlaps, the $\delta$-Medoids algorithm works best for classification.
+It selects the lowest number of representatives while getting the best results.
+
+The Greedy Selection and $\delta$-Medoids One-Shot select the same number of representatives, and their results are also very similar.
+This is interesting as the complexity of these algorithms differs a lot, Greedy Selection being much slower with $\mathcal{O}(n^2)$.
+\medskip
 \begin{figure}[t]
    \includegraphics[width=\linewidth]{img/exp3_pendigits.png}
   \caption{Confusion matrices for Pendigits dataset}
   \label{img:exp3_pendigits}
-\end{figure}
+\end{figure} \todo{oprava obrazku, je tam full misto modififed}
 
 \textbf{MNIST Fashion}
 
-In the experiment for this dataset, the Greedy Selection algorithm was omitted as the experiments would take too long on clusters that contain 6000 samples.
+In the experiment for this dataset, the Greedy Selection algorithm was omitted as the tests would take too long on clusters that contain 6000 samples.
 Previous experiments show that the $\delta$-Medoids algorithm chooses a similar amount of representatives while getting better coverage.
+\todo{get the number for Delta}
 
 \begin{table}[H]
 \resizebox{\textwidth}{!}{
 \begin{tabular}{l|lllll}
 \hline
  \textbf{Cluster} & \specialcell{\textbf{All}\\ \textbf{Samples}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{One-Shot}} & \specialcell{\textbf{$\delta$-Medoids}\\ \textbf{Modified}} & \specialcell{\textbf{Random}\\ \textbf{Selection}} \\ \hline
-0 & 6000 & 859  & 23 & 23 \\
-1 & 6000 & 176  & 16 & 16 \\
-2 & 6000 & 845  & 20 & 20 \\
-3 & 6000 & 616  & 22 & 22 \\
-4 & 6000 & 630  & 25 & 25 \\
-5 & 6000 & 1622 & 14 & 14 \\
-6 & 6000 & 1181 & 18 & 18 \\
-7 & 6000 & 266  & 19 & 19 \\
-8 & 6000 & 1971 & 16 & 16 \\
-9 & 6000 & 686  & 28 & 28 \\ \hline
+0 & 6000 & 859  (100\%)& 23 (100\%)& 23 (93.41\%)\\
+1 & 6000 & 176  (100\%)& 16 (100\%)& 16 (95.58\%)\\
+2 & 6000 & 845  (100\%)& 20 (100\%)& 20 (93.37\%)\\
+3 & 6000 & 616  (100\%)& 22 (100\%)& 22 (95.33\%)\\
+4 & 6000 & 630  (100\%)& 25 (100\%)& 25 (94.98\%)\\
+5 & 6000 & 1622 (100\%)& 14 (100\%)& 14 (94.36\%)\\
+6 & 6000 & 1181 (100\%)& 18 (100\%)& 18 (95.06\%)\\
+7 & 6000 & 266  (100\%)& 19 (100\%)& 19 (95.12\%)\\
+8 & 6000 & 1971 (100\%)& 16 (100\%)& 16 (94.72\%)\\
+9 & 6000 & 686  (100\%)& 28 (100\%)& 28 (93.56\%)\\ \hline
 \end{tabular}}
-\caption{Number of selected representatives with coverate in percent for the MNIST Fashion dataset}
+\caption{Number of selected representatives with coverage in percent for the MNIST Fashion dataset}
 \end{table}
-\noindent The confusion matrix can be seen in Figure~\ref{img:exp4}
+
+\noindent The coverage for the MNIST Fashion shows that estimation of the $\delta$ as the 5\% quantile of distances from one random sample to the rest works well even for a very complex dataset.
+
+However, the complete coverage did not ensure accurate results it the classification test.
+For each method the number of correctly classified samples out of 10000 is listed below as the difference between algorithms is not noticeable on first sight from the confusion matrix in Figure~\ref{img:exp4}.
+It represents the sum of numbers on the diagonal of the matrix.
+For Random Selection the number of correctly classified samples is 6520, for $\delta$-Medoids One Shot it is 6826 and for $\delta$-Medoids Full it is 7053.
+These numbers confirm that selecting the correct representatives can improve the classification results,  especially when the Modified and One-Shot version of $\delta$-Medoids are compared.
+The Modified algorithm was able to get better results with a much lower number of representatives.
+In some cases the number of representatives selected is for $\delta$-Medoids Modified is less than 1\% of the number selected with the One Shot version.
+
 \medskip
 
 \begin{figure}[t]
@@ -1039,17 +1062,10 @@ Previous experiments show that the $\delta$-Medoids algorithm chooses a similar 
   \label{img:exp4}
 \end{figure}
 
-\subsection{Conclusion for Image Recognition Datasets}
-Using algorithms on real datasets shows more significant differences between results in algorithms.
-Especially the difference in numbers of representatives chosen with $\delta$-Medoids Modified while still performing the best in classification test.
-The $\delta$-Medoids Modified chooses the lowest number of representatives while getting the best results.
-As can be seen in the results for the Pendigits dataset, the Greedy Selection and $\delta$-Medoids One-Shot select similar number of representatives and their results are also very similar.
-This is interesting as the complexity of these algorithms differs a lot, Greedy Selection being much slower with $\mathcal{O}(n^2)$.
-
 \section{Network Security Data}\label{sec:exp4}
 
 This experiment tests the functionality of selected methods as if they were plugged into the toolchain of Cognitive Targeted Anomaly Detection described in Section~\ref{sec:ctadf}.
-The data for it was collected from the framework, and the experiment was done separately on a different machine.
+The data for it was collected from the framework.
 
 \subsection{Experimental Setup}
 Clustered hosts from a real network were used for this experiment.
@@ -1087,7 +1103,7 @@ N & 259  & 15   & 16 & 16 \\
 O & 76   & 58   & 13 & 13 \\
 P & 76   & 76   & 7  & 7  \\ \hline
 \end{tabular}}
-\caption{Number of selected representatives with coverate in percent for the real network data}
+\caption{Number of selected representatives with coverage in percent for the real network data}
 \end{table}
 \noindent The confusion matrix can be seen in Figure~\ref{img:exp4}
 $\delta$-Medoids One Shot algorithm shows better results in classification as the number of representatives selected by this algorithm is significantly higher containing on average 30\% of each cluster.
